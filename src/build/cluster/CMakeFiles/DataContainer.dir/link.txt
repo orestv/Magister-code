@@ -1,0 +1,2 @@
+/usr/bin/ar cr libDataContainer.a  CMakeFiles/DataContainer.dir/DataContainer.cpp.o
+/usr/bin/ranlib libDataContainer.a

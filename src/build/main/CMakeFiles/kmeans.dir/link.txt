@@ -1,0 +1,1 @@
+/usr/bin/c++      CMakeFiles/kmeans.dir/main.cpp.o  -o kmeans -rdynamic ../cluster/libObject.a ../cluster/libCluster.a libReader.a ../cluster/libObject.a ../cluster/libAttribute.a 

@@ -1,0 +1,2 @@
+/usr/bin/ar cr libCluster.a  CMakeFiles/Cluster.dir/Cluster.cpp.o
+/usr/bin/ranlib libCluster.a
