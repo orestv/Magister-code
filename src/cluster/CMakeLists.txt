@@ -2,6 +2,8 @@ add_library (Object Object.cpp)
 add_library (Attribute Attribute.cpp)
 add_library (Cluster Cluster.cpp)
 add_library (DataContainer DataContainer.cpp)
+add_library (KMeans KMeans.cpp)
 
 target_link_libraries (Object Attribute)
 target_link_libraries (DataContainer Object)
+target_link_libraries (KMeans DataContainer)
