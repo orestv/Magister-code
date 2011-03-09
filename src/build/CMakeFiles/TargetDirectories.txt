@@ -1,6 +1,0 @@
-/home/seth/dev/KMeans/src/build/cluster/CMakeFiles/Attribute.dir
-/home/seth/dev/KMeans/src/build/cluster/CMakeFiles/Cluster.dir
-/home/seth/dev/KMeans/src/build/cluster/CMakeFiles/DataContainer.dir
-/home/seth/dev/KMeans/src/build/cluster/CMakeFiles/Object.dir
-/home/seth/dev/KMeans/src/build/main/CMakeFiles/Reader.dir
-/home/seth/dev/KMeans/src/build/main/CMakeFiles/magister.dir

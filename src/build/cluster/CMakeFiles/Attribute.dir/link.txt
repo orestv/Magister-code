@@ -1,2 +1,0 @@
-/usr/bin/ar cr libAttribute.a  CMakeFiles/Attribute.dir/Attribute.cpp.o
-/usr/bin/ranlib libAttribute.a

@@ -1,1 +1,0 @@
-/usr/bin/c++   -g   CMakeFiles/magister.dir/main.cpp.o  -o magister -rdynamic ../cluster/libObject.a ../cluster/libCluster.a libReader.a ../cluster/libDataContainer.a ../cluster/libObject.a ../cluster/libAttribute.a 
