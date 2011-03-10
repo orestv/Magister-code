@@ -19,6 +19,10 @@ public:
     Cluster(const Cluster& orig);
 
     Object *center(AbstractMetric *pMetric);
+	list<int> indices();
+	
+	void add(int index);
+	void remove(int index);
 
     virtual ~Cluster();
 private:
@@ -28,6 +32,7 @@ private:
     map<int, Object*> *_pObjects;
     list<int> _indices;
     int _attributeCount;
+	bool _centerValid;
 };
 
 #endif	/* _CLUSTER_H */
