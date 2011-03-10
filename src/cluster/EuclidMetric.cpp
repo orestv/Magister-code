@@ -27,9 +27,9 @@ double EuclidMetric::distance(Object& o1, Object& o2) {
 }
 
 Object* EuclidMetric::center(DataContainer *pContainer,
-        list<int>& indices) {
+        vector<int>& indices) {
     int nAttributeCount = 0;
-    list<int>::iterator iIndex;
+    vector<int>::iterator iIndex;
     for (iIndex = indices.begin(); iIndex != indices.end(); iIndex++) {
         nAttributeCount = max(nAttributeCount, pContainer->get(*iIndex)->attributeCount());
     }

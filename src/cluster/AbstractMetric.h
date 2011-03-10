@@ -11,14 +11,14 @@
 #include "Object.h"
 #include "DataContainer.h"
 #include <map>
-#include <list>
+#include <vector>
 
 class AbstractMetric {
 public:
 
     virtual double distance(Object &o1, Object &o2){};
     virtual Object* center(DataContainer *pContainer, \
-        list<int> &indices){};
+        vector<int> &indices){};
 private:
 
 };

@@ -49,7 +49,7 @@ Object* Cluster::center(AbstractMetric *pMetric) {
     return _pCenter;
 }
 
-list<int> Cluster::indices() {
+vector<int> Cluster::indices() {
 	return _indices;
 }
 
@@ -59,12 +59,19 @@ void Cluster::add(int index) {
 }
 
 void Cluster::remove(int index) {
-	_indices.remove(index);
+	for (vector<int>::iterator iter = _indices.begin(); \
+		iter != _indices.end(); iter++) {
+		
+		if (*iter == index) {
+			_indices.erase(iter);
+			return;
+		}
+	}
 	_centerValid = false;
 }
 
 bool Cluster::contains(int index) {
-	for (list<int>::iterator iIndex = _indices.begin(); \
+	for (vector<int>::iterator iIndex = _indices.begin(); \
 		iIndex != _indices.end(); iIndex++) {
 		
 		if (*iIndex == index)
