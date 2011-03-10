@@ -29,6 +29,8 @@ public:
 	void remove(int index);
 	
 	bool contains(int index);
+	
+	void clear();
 
     virtual ~Cluster();
 private:

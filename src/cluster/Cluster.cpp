@@ -25,6 +25,19 @@ void Cluster::setContainer(DataContainer *pContainer) {
 }
 
 Cluster::Cluster(const Cluster& orig) {
+	_pCenter = 0;
+	_pContainer = orig._pContainer;
+	_indices = orig._indices;
+	_centerValid = false;
+}
+
+void Cluster::clear() {
+	if (_pCenter) {
+		delete _pCenter;
+		_pCenter = 0;
+	}
+	_indices.clear();
+	_centerValid = false;
 }
 
 Object* Cluster::center(AbstractMetric *pMetric) {
