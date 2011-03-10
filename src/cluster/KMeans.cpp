@@ -3,6 +3,7 @@
 #include <list>
 #include <time.h>
 #include <stdlib.h>
+#include <memory.h>
 #include <vector>
 #include <iostream>
 
@@ -65,8 +66,7 @@ void KMeans::clusterize(AbstractMetric *pMetric) {
 			pObj = _pContainer->get(*iIndex);
 			for (int nCluster = 0; nCluster < _clusterCount; nCluster++) {
 				dist = pMetric->distance(*pObj, *_clusters[nCluster].center(pMetric));
-				distances.assign(nCluster, dist);
-				//cout<<dist<<endl;
+				distances[nCluster] = dist;
 			}
 			nIndexCounter++;
 			if (nIndexCounter % 1000 == 0)
