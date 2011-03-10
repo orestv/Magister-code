@@ -9,14 +9,18 @@
 #define	_CLUSTER_H
 
 #include "Object.h"
+#include "DataContainer.h"
 #include "AbstractMetric.h"
 #include <map>
 #include <list>
 
 class Cluster {
 public:
-    Cluster(map<int, Object*> *_pObjects);
+	Cluster();
+    Cluster(DataContainer *pContainer);
     Cluster(const Cluster& orig);
+	
+	void setContainer(DataContainer *pContainer);
 
     Object *center(AbstractMetric *pMetric);
 	list<int> indices();
@@ -29,9 +33,8 @@ private:
     Object *calculateCenter(AbstractMetric *pMetric);
 
     Object *_pCenter;
-    map<int, Object*> *_pObjects;
+    DataContainer *_pContainer;
     list<int> _indices;
-    int _attributeCount;
 	bool _centerValid;
 };
 

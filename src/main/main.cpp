@@ -11,6 +11,7 @@
 #include <fstream>
 
 #include "Reader.h"
+#include "KMeans.h"
 
 using namespace std;
 
@@ -21,6 +22,8 @@ int main(int argc, char** argv) {
     Reader rdr("../../data/dmc2008_train.txt");
     DataContainer container;
     rdr.fill(container);
+	
+	KMeans km(&container, 5);
 
     return (EXIT_SUCCESS);
 }

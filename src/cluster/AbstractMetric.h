@@ -9,6 +9,7 @@
 #define	_ABSTRACTMETRIC_H
 
 #include "Object.h"
+#include "DataContainer.h"
 #include <map>
 #include <list>
 
@@ -16,7 +17,7 @@ class AbstractMetric {
 public:
 
     virtual double distance(Object &o1, Object &o2){};
-    virtual Object* center(map<int, Object*> &objects, \
+    virtual Object* center(DataContainer *pContainer, \
         list<int> &indices){};
 private:
 
