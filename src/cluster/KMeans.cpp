@@ -3,6 +3,7 @@
 #include <list>
 #include <time.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <memory.h>
 #include <vector>
 #include <iostream>
@@ -56,6 +57,7 @@ void KMeans::clusterize(AbstractMetric *pMetric) {
 	Object *pObj;
 	
 	int nClusterChanges = 0;
+    int nClusterChangeTreshold = 500;
 	
 	bool bClustersChanged = true;
 	while (bClustersChanged) {
@@ -82,10 +84,12 @@ void KMeans::clusterize(AbstractMetric *pMetric) {
 			}
 			
 			//if (!bClustersChanged && !_clusters[nSelectedCluster].contains(*iObjectId))
-			if (!_clusters[nSelectedCluster].contains(*iObjectId)) {
+            /*
+			if (nClusterChanges < nClusterChangeTreshold && !_clusters[nSelectedCluster].contains(*iObjectId)) {
 				bClustersChanged = true;
 				nClusterChanges++;
 			}
+            */
 				
 			pTempClusters[nSelectedCluster].add(*iObjectId);
 			
@@ -94,13 +98,29 @@ void KMeans::clusterize(AbstractMetric *pMetric) {
 				printf("%i objects processed.\r\n", nIndexCounter);
 		}
 		end = time(NULL);
-		printf("Calculating all the distances took %i seconds.\r\n", end-start);
-		printf("%i points have changed their clusters during this iteration.\r\n\r\n", nClusterChanges);
+		printf("Calculating all the distances took %i seconds.\r\n", (int)(end-start));
+        printf("Calculating differences...\r\n");
+        start = time(NULL);
+
+        for (nCluster = 0; nCluster < _clusterCount; nCluster++) {
+            if (! (_clusters[nCluster] == pTempClusters[nCluster])) {
+                bClustersChanged = true;
+                break;
+            }
+        }
+        end = time(NULL);
+        printf("Differences calculated, %i seconds spent.\r\n", (int)(end-start));
+        if (bClustersChanged)
+            printf("Differences found!\r\n");
+        else
+            printf("No differences found!\r\n");
+
 		for (nCluster = 0; nCluster < _clusterCount; nCluster++) {
 			_clusters[nCluster] = pTempClusters[nCluster];
 			pTempClusters[nCluster].clear();
 		}
 	}
+    printf("Done!\r\n");
 	delete[] pTempClusters;
 }
 

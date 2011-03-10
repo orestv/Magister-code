@@ -6,6 +6,7 @@
  */
 
 #include "Cluster.h"
+#include <iostream>
 
 Cluster::Cluster() {
 	_centerValid = false;
@@ -83,6 +84,33 @@ bool Cluster::contains(int index) {
 Object* Cluster::calculateCenter(AbstractMetric* pMetric) {
 	_centerValid = true;
     return pMetric->center(_pContainer, _indices);
+}
+
+bool Cluster::operator==(Cluster &other) {
+    return _indices == other._indices;
+    if (_pContainer != other._pContainer)
+        return false;
+    /*
+    if (_indices.size() != other._indices.size()) {
+        std::cout<<"Diff: "<<_indices.size()-other._indices.size()<<" elements"<<std::endl;
+        return false;
+    }
+    */
+    bool bFound = false;
+    for (vector<int>::iterator idOuter = _indices.begin(); idOuter != _indices.end(); idOuter++) {
+        bFound = false;
+
+        for (vector<int>::iterator idInner = other._indices.begin(); idInner != other._indices.end(); idInner++) {
+            if (*idOuter == *idInner) {
+                bFound = true;
+                break;
+            }
+        }
+        std::cout<<bFound<<std::endl;
+        if (!bFound)
+            return false;
+    }
+    return true;
 }
 
 Cluster::~Cluster() {

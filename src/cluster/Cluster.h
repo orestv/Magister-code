@@ -19,6 +19,7 @@ public:
 	Cluster();
     Cluster(DataContainer *pContainer);
     Cluster(const Cluster& orig);
+    virtual ~Cluster();
 	
 	void setContainer(DataContainer *pContainer);
 
@@ -32,7 +33,8 @@ public:
 	
 	void clear();
 
-    virtual ~Cluster();
+    bool operator==(Cluster &other);
+
 private:
     Object *calculateCenter(AbstractMetric *pMetric);
 
