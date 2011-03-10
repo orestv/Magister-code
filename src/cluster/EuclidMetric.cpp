@@ -7,6 +7,7 @@
 
 #include "EuclidMetric.h"
 #include <math.h>
+#include <memory.h>
 
 EuclidMetric::EuclidMetric() {
 }
@@ -42,7 +43,7 @@ Object* EuclidMetric::center(DataContainer *pContainer,
     for (iIndex = indices.begin();  \
             iIndex != indices.end(); iIndex++) {
 
-        pObj = pContainer.get(*iIndex);
+        pObj = pContainer->get(*iIndex);
         for (int nAttribute = 0; nAttribute < nAttributeCount; nAttribute++) {
             if (pObj->isAttrValid(nAttribute)) {
                 pAttributes[nAttribute] += pObj->attr(nAttribute);

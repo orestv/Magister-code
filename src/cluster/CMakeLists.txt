@@ -11,3 +11,5 @@ target_link_libraries (DataContainer Object)
 add_library (KMeans KMeans.cpp)
 target_link_libraries (KMeans DataContainer)
 target_link_libraries (KMeans Cluster)
+
+add_library (EuclidMetric EuclidMetric.cpp)

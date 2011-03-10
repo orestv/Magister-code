@@ -2,6 +2,7 @@
 #define _kmeans_h_
 
 #include "DataContainer.h"
+#include "AbstractMetric.h"
 #include "Cluster.h"
 #include <list>
 
@@ -10,7 +11,7 @@ class KMeans {
 		KMeans(DataContainer *pContainer, int clusterCount);
 		~KMeans();
 		
-		void clusterize();
+		void clusterize(AbstractMetric *pMetric);
 		
 		Cluster* clusters();
 		int clusterCount();

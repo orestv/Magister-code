@@ -3,6 +3,8 @@
 #include <list>
 #include <time.h>
 #include <stdlib.h>
+#include <vector>
+#include <iostream>
 
 using namespace std;
 
@@ -30,8 +32,49 @@ Cluster* KMeans::clusters() {
 	return _clusters;
 }
 
-void KMeans::clusterize() {
+void KMeans::clusterize(AbstractMetric *pMetric) {
+	list<int> indices = _pContainer->indices();
+	
+	list<int> sample = KMeans::randomSample(indices, _clusterCount);
+	int nCluster = 0;
+	for (list<int>::iterator iIndex = sample.begin(); \
+		iIndex != sample.end(); iIndex++, nCluster++) {
 		
+		_clusters[nCluster].add(*iIndex);
+	}
+	
+	Cluster *clustersTemp = new Cluster[_clusterCount];
+	for (int i = 0; i < _clusterCount; i++)
+		clustersTemp[i].setContainer(_pContainer);
+		
+	
+	double dist;
+	vector<double> distances;
+	distances.resize(_clusterCount);
+	Object *pObj;
+	bool bClustersChanged = true;
+	while (bClustersChanged) {
+		bClustersChanged = false;
+		
+		time_t start, end;
+		start = time(NULL);
+		int nIndexCounter = 0;
+		for (list<int>::iterator iIndex = indices.begin(); \
+			iIndex != indices.end(); iIndex++) {
+			
+			pObj = _pContainer->get(*iIndex);
+			for (int nCluster = 0; nCluster < _clusterCount; nCluster++) {
+				dist = pMetric->distance(*pObj, *_clusters[nCluster].center(pMetric));
+				distances.assign(nCluster, dist);
+				//cout<<dist<<endl;
+			}
+			nIndexCounter++;
+			if (nIndexCounter % 1000 == 0)
+				printf("%i objects processed.\r\n", nIndexCounter);
+		}
+		end = time(NULL);
+		printf("Calculating all the distances took %i seconds.\r\n", end-start);
+	}
 }
 
 list<int> KMeans::randomSample(list<int> indices, int nIndexCount) {	

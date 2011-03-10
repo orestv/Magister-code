@@ -12,6 +12,7 @@
 
 #include "Reader.h"
 #include "KMeans.h"
+#include "EuclidMetric.h"
 
 using namespace std;
 
@@ -25,6 +26,12 @@ int main(int argc, char** argv) {
     rdr.fill(container);
 	
 	KMeans km(&container, 5);
+	
+	AbstractMetric *pMetric = new EuclidMetric();
+	
+	km.clusterize(pMetric);
+	
+	delete pMetric;
 
     return (EXIT_SUCCESS);
 }
