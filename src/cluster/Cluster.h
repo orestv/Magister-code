@@ -27,6 +27,8 @@ public:
 	
 	void add(int index);
 	void remove(int index);
+	
+	bool contains(int index);
 
     virtual ~Cluster();
 private:

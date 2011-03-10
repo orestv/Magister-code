@@ -50,6 +50,16 @@ void Cluster::remove(int index) {
 	_centerValid = false;
 }
 
+bool Cluster::contains(int index) {
+	for (list<int>::iterator iIndex = _indices.begin(); \
+		iIndex != _indices.end(); iIndex++) {
+		
+		if (*iIndex == index)
+			return true;
+	}
+	return false;
+}
+
 Object* Cluster::calculateCenter(AbstractMetric* pMetric) {
 	_centerValid = true;
     return pMetric->center(_pContainer, _indices);
