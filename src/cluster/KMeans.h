@@ -15,7 +15,7 @@ class KMeans {
 		Cluster* clusters();
 		int clusterCount();
 		
-		static list<int> randomIndices(list<int> indices, int nIndexCount);
+		static list<int> randomSample(list<int> indices, int nIndexCount);
 		
     private:
         DataContainer *_pContainer;

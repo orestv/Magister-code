@@ -24,3 +24,7 @@ Object* DataContainer::get(int id) {
     else
         return 0;
 }
+
+std::list<int> DataContainer::indices() {
+	return _indices;
+}

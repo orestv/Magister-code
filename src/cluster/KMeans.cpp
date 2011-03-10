@@ -2,6 +2,7 @@
 #include <math.h>
 #include <list>
 #include <time.h>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -30,24 +31,21 @@ Cluster* KMeans::clusters() {
 }
 
 void KMeans::clusterize() {
-	
-	list<int> indices = _pContainer->indices();
-	int nRandomIndex;
-	
-	for (int nCluster = 0; nCluster < _clusterCount; nCluster++) {
 		
-	}
-	
 }
 
-list<int> KMeans::randomIndices(list<int> indices, int nIndexCount) {	
-	//srand(time(NULL));
+list<int> KMeans::randomSample(list<int> indices, int nIndexCount) {	
 	list<int> result;
 	int nItemIndex = 0;
 	int nRandomIndex = 0;
+	list<int>::iterator iList;
+	int nTemp = 0;
 	for (int i = 0; i < nIndexCount; i++) {
-		//nItemIndex = (int) (rand() * indices.size());
-		nRandomIndex = indices[nItemIndex];
+		nItemIndex = (rand() % indices.size());
+		nTemp = 0;
+		for (iList = indices.begin(); iList != indices.end() && nTemp < nItemIndex; \
+			iList++, nTemp++) {} 
+		nRandomIndex = *iList;		//Attention! Might be outside the list!
 		indices.remove(nRandomIndex);
 		result.push_back(nRandomIndex);
 	}

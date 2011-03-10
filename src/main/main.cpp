@@ -19,6 +19,7 @@ using namespace std;
  * 
  */
 int main(int argc, char** argv) {
+	
     Reader rdr("../../data/dmc2008_train.txt");
     DataContainer container;
     rdr.fill(container);
