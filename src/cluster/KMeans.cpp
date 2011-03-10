@@ -38,43 +38,70 @@ void KMeans::clusterize(AbstractMetric *pMetric) {
 	
 	list<int> sample = KMeans::randomSample(indices, _clusterCount);
 	int nCluster = 0;
-	for (list<int>::iterator iIndex = sample.begin(); \
-		iIndex != sample.end(); iIndex++, nCluster++) {
+	for (list<int>::iterator iObjectId = sample.begin(); \
+		iObjectId != sample.end(); iObjectId++, nCluster++) {
 		
-		_clusters[nCluster].add(*iIndex);
+		_clusters[nCluster].add(*iObjectId);
 	}
 	
-	Cluster *clustersTemp = new Cluster[_clusterCount];
+	Cluster *pTempClusters = new Cluster[_clusterCount];
 	for (int i = 0; i < _clusterCount; i++)
-		clustersTemp[i].setContainer(_pContainer);
+		pTempClusters[i].setContainer(_pContainer);
 		
 	
-	double dist;
+	double dist, minDist;
+	int nSelectedCluster = 0;
 	vector<double> distances;
 	distances.resize(_clusterCount);
 	Object *pObj;
+	
+	int nClusterChanges = 0;
+	
 	bool bClustersChanged = true;
 	while (bClustersChanged) {
+		nClusterChanges = 0;
 		bClustersChanged = false;
 		
 		time_t start, end;
 		start = time(NULL);
 		int nIndexCounter = 0;
-		for (list<int>::iterator iIndex = indices.begin(); \
-			iIndex != indices.end(); iIndex++) {
+		for (list<int>::iterator iObjectId = indices.begin(); \
+			iObjectId != indices.end(); iObjectId++) {			
+			pObj = _pContainer->get(*iObjectId);
 			
-			pObj = _pContainer->get(*iIndex);
-			for (int nCluster = 0; nCluster < _clusterCount; nCluster++) {
+			minDist = -1;
+			nCluster = 0;
+			nSelectedCluster = 0;
+			for (nCluster = 0; nCluster < _clusterCount; nCluster++) {
 				dist = pMetric->distance(*pObj, *_clusters[nCluster].center(pMetric));
 				distances[nCluster] = dist;
+				if (minDist < 0 || dist < minDist) {
+					nSelectedCluster = nCluster;
+					minDist = dist;
+				}
 			}
+			
+			//if (!bClustersChanged && !_clusters[nSelectedCluster].contains(*iObjectId))
+			if (!_clusters[nSelectedCluster].contains(*iObjectId)) {
+				bClustersChanged = true;
+				nClusterChanges++;
+			}
+				
+			pTempClusters[nSelectedCluster].add(*iObjectId);
+			
 			nIndexCounter++;
-			if (nIndexCounter % 1000 == 0)
+			if (nIndexCounter % 10000 == 0)
 				printf("%i objects processed.\r\n", nIndexCounter);
 		}
 		end = time(NULL);
 		printf("Calculating all the distances took %i seconds.\r\n", end-start);
+		printf("%i points have changed their clusters during this iteration.\r\n\r\n", nClusterChanges);
+		for (nCluster = 0; nCluster < _clusterCount; nCluster++) {
+			_clusters[nCluster] = pTempClusters[nCluster];
+			pTempClusters[nCluster].clear();
+		}
 	}
+	delete[] pTempClusters;
 }
 
 list<int> KMeans::randomSample(list<int> indices, int nIndexCount) {	
