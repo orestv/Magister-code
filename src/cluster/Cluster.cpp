@@ -7,24 +7,52 @@
 
 #include "Cluster.h"
 
-Cluster::Cluster(map<int, Object*> *pObjects) {
-    int nAttributeCount = 0;
-    this->_pObjects = pObjects;
+Cluster::Cluster() {
+	_centerValid = false;
+	_pCenter = 0;
+	_pContainer = 0;
+}
+
+Cluster::Cluster(DataContainer *pContainer) {
+    _pContainer = pContainer;
     _pCenter = 0;
-    _attributeCount = nAttributeCount;
+	_centerValid = false;
+}
+
+void Cluster::setContainer(DataContainer *pContainer) {
+	_pContainer = pContainer;
+	_centerValid = false;
 }
 
 Cluster::Cluster(const Cluster& orig) {
 }
 
 Object* Cluster::center(AbstractMetric *pMetric) {
-    if (!_pCenter)
+	if (!_centerValid) {
+		if (_pCenter)
+			delete _pCenter;
         _pCenter = calculateCenter(pMetric);
+	}
     return _pCenter;
 }
 
+list<int> Cluster::indices() {
+	return _indices;
+}
+
+void Cluster::add(int index) {
+	_indices.push_back(index);
+	_centerValid = false;
+}
+
+void Cluster::remove(int index) {
+	_indices.remove(index);
+	_centerValid = false;
+}
+
 Object* Cluster::calculateCenter(AbstractMetric* pMetric) {
-    return pMetric->center(*_pObjects, _indices);
+	_centerValid = true;
+    return pMetric->center(_pContainer, _indices);
 }
 
 Cluster::~Cluster() {
