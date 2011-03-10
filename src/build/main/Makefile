@@ -39,10 +39,10 @@ RM = /usr/bin/cmake -E remove -f
 CMAKE_EDIT_COMMAND = /usr/bin/ccmake
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/seth/dev/KMeans/src
+CMAKE_SOURCE_DIR = /home/seth/dev/magister/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/seth/dev/KMeans/src/build
+CMAKE_BINARY_DIR = /home/seth/dev/magister/src/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -69,14 +69,14 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/seth/dev/KMeans/src/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/seth/dev/KMeans/src/build/CMakeFiles /home/seth/dev/KMeans/src/build/main/CMakeFiles/progress.marks
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f CMakeFiles/Makefile2 main/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/seth/dev/KMeans/src/build/CMakeFiles 0
+	cd /home/seth/dev/magister/src/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/seth/dev/magister/src/build/CMakeFiles /home/seth/dev/magister/src/build/main/CMakeFiles/progress.marks
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f CMakeFiles/Makefile2 main/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/seth/dev/magister/src/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f CMakeFiles/Makefile2 main/clean
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f CMakeFiles/Makefile2 main/clean
 .PHONY : clean
 
 # The main clean target
@@ -85,22 +85,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f CMakeFiles/Makefile2 main/preinstall
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f CMakeFiles/Makefile2 main/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f CMakeFiles/Makefile2 main/preinstall
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f CMakeFiles/Makefile2 main/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/seth/dev/KMeans/src/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/seth/dev/magister/src/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 main/CMakeFiles/Reader.dir/rule:
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f CMakeFiles/Makefile2 main/CMakeFiles/Reader.dir/rule
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f CMakeFiles/Makefile2 main/CMakeFiles/Reader.dir/rule
 .PHONY : main/CMakeFiles/Reader.dir/rule
 
 # Convenience name for target.
@@ -109,12 +109,12 @@ Reader: main/CMakeFiles/Reader.dir/rule
 
 # fast build rule for target.
 Reader/fast:
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f main/CMakeFiles/Reader.dir/build.make main/CMakeFiles/Reader.dir/build
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f main/CMakeFiles/Reader.dir/build.make main/CMakeFiles/Reader.dir/build
 .PHONY : Reader/fast
 
 # Convenience name for target.
 main/CMakeFiles/magister.dir/rule:
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f CMakeFiles/Makefile2 main/CMakeFiles/magister.dir/rule
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f CMakeFiles/Makefile2 main/CMakeFiles/magister.dir/rule
 .PHONY : main/CMakeFiles/magister.dir/rule
 
 # Convenience name for target.
@@ -123,7 +123,7 @@ magister: main/CMakeFiles/magister.dir/rule
 
 # fast build rule for target.
 magister/fast:
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f main/CMakeFiles/magister.dir/build.make main/CMakeFiles/magister.dir/build
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f main/CMakeFiles/magister.dir/build.make main/CMakeFiles/magister.dir/build
 .PHONY : magister/fast
 
 Reader.o: Reader.cpp.o
@@ -131,7 +131,7 @@ Reader.o: Reader.cpp.o
 
 # target to build an object file
 Reader.cpp.o:
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f main/CMakeFiles/Reader.dir/build.make main/CMakeFiles/Reader.dir/Reader.cpp.o
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f main/CMakeFiles/Reader.dir/build.make main/CMakeFiles/Reader.dir/Reader.cpp.o
 .PHONY : Reader.cpp.o
 
 Reader.i: Reader.cpp.i
@@ -139,7 +139,7 @@ Reader.i: Reader.cpp.i
 
 # target to preprocess a source file
 Reader.cpp.i:
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f main/CMakeFiles/Reader.dir/build.make main/CMakeFiles/Reader.dir/Reader.cpp.i
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f main/CMakeFiles/Reader.dir/build.make main/CMakeFiles/Reader.dir/Reader.cpp.i
 .PHONY : Reader.cpp.i
 
 Reader.s: Reader.cpp.s
@@ -147,7 +147,7 @@ Reader.s: Reader.cpp.s
 
 # target to generate assembly for a file
 Reader.cpp.s:
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f main/CMakeFiles/Reader.dir/build.make main/CMakeFiles/Reader.dir/Reader.cpp.s
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f main/CMakeFiles/Reader.dir/build.make main/CMakeFiles/Reader.dir/Reader.cpp.s
 .PHONY : Reader.cpp.s
 
 main.o: main.cpp.o
@@ -155,7 +155,7 @@ main.o: main.cpp.o
 
 # target to build an object file
 main.cpp.o:
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f main/CMakeFiles/magister.dir/build.make main/CMakeFiles/magister.dir/main.cpp.o
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f main/CMakeFiles/magister.dir/build.make main/CMakeFiles/magister.dir/main.cpp.o
 .PHONY : main.cpp.o
 
 main.i: main.cpp.i
@@ -163,7 +163,7 @@ main.i: main.cpp.i
 
 # target to preprocess a source file
 main.cpp.i:
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f main/CMakeFiles/magister.dir/build.make main/CMakeFiles/magister.dir/main.cpp.i
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f main/CMakeFiles/magister.dir/build.make main/CMakeFiles/magister.dir/main.cpp.i
 .PHONY : main.cpp.i
 
 main.s: main.cpp.s
@@ -171,7 +171,7 @@ main.s: main.cpp.s
 
 # target to generate assembly for a file
 main.cpp.s:
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f main/CMakeFiles/magister.dir/build.make main/CMakeFiles/magister.dir/main.cpp.s
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f main/CMakeFiles/magister.dir/build.make main/CMakeFiles/magister.dir/main.cpp.s
 .PHONY : main.cpp.s
 
 # Help Target
@@ -201,6 +201,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/seth/dev/KMeans/src/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/seth/dev/magister/src/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

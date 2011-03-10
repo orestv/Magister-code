@@ -15,7 +15,7 @@
 
 class Cluster {
 public:
-    Cluster(map<int, Object*> *_pObjects, int nAttributeCount);
+    Cluster(map<int, Object*> *_pObjects);
     Cluster(const Cluster& orig);
 
     Object *center(AbstractMetric *pMetric);

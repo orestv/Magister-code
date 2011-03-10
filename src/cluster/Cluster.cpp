@@ -7,7 +7,8 @@
 
 #include "Cluster.h"
 
-Cluster::Cluster(map<int, Object*> *pObjects, int nAttributeCount) {
+Cluster::Cluster(map<int, Object*> *pObjects) {
+    int nAttributeCount = 0;
     this->_pObjects = pObjects;
     _pCenter = 0;
     _attributeCount = nAttributeCount;

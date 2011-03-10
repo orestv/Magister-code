@@ -39,10 +39,10 @@ RM = /usr/bin/cmake -E remove -f
 CMAKE_EDIT_COMMAND = /usr/bin/ccmake
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/seth/dev/KMeans/src
+CMAKE_SOURCE_DIR = /home/seth/dev/magister/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/seth/dev/KMeans/src/build
+CMAKE_BINARY_DIR = /home/seth/dev/magister/src/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -69,14 +69,14 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/seth/dev/KMeans/src/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/seth/dev/KMeans/src/build/CMakeFiles /home/seth/dev/KMeans/src/build/cluster/CMakeFiles/progress.marks
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f CMakeFiles/Makefile2 cluster/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/seth/dev/KMeans/src/build/CMakeFiles 0
+	cd /home/seth/dev/magister/src/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/seth/dev/magister/src/build/CMakeFiles /home/seth/dev/magister/src/build/cluster/CMakeFiles/progress.marks
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f CMakeFiles/Makefile2 cluster/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/seth/dev/magister/src/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f CMakeFiles/Makefile2 cluster/clean
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f CMakeFiles/Makefile2 cluster/clean
 .PHONY : clean
 
 # The main clean target
@@ -85,22 +85,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f CMakeFiles/Makefile2 cluster/preinstall
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f CMakeFiles/Makefile2 cluster/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f CMakeFiles/Makefile2 cluster/preinstall
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f CMakeFiles/Makefile2 cluster/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/seth/dev/KMeans/src/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/seth/dev/magister/src/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 cluster/CMakeFiles/Attribute.dir/rule:
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f CMakeFiles/Makefile2 cluster/CMakeFiles/Attribute.dir/rule
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f CMakeFiles/Makefile2 cluster/CMakeFiles/Attribute.dir/rule
 .PHONY : cluster/CMakeFiles/Attribute.dir/rule
 
 # Convenience name for target.
@@ -109,12 +109,12 @@ Attribute: cluster/CMakeFiles/Attribute.dir/rule
 
 # fast build rule for target.
 Attribute/fast:
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f cluster/CMakeFiles/Attribute.dir/build.make cluster/CMakeFiles/Attribute.dir/build
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f cluster/CMakeFiles/Attribute.dir/build.make cluster/CMakeFiles/Attribute.dir/build
 .PHONY : Attribute/fast
 
 # Convenience name for target.
 cluster/CMakeFiles/Cluster.dir/rule:
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f CMakeFiles/Makefile2 cluster/CMakeFiles/Cluster.dir/rule
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f CMakeFiles/Makefile2 cluster/CMakeFiles/Cluster.dir/rule
 .PHONY : cluster/CMakeFiles/Cluster.dir/rule
 
 # Convenience name for target.
@@ -123,12 +123,12 @@ Cluster: cluster/CMakeFiles/Cluster.dir/rule
 
 # fast build rule for target.
 Cluster/fast:
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f cluster/CMakeFiles/Cluster.dir/build.make cluster/CMakeFiles/Cluster.dir/build
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f cluster/CMakeFiles/Cluster.dir/build.make cluster/CMakeFiles/Cluster.dir/build
 .PHONY : Cluster/fast
 
 # Convenience name for target.
 cluster/CMakeFiles/DataContainer.dir/rule:
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f CMakeFiles/Makefile2 cluster/CMakeFiles/DataContainer.dir/rule
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f CMakeFiles/Makefile2 cluster/CMakeFiles/DataContainer.dir/rule
 .PHONY : cluster/CMakeFiles/DataContainer.dir/rule
 
 # Convenience name for target.
@@ -137,12 +137,26 @@ DataContainer: cluster/CMakeFiles/DataContainer.dir/rule
 
 # fast build rule for target.
 DataContainer/fast:
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f cluster/CMakeFiles/DataContainer.dir/build.make cluster/CMakeFiles/DataContainer.dir/build
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f cluster/CMakeFiles/DataContainer.dir/build.make cluster/CMakeFiles/DataContainer.dir/build
 .PHONY : DataContainer/fast
 
 # Convenience name for target.
+cluster/CMakeFiles/KMeans.dir/rule:
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f CMakeFiles/Makefile2 cluster/CMakeFiles/KMeans.dir/rule
+.PHONY : cluster/CMakeFiles/KMeans.dir/rule
+
+# Convenience name for target.
+KMeans: cluster/CMakeFiles/KMeans.dir/rule
+.PHONY : KMeans
+
+# fast build rule for target.
+KMeans/fast:
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f cluster/CMakeFiles/KMeans.dir/build.make cluster/CMakeFiles/KMeans.dir/build
+.PHONY : KMeans/fast
+
+# Convenience name for target.
 cluster/CMakeFiles/Object.dir/rule:
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f CMakeFiles/Makefile2 cluster/CMakeFiles/Object.dir/rule
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f CMakeFiles/Makefile2 cluster/CMakeFiles/Object.dir/rule
 .PHONY : cluster/CMakeFiles/Object.dir/rule
 
 # Convenience name for target.
@@ -151,7 +165,7 @@ Object: cluster/CMakeFiles/Object.dir/rule
 
 # fast build rule for target.
 Object/fast:
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f cluster/CMakeFiles/Object.dir/build.make cluster/CMakeFiles/Object.dir/build
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f cluster/CMakeFiles/Object.dir/build.make cluster/CMakeFiles/Object.dir/build
 .PHONY : Object/fast
 
 Attribute.o: Attribute.cpp.o
@@ -159,7 +173,7 @@ Attribute.o: Attribute.cpp.o
 
 # target to build an object file
 Attribute.cpp.o:
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f cluster/CMakeFiles/Attribute.dir/build.make cluster/CMakeFiles/Attribute.dir/Attribute.cpp.o
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f cluster/CMakeFiles/Attribute.dir/build.make cluster/CMakeFiles/Attribute.dir/Attribute.cpp.o
 .PHONY : Attribute.cpp.o
 
 Attribute.i: Attribute.cpp.i
@@ -167,7 +181,7 @@ Attribute.i: Attribute.cpp.i
 
 # target to preprocess a source file
 Attribute.cpp.i:
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f cluster/CMakeFiles/Attribute.dir/build.make cluster/CMakeFiles/Attribute.dir/Attribute.cpp.i
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f cluster/CMakeFiles/Attribute.dir/build.make cluster/CMakeFiles/Attribute.dir/Attribute.cpp.i
 .PHONY : Attribute.cpp.i
 
 Attribute.s: Attribute.cpp.s
@@ -175,7 +189,7 @@ Attribute.s: Attribute.cpp.s
 
 # target to generate assembly for a file
 Attribute.cpp.s:
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f cluster/CMakeFiles/Attribute.dir/build.make cluster/CMakeFiles/Attribute.dir/Attribute.cpp.s
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f cluster/CMakeFiles/Attribute.dir/build.make cluster/CMakeFiles/Attribute.dir/Attribute.cpp.s
 .PHONY : Attribute.cpp.s
 
 Cluster.o: Cluster.cpp.o
@@ -183,7 +197,7 @@ Cluster.o: Cluster.cpp.o
 
 # target to build an object file
 Cluster.cpp.o:
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f cluster/CMakeFiles/Cluster.dir/build.make cluster/CMakeFiles/Cluster.dir/Cluster.cpp.o
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f cluster/CMakeFiles/Cluster.dir/build.make cluster/CMakeFiles/Cluster.dir/Cluster.cpp.o
 .PHONY : Cluster.cpp.o
 
 Cluster.i: Cluster.cpp.i
@@ -191,7 +205,7 @@ Cluster.i: Cluster.cpp.i
 
 # target to preprocess a source file
 Cluster.cpp.i:
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f cluster/CMakeFiles/Cluster.dir/build.make cluster/CMakeFiles/Cluster.dir/Cluster.cpp.i
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f cluster/CMakeFiles/Cluster.dir/build.make cluster/CMakeFiles/Cluster.dir/Cluster.cpp.i
 .PHONY : Cluster.cpp.i
 
 Cluster.s: Cluster.cpp.s
@@ -199,7 +213,7 @@ Cluster.s: Cluster.cpp.s
 
 # target to generate assembly for a file
 Cluster.cpp.s:
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f cluster/CMakeFiles/Cluster.dir/build.make cluster/CMakeFiles/Cluster.dir/Cluster.cpp.s
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f cluster/CMakeFiles/Cluster.dir/build.make cluster/CMakeFiles/Cluster.dir/Cluster.cpp.s
 .PHONY : Cluster.cpp.s
 
 DataContainer.o: DataContainer.cpp.o
@@ -207,7 +221,7 @@ DataContainer.o: DataContainer.cpp.o
 
 # target to build an object file
 DataContainer.cpp.o:
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f cluster/CMakeFiles/DataContainer.dir/build.make cluster/CMakeFiles/DataContainer.dir/DataContainer.cpp.o
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f cluster/CMakeFiles/DataContainer.dir/build.make cluster/CMakeFiles/DataContainer.dir/DataContainer.cpp.o
 .PHONY : DataContainer.cpp.o
 
 DataContainer.i: DataContainer.cpp.i
@@ -215,7 +229,7 @@ DataContainer.i: DataContainer.cpp.i
 
 # target to preprocess a source file
 DataContainer.cpp.i:
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f cluster/CMakeFiles/DataContainer.dir/build.make cluster/CMakeFiles/DataContainer.dir/DataContainer.cpp.i
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f cluster/CMakeFiles/DataContainer.dir/build.make cluster/CMakeFiles/DataContainer.dir/DataContainer.cpp.i
 .PHONY : DataContainer.cpp.i
 
 DataContainer.s: DataContainer.cpp.s
@@ -223,15 +237,39 @@ DataContainer.s: DataContainer.cpp.s
 
 # target to generate assembly for a file
 DataContainer.cpp.s:
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f cluster/CMakeFiles/DataContainer.dir/build.make cluster/CMakeFiles/DataContainer.dir/DataContainer.cpp.s
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f cluster/CMakeFiles/DataContainer.dir/build.make cluster/CMakeFiles/DataContainer.dir/DataContainer.cpp.s
 .PHONY : DataContainer.cpp.s
+
+KMeans.o: KMeans.cpp.o
+.PHONY : KMeans.o
+
+# target to build an object file
+KMeans.cpp.o:
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f cluster/CMakeFiles/KMeans.dir/build.make cluster/CMakeFiles/KMeans.dir/KMeans.cpp.o
+.PHONY : KMeans.cpp.o
+
+KMeans.i: KMeans.cpp.i
+.PHONY : KMeans.i
+
+# target to preprocess a source file
+KMeans.cpp.i:
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f cluster/CMakeFiles/KMeans.dir/build.make cluster/CMakeFiles/KMeans.dir/KMeans.cpp.i
+.PHONY : KMeans.cpp.i
+
+KMeans.s: KMeans.cpp.s
+.PHONY : KMeans.s
+
+# target to generate assembly for a file
+KMeans.cpp.s:
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f cluster/CMakeFiles/KMeans.dir/build.make cluster/CMakeFiles/KMeans.dir/KMeans.cpp.s
+.PHONY : KMeans.cpp.s
 
 Object.o: Object.cpp.o
 .PHONY : Object.o
 
 # target to build an object file
 Object.cpp.o:
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f cluster/CMakeFiles/Object.dir/build.make cluster/CMakeFiles/Object.dir/Object.cpp.o
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f cluster/CMakeFiles/Object.dir/build.make cluster/CMakeFiles/Object.dir/Object.cpp.o
 .PHONY : Object.cpp.o
 
 Object.i: Object.cpp.i
@@ -239,7 +277,7 @@ Object.i: Object.cpp.i
 
 # target to preprocess a source file
 Object.cpp.i:
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f cluster/CMakeFiles/Object.dir/build.make cluster/CMakeFiles/Object.dir/Object.cpp.i
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f cluster/CMakeFiles/Object.dir/build.make cluster/CMakeFiles/Object.dir/Object.cpp.i
 .PHONY : Object.cpp.i
 
 Object.s: Object.cpp.s
@@ -247,7 +285,7 @@ Object.s: Object.cpp.s
 
 # target to generate assembly for a file
 Object.cpp.s:
-	cd /home/seth/dev/KMeans/src/build && $(MAKE) -f cluster/CMakeFiles/Object.dir/build.make cluster/CMakeFiles/Object.dir/Object.cpp.s
+	cd /home/seth/dev/magister/src/build && $(MAKE) -f cluster/CMakeFiles/Object.dir/build.make cluster/CMakeFiles/Object.dir/Object.cpp.s
 .PHONY : Object.cpp.s
 
 # Help Target
@@ -259,6 +297,7 @@ help:
 	@echo "... Attribute"
 	@echo "... Cluster"
 	@echo "... DataContainer"
+	@echo "... KMeans"
 	@echo "... Object"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
@@ -271,6 +310,9 @@ help:
 	@echo "... DataContainer.o"
 	@echo "... DataContainer.i"
 	@echo "... DataContainer.s"
+	@echo "... KMeans.o"
+	@echo "... KMeans.i"
+	@echo "... KMeans.s"
 	@echo "... Object.o"
 	@echo "... Object.i"
 	@echo "... Object.s"
@@ -285,6 +327,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/seth/dev/KMeans/src/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/seth/dev/magister/src/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 
