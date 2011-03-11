@@ -26,9 +26,20 @@ void Cluster::setContainer(DataContainer *pContainer) {
 }
 
 Cluster::Cluster(const Cluster& orig) {
+    if (_pCenter)
+        delete _pCenter;
 	_pCenter = 0;
 	_pContainer = orig._pContainer;
 	_indices = orig._indices;
+	_centerValid = false;
+}
+
+Cluster& Cluster::operator=(Cluster &other) {
+    if (_pCenter)
+        delete _pCenter;
+	_pCenter = 0;
+	_pContainer = other._pContainer;
+	_indices = other._indices;
 	_centerValid = false;
 }
 
@@ -45,12 +56,14 @@ Object* Cluster::center(AbstractMetric *pMetric) {
 	if (!_centerValid) {
 		if (_pCenter)
 			delete _pCenter;
-        _pCenter = calculateCenter(pMetric);
+        //_pCenter = calculateCenter(pMetric);
+        _pCenter = pMetric->center(_pContainer, _indices);
+        _centerValid = true;
 	}
     return _pCenter;
 }
 
-vector<int> Cluster::indices() {
+list<int> Cluster::indices() {
 	return _indices;
 }
 
@@ -60,19 +73,22 @@ void Cluster::add(int index) {
 }
 
 void Cluster::remove(int index) {
-	for (vector<int>::iterator iter = _indices.begin(); \
+    _indices.remove(index);
+    /*
+	for (list<int>::iterator iter = _indices.begin(); \
 		iter != _indices.end(); iter++) {
 		
 		if (*iter == index) {
-			_indices.erase(iter);
+			_indices.remove(iter);
 			return;
 		}
 	}
+    */
 	_centerValid = false;
 }
 
 bool Cluster::contains(int index) {
-	for (vector<int>::iterator iIndex = _indices.begin(); \
+	for (list<int>::iterator iIndex = _indices.begin(); \
 		iIndex != _indices.end(); iIndex++) {
 		
 		if (*iIndex == index)
@@ -97,10 +113,10 @@ bool Cluster::operator==(Cluster &other) {
     }
     */
     bool bFound = false;
-    for (vector<int>::iterator idOuter = _indices.begin(); idOuter != _indices.end(); idOuter++) {
+    for (list<int>::iterator idOuter = _indices.begin(); idOuter != _indices.end(); idOuter++) {
         bFound = false;
 
-        for (vector<int>::iterator idInner = other._indices.begin(); idInner != other._indices.end(); idInner++) {
+        for (list<int>::iterator idInner = other._indices.begin(); idInner != other._indices.end(); idInner++) {
             if (*idOuter == *idInner) {
                 bFound = true;
                 break;

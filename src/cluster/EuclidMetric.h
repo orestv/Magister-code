@@ -17,7 +17,7 @@ public:
     EuclidMetric(const EuclidMetric& orig);
 
     double distance(Object &o1, Object &o2);
-    Object* center(DataContainer *pContainer, vector<int> &indices);
+    Object* center(DataContainer *pContainer, list<int> &indices);
 
     virtual ~EuclidMetric();
 private:

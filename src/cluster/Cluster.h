@@ -12,7 +12,7 @@
 #include "DataContainer.h"
 #include "AbstractMetric.h"
 #include <map>
-#include <vector>
+#include <list>
 
 class Cluster {
 public:
@@ -24,7 +24,7 @@ public:
 	void setContainer(DataContainer *pContainer);
 
     Object *center(AbstractMetric *pMetric);
-	vector<int> indices();
+	list<int> indices();
 	
 	void add(int index);
 	void remove(int index);
@@ -34,13 +34,14 @@ public:
 	void clear();
 
     bool operator==(Cluster &other);
+    Cluster& operator=(Cluster &other);
 
 private:
     Object *calculateCenter(AbstractMetric *pMetric);
 
     Object *_pCenter;
     DataContainer *_pContainer;
-    vector<int> _indices;
+    list<int> _indices;
 	bool _centerValid;
 };
 
