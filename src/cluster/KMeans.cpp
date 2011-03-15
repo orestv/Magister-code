@@ -38,6 +38,12 @@ void KMeans::clusterize(AbstractMetric *pMetric) {
 	list<int> indices = _pContainer->indices();
 	
 	list<int> sample = KMeans::randomSample(indices, _clusterCount);
+    for (list<int>::iterator iEl = sample.begin();
+            iEl != sample.end(); iEl++) {
+
+        printf("%i\r\n", *iEl);
+
+    }
 	int nCluster = 0;
 	for (list<int>::iterator iObjectId = sample.begin(); \
 		iObjectId != sample.end(); iObjectId++, nCluster++) {
@@ -121,6 +127,19 @@ void KMeans::clusterize(AbstractMetric *pMetric) {
 	}
     printf("Done!\r\n");
 	delete[] pTempClusters;
+    FILE *pFile = 0;
+    char *filename = new char[128];
+    for (nCluster = 0; nCluster < _clusterCount; nCluster++) {
+        list<int> indices = _clusters[nCluster].indices();
+        sprintf(filename, "%i.txt", nCluster);
+        pFile = fopen(filename, "w");
+        for (list<int>::iterator iId = indices.begin();
+                iId != indices.end(); iId++) {
+            fprintf(pFile, "%i ", _pContainer->get(*iId)->actualClass());
+        }
+        fclose(pFile);
+    }
+    delete[] filename;
 }
 
 list<int> KMeans::randomSample(list<int> indices, int nIndexCount) {	

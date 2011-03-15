@@ -27,9 +27,13 @@ public:
 
     void setAttr(int index, double value);
 
+    void setActualClass(int actualClass);
+    int actualClass();
+
     virtual ~Object();
 private:
     int _attributeCount;
+    int _actualClass;
     Attribute* _attributes;
 
 };

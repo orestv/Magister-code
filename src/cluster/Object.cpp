@@ -42,6 +42,14 @@ void Object::setAttr(int index, double value) {
     _attributes[index].setValue(value);
 }
 
+void Object::setActualClass(int actualClass) {
+    _actualClass = actualClass;
+}
+
+int Object::actualClass() {
+    return _actualClass;
+}
+
 Object::~Object() {
     if (_attributes)
         delete[] _attributes;

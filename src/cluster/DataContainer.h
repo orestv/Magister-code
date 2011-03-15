@@ -12,7 +12,7 @@ class DataContainer {
         Object* get(int id);
         void add(int id, Object **ppObj);
 		
-		std::list<int> indices();
+		std::list<int>& indices();
 
         ~DataContainer();
     private:

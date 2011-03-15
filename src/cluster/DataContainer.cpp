@@ -25,6 +25,6 @@ Object* DataContainer::get(int id) {
         return 0;
 }
 
-std::list<int> DataContainer::indices() {
+std::list<int>& DataContainer::indices() {
 	return _indices;
 }

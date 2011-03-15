@@ -8,16 +8,19 @@
 #include "Cluster.h"
 #include <iostream>
 
-Cluster::Cluster() {
+void Cluster::init(){
 	_centerValid = false;
 	_pCenter = 0;
 	_pContainer = 0;
 }
 
+Cluster::Cluster() {
+    init();
+}
+
 Cluster::Cluster(DataContainer *pContainer) {
+    init();
     _pContainer = pContainer;
-    _pCenter = 0;
-	_centerValid = false;
 }
 
 void Cluster::setContainer(DataContainer *pContainer) {
@@ -63,13 +66,18 @@ Object* Cluster::center(AbstractMetric *pMetric) {
     return _pCenter;
 }
 
-list<int> Cluster::indices() {
-	return _indices;
+list<int>& Cluster::indices() {
+    return _indices;
 }
 
 void Cluster::add(int index) {
 	_indices.push_back(index);
 	_centerValid = false;
+}
+
+void Cluster::add(Cluster *pCluster) {
+    _clusters.add(pCluster);
+    _indices.insert(_indices.begin(), pCluster->indices().begin(), pCluster->indices().end());
 }
 
 void Cluster::remove(int index) {
@@ -132,5 +140,12 @@ bool Cluster::operator==(Cluster &other) {
 Cluster::~Cluster() {
     if (_pCenter)
         delete _pCenter;
+    if (!_clusters.empty()) {
+        for (list<Cluster*>::iterator iCluster = _clusters.begin();
+                iCluster != _clusters.end(); iCluster++) {
+
+            delete *iCluster;
+        }
+    }
 }
 
