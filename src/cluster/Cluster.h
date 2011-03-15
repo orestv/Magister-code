@@ -30,12 +30,16 @@ public:
     void add(Cluster *pCluster);
 	void remove(int index);
 	
-	bool contains(int index);
+	bool contains(int id);
+    
+    Object *get(int id);
 	
 	void clear();
 
     bool operator==(Cluster &other);
     Cluster& operator=(Cluster &other);
+
+    static double distance(Cluster &c1, Cluster &c2, AbstractMetric *pMetric);
 
 private:
     Object *calculateCenter(AbstractMetric *pMetric);

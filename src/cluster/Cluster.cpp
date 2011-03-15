@@ -137,6 +137,27 @@ bool Cluster::operator==(Cluster &other) {
     return true;
 }
 
+Object *Cluster::get(int id) {
+    return _pContainer->get(id);
+}
+
+double Cluster::distance(Cluster &c1, Cluster &c2, AbstractMetric *pMetric) {
+    double result = 0.;
+    list<int> indices1 = c1.indices();
+    list<int> indices2 = c2.indices();
+
+    for (list<int>::iterator iOuter = indices1.begin();
+            iOuter != indices1.end(); iOuter++) {
+
+        for (list<int>::iterator iInner = indices2.begin();
+                iInner != indices2.end(); iInner++) {
+            result += pMetric->distance(*c1.get(*iOuter), *c2.get(*iInner));
+        }
+    }
+    result /= (double) (indices1.size() + indices2.size());
+    return result;
+}
+
 Cluster::~Cluster() {
     if (_pCenter)
         delete _pCenter;
