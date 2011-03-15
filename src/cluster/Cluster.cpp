@@ -76,7 +76,7 @@ void Cluster::add(int index) {
 }
 
 void Cluster::add(Cluster *pCluster) {
-    _clusters.add(pCluster);
+    _clusters.insert(_clusters.end(), pCluster);
     _indices.insert(_indices.begin(), pCluster->indices().begin(), pCluster->indices().end());
 }
 
