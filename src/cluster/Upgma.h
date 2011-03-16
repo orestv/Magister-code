@@ -18,6 +18,7 @@ class Upgma {
     private:
         DataContainer *_pContainer;
         list<Cluster*> _clusters;
+        Cluster *_pCluster;
 
 };
 
