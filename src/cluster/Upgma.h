@@ -11,7 +11,7 @@ class Upgma {
         Upgma(DataContainer *pContainer);
         ~Upgma();
 
-        void clusterize();
+        void clusterize(AbstractMetric *pMetric);
 
         Cluster* result();
 

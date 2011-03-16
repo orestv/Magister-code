@@ -22,7 +22,16 @@ Cluster* Upgma::result() {
     return _pCluster;
 }
 
-void Upgma::clusterize() {
+void Upgma::clusterize(AbstractMetric *pMetric) {
+    list<int> ids = _pContainer->ids();
+    Cluster *pCluster = 0;
 
+    for (list<int>::iterator iId = ids.begin();
+            iId != ids.end(); iId++) {
+
+        pCluster = new Cluster(_pContainer);        
+        pCluster->add(*iId);
+        _clusters.push_back(pCluster);
+    }
 }
 

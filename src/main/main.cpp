@@ -12,6 +12,7 @@
 
 #include "Reader.h"
 #include "KMeans.h"
+#include "Upgma.h"
 #include "EuclidMetric.h"
 #include <time.h>
 
@@ -42,13 +43,15 @@ int main(int argc, char** argv) {
     rdr.fill(container);
 	
 	KMeans km(&container, nClusters);
+    Upgma up(&container);
 	
 	AbstractMetric *pMetric = new EuclidMetric();
 	
     time_t start, end;
     start = time(NULL);
 
-	km.clusterize(pMetric);
+	//km.clusterize(pMetric);
+    up.clusterize(pMetric);
 
     end = time(NULL);
 
