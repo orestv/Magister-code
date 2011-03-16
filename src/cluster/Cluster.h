@@ -24,11 +24,11 @@ public:
 	void setContainer(DataContainer *pContainer);
 
     Object *center(AbstractMetric *pMetric);
-	list<int>& indices();
+	list<int>& ids();
 	
-	void add(int index);
+	void add(int id);
     void add(Cluster *pCluster);
-	void remove(int index);
+	void remove(int id);
     list<Cluster*>& clusters();
 	
 	bool contains(int id);
@@ -48,7 +48,7 @@ private:
 
     Object *_pCenter;
     DataContainer *_pContainer;
-    list<int> _indices;
+    list<int> _ids;
     list<Cluster*> _clusters;
 	bool _centerValid;
 };

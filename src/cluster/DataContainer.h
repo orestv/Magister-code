@@ -12,12 +12,12 @@ class DataContainer {
         Object* get(int id);
         void add(int id, Object **ppObj);
 		
-		std::list<int>& indices();
+		std::list<int>& ids();
 
         ~DataContainer();
     private:
         std::map<int, Object*> _objects;
-        std::list<int> _indices;
+        std::list<int> _ids;
 
 
 };

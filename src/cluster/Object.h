@@ -22,10 +22,10 @@ public:
 
     int attributeCount();
 
-    bool isAttrValid(int index);
-    double attr(int index);
+    bool isAttrValid(int id);
+    double attr(int id);
 
-    void setAttr(int index, double value);
+    void setAttr(int id, double value);
 
     void setActualClass(int actualClass);
     int actualClass();

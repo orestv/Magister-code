@@ -14,7 +14,7 @@ DataContainer::~DataContainer(){
 
 void DataContainer::add(int id, Object **ppObj) {
     _objects.insert(pair<int, Object*>(id, *ppObj));
-    _indices.push_back(id);
+    _ids.push_back(id);
 }
 
 Object* DataContainer::get(int id) {
@@ -25,6 +25,6 @@ Object* DataContainer::get(int id) {
         return 0;
 }
 
-std::list<int>& DataContainer::indices() {
-	return _indices;
+std::list<int>& DataContainer::ids() {
+	return _ids;
 }

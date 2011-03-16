@@ -24,22 +24,22 @@ int Object::attributeCount() {
     return _attributeCount;
 }
 
-bool Object::isAttrValid(int index) {
-    if (index >= _attributeCount || index < 0)
+bool Object::isAttrValid(int id) {
+    if (id >= _attributeCount || id < 0)
         return false;
-    return _attributes[index].valid();
+    return _attributes[id].valid();
 }
 
-double Object::attr(int index) {
-    if (!isAttrValid(index))
+double Object::attr(int id) {
+    if (!isAttrValid(id))
         return 0;
-    return _attributes[index].value();
+    return _attributes[id].value();
 }
 
-void Object::setAttr(int index, double value) {
-    if (index >= _attributeCount)
+void Object::setAttr(int id, double value) {
+    if (id >= _attributeCount)
         return;
-    _attributes[index].setValue(value);
+    _attributes[id].setValue(value);
 }
 
 void Object::setActualClass(int actualClass) {

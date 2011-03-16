@@ -35,9 +35,9 @@ Cluster* KMeans::clusters() {
 }
 
 void KMeans::clusterize(AbstractMetric *pMetric) {
-	list<int> indices = _pContainer->indices();
+	list<int> ids = _pContainer->ids();
 	
-	list<int> sample = KMeans::randomSample(indices, _clusterCount);
+	list<int> sample = KMeans::randomSample(ids, _clusterCount);
     for (list<int>::iterator iEl = sample.begin();
             iEl != sample.end(); iEl++) {
 
@@ -72,8 +72,8 @@ void KMeans::clusterize(AbstractMetric *pMetric) {
 		time_t start, end;
 		start = time(NULL);
 		int nIndexCounter = 0;
-		for (list<int>::iterator iObjectId = indices.begin(); \
-			iObjectId != indices.end(); iObjectId++) {			
+		for (list<int>::iterator iObjectId = ids.begin(); \
+			iObjectId != ids.end(); iObjectId++) {			
 			pObj = _pContainer->get(*iObjectId);
 			
 			minDist = -1;
@@ -130,11 +130,11 @@ void KMeans::clusterize(AbstractMetric *pMetric) {
     FILE *pFile = 0;
     char *filename = new char[128];
     for (nCluster = 0; nCluster < _clusterCount; nCluster++) {
-        list<int> indices = _clusters[nCluster].indices();
+        list<int> ids = _clusters[nCluster].ids();
         sprintf(filename, "%i.txt", nCluster);
         pFile = fopen(filename, "w");
-        for (list<int>::iterator iId = indices.begin();
-                iId != indices.end(); iId++) {
+        for (list<int>::iterator iId = ids.begin();
+                iId != ids.end(); iId++) {
             fprintf(pFile, "%i ", _pContainer->get(*iId)->actualClass());
         }
         fclose(pFile);
@@ -142,19 +142,19 @@ void KMeans::clusterize(AbstractMetric *pMetric) {
     delete[] filename;
 }
 
-list<int> KMeans::randomSample(list<int> indices, int nIndexCount) {	
+list<int> KMeans::randomSample(list<int> ids, int nIndexCount) {	
 	list<int> result;
 	int nItemIndex = 0;
 	int nRandomIndex = 0;
 	list<int>::iterator iList;
 	int nTemp = 0;
 	for (int i = 0; i < nIndexCount; i++) {
-		nItemIndex = (rand() % indices.size());
+		nItemIndex = (rand() % ids.size());
 		nTemp = 0;
-		for (iList = indices.begin(); iList != indices.end() && nTemp < nItemIndex; \
+		for (iList = ids.begin(); iList != ids.end() && nTemp < nItemIndex; \
 			iList++, nTemp++) {} 
 		nRandomIndex = *iList;		//Attention! Might be outside the list!
-		indices.remove(nRandomIndex);
+		ids.remove(nRandomIndex);
 		result.push_back(nRandomIndex);
 	}
 	
