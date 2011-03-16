@@ -8,8 +8,8 @@ using namespace std;
 
 class Upgma {
     public:
-        UPGMA(DataContainer *pContainer);
-        ~UPGMA();
+        Upgma(DataContainer *pContainer);
+        ~Upgma();
 
         void clusterize();
 
