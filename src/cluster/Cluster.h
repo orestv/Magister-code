@@ -29,6 +29,7 @@ public:
 	void add(int index);
     void add(Cluster *pCluster);
 	void remove(int index);
+    list<Cluster*>& clusters();
 	
 	bool contains(int id);
     

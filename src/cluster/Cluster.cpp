@@ -70,6 +70,10 @@ list<int>& Cluster::indices() {
     return _indices;
 }
 
+list<Cluster*>& Cluster::clusters() {
+    return _clusters;
+}
+
 void Cluster::add(int index) {
 	_indices.push_back(index);
 	_centerValid = false;
@@ -165,7 +169,8 @@ Cluster::~Cluster() {
         for (list<Cluster*>::iterator iCluster = _clusters.begin();
                 iCluster != _clusters.end(); iCluster++) {
 
-            delete *iCluster;
+            if (*iCluster != 0)
+                delete *iCluster;
         }
     }
 }
