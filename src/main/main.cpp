@@ -45,15 +45,15 @@ int main(int argc, char** argv) {
     rdr.fill(container);
 	
 	KMeans km(&container, nClusters);
-    //Upgma up(&container);
+    Upgma up(&container);
 	
 	AbstractMetric *pMetric = new EuclidMetric();
 	
     time_t start, end;
     start = time(NULL);
 
-	km.clusterize(pMetric);
-    //up.clusterize(pMetric);
+	//km.clusterize(pMetric);
+    up.clusterize(pMetric);
 
     end = time(NULL);
 
