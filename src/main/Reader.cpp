@@ -38,6 +38,8 @@ void Reader::fill(DataContainer &container) {
     time(&start);
     while (_dataFile.good()) {
         getline(_dataFile, strBuf);
+        if (strBuf.length() == 0)
+            break;
         pObject = parseObject(strBuf, nID);
         container.add(nID, &pObject);
         nCounter++;
@@ -51,6 +53,7 @@ void Reader::fill(DataContainer &container) {
 }
 
 Object* Reader::parseObject(string sRow, int &id) {
+    char delimiter = ';';
     int nRowLength = sRow.length();
     char *pRowStart = new char[nRowLength + 1];
     char *pRow = pRowStart;
@@ -61,9 +64,10 @@ Object* Reader::parseObject(string sRow, int &id) {
     pRow[nRowLength] = '\0';
     char *pEnd = pRow + nRowLength;
     int nNumberLength = 0;
-    id = getNumber(&pRow, nNumberLength);
+    id = getNumber(&pRow, nNumberLength, delimiter);
+    //cout<<"ID:"<<id<<endl;
     pRow += nNumberLength + 1;
-    getNumber(&pRow, nNumberLength);
+    int nActualClass = getNumber(&pRow, nNumberLength);
     pRow += nNumberLength + 1;
 
     int nAttributeCount = 0;
@@ -72,14 +76,17 @@ Object* Reader::parseObject(string sRow, int &id) {
             nAttributeCount++;
     }
     nAttributeCount++;
+    //cout<<"Attribute count: "<<nAttributeCount<<endl;
 
     Object *pObj = new Object(nAttributeCount);
+    pObj->setActualClass(nActualClass);
     double attrValue = 0;
     int nAttribute = 0;
 
     while (pRow < pEnd) {
 
-        attrValue = getNumber(&pRow, nNumberLength);
+        attrValue = getNumber(&pRow, nNumberLength, delimiter);
+        //cout<<"Attribute value: "<<attrValue<<endl;
 
         if (nNumberLength > 0)
             pObj->setAttr(nAttribute, attrValue);
@@ -88,6 +95,7 @@ Object* Reader::parseObject(string sRow, int &id) {
         pRow += nNumberLength + 1;
     }
     delete[] pRowStart;
+    //cout<<endl<<endl;
     return pObj;
 }
 
@@ -100,6 +108,7 @@ double Reader::getNumber(char **data, int &length, char delimiter) {
             break;
         }
         pIndex++;
+        length++;
     }
     if (length > 0) {
         (*data)[length] = '\0';

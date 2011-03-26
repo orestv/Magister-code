@@ -136,6 +136,7 @@ void KMeans::clusterize(AbstractMetric *pMetric) {
         for (list<int>::iterator iId = ids.begin();
                 iId != ids.end(); iId++) {
             fprintf(pFile, "%i ", _pContainer->get(*iId)->actualClass());
+            //fprintf(pFile, "%i ", *iId);
         }
         fclose(pFile);
     }
