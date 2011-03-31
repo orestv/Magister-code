@@ -6,6 +6,7 @@
  */
 
 #include <stdlib.h>
+#include <cstring>
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -18,24 +19,24 @@
 
 using namespace std;
 
-/*
- * 
- */
 int main(int argc, char** argv) {
 
 
     char *filename;
     int nClusters = 5;
-    if (argc == 3) {
-        if (*argv[1] == '1')
+    if (argc > 1) {
+        if (strcmp(argv[1], "short") == 0)
             filename = "../../data/dmc2008_train_short.txt";
-        else if (*argv[1] == '2')
+        else if (strcmp(argv[1], "medium") == 0)
             filename = "../../data/dmc2008_train_medium.txt";
-        else if (*argv[1] == '3')
+        else if (strcmp(argv[1], "test") == 0)
             filename = "../../data/train.txt";
         else
             filename = "../../data/dmc2008_train.txt";
-        nClusters = atoi(argv[2]);
+
+        if (strcmp(argv[2], "kmeans") == 0)
+            nClusters = atoi(argv[3]);
+
     }
     else
         return 0;
@@ -52,8 +53,8 @@ int main(int argc, char** argv) {
     time_t start, end;
     start = time(NULL);
 
-	//km.clusterize(pMetric);
-    up.clusterize(pMetric);
+	km.clusterize(pMetric);
+    //up.clusterize(pMetric);
 
     end = time(NULL);
 
