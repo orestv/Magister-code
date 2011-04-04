@@ -11,6 +11,7 @@ class DataContainer {
 
         Object* get(int id);
         void add(int id, Object **ppObj);
+        void normalize();
 		
 		std::list<int>& ids();
 

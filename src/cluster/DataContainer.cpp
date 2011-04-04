@@ -1,4 +1,6 @@
 #include "DataContainer.h"
+#include <stdlib.h>
+#include <memory.h>
 using namespace std;
 
 DataContainer::DataContainer(){
@@ -30,5 +32,34 @@ std::list<int>& DataContainer::ids() {
 }
 
 void DataContainer::normalize() {
+    int nAttrCount = 0;
+    nAttrCount = _objects.begin()->second->attributeCount();
+    double *arrCoeff = new double[nAttrCount];
+    memset(arrCoeff, 0, nAttrCount*sizeof(double));
 
+    Object *pObj = NULL;
+    for (map<int, Object*>::iterator obj = _objects.begin();
+            obj != _objects.end(); obj++) {
+
+        pObj = obj->second;
+        for (int i = 0; i < nAttrCount; i++) {
+            if (pObj->isAttrValid(i)) {
+                arrCoeff[i] = max(arrCoeff[i], pObj->attr(i));
+            }
+        }
+    }
+    double value;
+    for (map<int, Object*>::iterator obj = _objects.begin();
+            obj != _objects.end() && false; obj++) {
+
+        pObj = obj->second;
+        for (int i = 0; i < nAttrCount; i++) {
+            if (pObj->isAttrValid(i)) {
+                value = pObj->attr(i) / arrCoeff[i];
+                pObj->setAttr(i, value);
+            }
+        }
+    }
+
+    delete[] arrCoeff;
 }
