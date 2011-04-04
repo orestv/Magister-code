@@ -13,7 +13,7 @@
 
 class EuclidMetric : public AbstractMetric {
 public:
-    EuclidMetric();
+    EuclidMetric(DataContainer *);
     EuclidMetric(const EuclidMetric& orig);
 
     double distance(Object &o1, Object &o2);
@@ -21,6 +21,10 @@ public:
 
     virtual ~EuclidMetric();
 private:
+    DataContainer *m_pContainer;
+    int m_nAttributeCount;
+    double *m_arrAverageDeltas;
+    int *m_arrValidAttrCount;
 
 };
 

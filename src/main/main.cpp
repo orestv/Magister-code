@@ -48,7 +48,7 @@ int main(int argc, char** argv) {
 	KMeans km(&container, nClusters);
     Upgma up(&container);
 	
-	AbstractMetric *pMetric = new EuclidMetric();
+	AbstractMetric *pMetric = new EuclidMetric(&container);
 	
     time_t start, end;
     start = time(NULL);

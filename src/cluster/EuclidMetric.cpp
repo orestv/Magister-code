@@ -6,13 +6,51 @@
  */
 
 #include "EuclidMetric.h"
+#include <stdio.h>
 #include <math.h>
 #include <memory.h>
 
-EuclidMetric::EuclidMetric() {
+EuclidMetric::EuclidMetric(DataContainer *pContainer) {
+    m_pContainer = pContainer;
+    m_nAttributeCount = 0;
+
+    list<int> &ids = pContainer->ids();
+    Object *pObj = NULL;
+    m_nAttributeCount = pContainer->get(*ids.begin())->attributeCount();
+
+    m_arrValidAttrCount = new int[m_nAttributeCount];
+    m_arrAverageDeltas = new double[m_nAttributeCount];
+
+    memset(m_arrValidAttrCount, 0, m_nAttributeCount*sizeof(int));
+    memset(m_arrAverageDeltas, 0, m_nAttributeCount*sizeof(double));
+
+    for (list<int>::iterator iID = ids.begin();
+            iID != ids.end(); iID++) {
+
+        pObj = pContainer->get(*iID);
+        for (int i = 0; i < m_nAttributeCount; i++) {
+            if (pObj->isAttrValid(i)) {
+                m_arrValidAttrCount[i]++;
+                m_arrAverageDeltas[i] += pObj->attr(i);
+            }
+        }
+    }
+    for (int i = 0; i < m_nAttributeCount; i++) {
+        m_arrAverageDeltas[i] /= (double)m_arrValidAttrCount[i];
+        printf("%f, ", m_arrAverageDeltas[i]);
+    }
+    printf("Attribute count: %i\n", m_nAttributeCount);
 }
 
 EuclidMetric::EuclidMetric(const EuclidMetric& orig) {
+    m_nAttributeCount = orig.m_nAttributeCount;
+    m_arrAverageDeltas = new double[m_nAttributeCount];
+    m_arrValidAttrCount = new int[m_nAttributeCount];
+
+    memcpy(m_arrAverageDeltas, orig.m_arrAverageDeltas, m_nAttributeCount*sizeof(double));
+    memcpy(m_arrValidAttrCount, orig.m_arrValidAttrCount, m_nAttributeCount*sizeof(int));
+
+    m_pContainer = orig.m_pContainer;
 }
 
 double EuclidMetric::distance(Object& o1, Object& o2) {
@@ -21,6 +59,8 @@ double EuclidMetric::distance(Object& o1, Object& o2) {
     for (int nAttr = 0; nAttr < nAttributeCount; nAttr++) {
         if (o1.isAttrValid(nAttr) && o2.isAttrValid(nAttr))
             dResult += pow((o1.attr(nAttr) - o2.attr(nAttr)), 2);
+        else
+            dResult += m_arrAverageDeltas[nAttr]*m_arrAverageDeltas[nAttr];
     }
     dResult = sqrt(dResult);
     return dResult;
@@ -64,5 +104,9 @@ Object* EuclidMetric::center(DataContainer *pContainer,
 }
 
 EuclidMetric::~EuclidMetric() {
+    if (m_arrAverageDeltas)
+        delete[] m_arrAverageDeltas;
+    if (m_arrValidAttrCount)
+        delete[] m_arrValidAttrCount;
 }
 
