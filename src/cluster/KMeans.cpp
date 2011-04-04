@@ -107,14 +107,17 @@ void KMeans::clusterize(AbstractMetric *pMetric) {
         printf("Calculating differences...\r\n");
         start = time(NULL);
 
+        int nChangedClusters = 0;
+
         for (nCluster = 0; nCluster < _clusterCount; nCluster++) {
             if (! (_clusters[nCluster] == pTempClusters[nCluster])) {
                 bClustersChanged = true;
-                break;
+                nChangedClusters++;
+                //break;
             }
         }
         end = time(NULL);
-        printf("Differences calculated, %i seconds spent.\r\n", (int)(end-start));
+        printf("Differences calculated, %i seconds spent. Clusters out of order: %i\r\n", (int)(end-start), nChangedClusters);
         if (bClustersChanged)
             printf("Differences found!\r\n");
         else
@@ -135,7 +138,7 @@ void KMeans::clusterize(AbstractMetric *pMetric) {
         fprintf(pFile, "Cluster %i: ", nCluster);
         for (list<int>::iterator iId = ids.begin();
                 iId != ids.end(); iId++) {
-            fprintf(pFile, "%i(%i) ", *iId, _pContainer->get(*iId)->actualClass());
+            fprintf(pFile, "%i ", _pContainer->get(*iId)->actualClass());
         }
         fprintf(pFile, "\n");
     }

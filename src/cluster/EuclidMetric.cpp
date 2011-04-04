@@ -7,6 +7,7 @@
 
 #include "EuclidMetric.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 #include <memory.h>
 
@@ -15,7 +16,7 @@ EuclidMetric::EuclidMetric(DataContainer *pContainer) {
     m_nAttributeCount = 0;
 
     list<int> &ids = pContainer->ids();
-    Object *pObj = NULL;
+    Object *pObj = NULL, *pPrevObj = NULL;
     m_nAttributeCount = pContainer->get(*ids.begin())->attributeCount();
 
     m_arrValidAttrCount = new int[m_nAttributeCount];
@@ -28,15 +29,23 @@ EuclidMetric::EuclidMetric(DataContainer *pContainer) {
             iID != ids.end(); iID++) {
 
         pObj = pContainer->get(*iID);
+
+        if (!pPrevObj) {
+            pPrevObj = pObj;
+            continue;
+        }
+
         for (int i = 0; i < m_nAttributeCount; i++) {
             if (pObj->isAttrValid(i)) {
                 m_arrValidAttrCount[i]++;
-                m_arrAverageDeltas[i] += pObj->attr(i);
+                m_arrAverageDeltas[i] += abs(pObj->attr(i) - pPrevObj->attr(i));
             }
         }
+        pPrevObj = pObj;
     }
     for (int i = 0; i < m_nAttributeCount; i++) {
-        m_arrAverageDeltas[i] /= (double)m_arrValidAttrCount[i];
+        //m_arrAverageDeltas[i] /= (double)m_arrValidAttrCount[i];
+        m_arrAverageDeltas[i] /= (double)ids.size();
         printf("%f, ", m_arrAverageDeltas[i]);
     }
     printf("Attribute count: %i\n", m_nAttributeCount);
