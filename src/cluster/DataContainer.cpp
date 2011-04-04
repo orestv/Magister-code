@@ -28,3 +28,7 @@ Object* DataContainer::get(int id) {
 std::list<int>& DataContainer::ids() {
 	return _ids;
 }
+
+void DataContainer::normalize() {
+
+}
