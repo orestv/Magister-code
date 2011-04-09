@@ -16,7 +16,7 @@ public:
     EuclidMetric(DataContainer *);
     EuclidMetric(const EuclidMetric& orig);
 
-    double distance(Object &o1, Object &o2);
+    double distance(Object &o1, Object &o2, bool bUseIntegratedPrediction = true);
     Object* center(DataContainer *pContainer, list<int> &indices);
 
     virtual ~EuclidMetric();

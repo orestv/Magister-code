@@ -63,17 +63,19 @@ EuclidMetric::EuclidMetric(const EuclidMetric& orig) {
     m_pContainer = orig.m_pContainer;
 }
 
-double EuclidMetric::distance(Object& o1, Object& o2) {
+double EuclidMetric::distance(Object& o1, Object& o2, bool bUseIntegratedPrediction) {
     double dResult = 0;
     int nAttributeCount = max(o1.attributeCount(), o2.attributeCount());
     for (int nAttr = 0; nAttr < nAttributeCount; nAttr++) {
-        if (o1.isAttrValid(nAttr) && o2.isAttrValid(nAttr)) {
-            double d1 = o1.isAttrValid(nAttr) ? o1.attr(nAttr) : m_arrAverageDeltas[nAttr];
-            double d2 = o2.isAttrValid(nAttr) ? o2.attr(nAttr) : m_arrAverageDeltas[nAttr];
-            dResult += pow(d1 - d2, 2);
+        if (bUseIntegratedPrediction) {
+            if (o1.isAttrValid(nAttr) && o2.isAttrValid(nAttr)) {
+                double d1 = o1.isAttrValid(nAttr) ? o1.attr(nAttr) : m_arrAverageDeltas[nAttr];
+                double d2 = o2.isAttrValid(nAttr) ? o2.attr(nAttr) : m_arrAverageDeltas[nAttr];
+                dResult += pow(d1 - d2, 2);
+                }
+            else {
+                dResult += m_arrAverageDeltas[nAttr]*m_arrAverageDeltas[nAttr];
             }
-        else {
-            dResult += m_arrAverageDeltas[nAttr]*m_arrAverageDeltas[nAttr];
         }
     }
     dResult = sqrt(dResult);
