@@ -39,13 +39,14 @@ EuclidMetric::EuclidMetric(DataContainer *pContainer) {
             if (pObj->isAttrValid(i)) {
                 m_arrValidAttrCount[i]++;
                 m_arrAverageDeltas[i] += abs(pObj->attr(i) - pPrevObj->attr(i));
+                //m_arrAverageDeltas[i] += pObj->attr(i);
             }
         }
         pPrevObj = pObj;
     }
     for (int i = 0; i < m_nAttributeCount; i++) {
-        //m_arrAverageDeltas[i] /= (double)m_arrValidAttrCount[i];
-        m_arrAverageDeltas[i] /= (double)ids.size();
+        m_arrAverageDeltas[i] /= (double)m_arrValidAttrCount[i];
+        //m_arrAverageDeltas[i] /= (double)ids.size();
         printf("%f, ", m_arrAverageDeltas[i]);
     }
     printf("Attribute count: %i\n", m_nAttributeCount);
@@ -66,10 +67,14 @@ double EuclidMetric::distance(Object& o1, Object& o2) {
     double dResult = 0;
     int nAttributeCount = max(o1.attributeCount(), o2.attributeCount());
     for (int nAttr = 0; nAttr < nAttributeCount; nAttr++) {
-        if (o1.isAttrValid(nAttr) && o2.isAttrValid(nAttr))
-            dResult += pow((o1.attr(nAttr) - o2.attr(nAttr)), 2);
-        else
+        if (o1.isAttrValid(nAttr) && o2.isAttrValid(nAttr)) {
+            double d1 = o1.isAttrValid(nAttr) ? o1.attr(nAttr) : m_arrAverageDeltas[nAttr];
+            double d2 = o2.isAttrValid(nAttr) ? o2.attr(nAttr) : m_arrAverageDeltas[nAttr];
+            dResult += pow(d1 - d2, 2);
+            }
+        else {
             dResult += m_arrAverageDeltas[nAttr]*m_arrAverageDeltas[nAttr];
+        }
     }
     dResult = sqrt(dResult);
     return dResult;

@@ -131,17 +131,25 @@ void KMeans::clusterize(AbstractMetric *pMetric) {
     printf("Done!\r\n");
 	delete[] pTempClusters;
     FILE *pFile = 0;
-    char *filename = "results.txt";
+    char *filename = "results2.txt";
     pFile = fopen(filename, "w");
+    int *pActualClasses = new int[_clusterCount];
+    memset(pActualClasses, 0, _clusterCount*sizeof(int));
     for (nCluster = 0; nCluster < _clusterCount; nCluster++) {
+        memset(pActualClasses, 0, _clusterCount*sizeof(int));
         list<int> ids = _clusters[nCluster].ids();
         fprintf(pFile, "Cluster %i: ", nCluster);
         for (list<int>::iterator iId = ids.begin();
                 iId != ids.end(); iId++) {
-            fprintf(pFile, "%i ", _pContainer->get(*iId)->actualClass());
+
+            pActualClasses[_pContainer->get(*iId)->actualClass()]++;
+        }
+        for (int nClusterInner = 0; nClusterInner < _clusterCount; nClusterInner++) {
+            fprintf(pFile, "%i: %i, ", nClusterInner, pActualClasses[nClusterInner]);
         }
         fprintf(pFile, "\n");
     }
+    delete[] pActualClasses;
     fclose(pFile);
 }
 
