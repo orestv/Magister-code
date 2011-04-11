@@ -14,6 +14,9 @@
 EuclidMetric::EuclidMetric(DataContainer *pContainer) {
     m_pContainer = pContainer;
     m_nAttributeCount = 0;
+    m_arrValidAttrCount = NULL;
+    m_arrAverageDeltas = NULL;
+    return;
 
     list<int> &ids = pContainer->ids();
     Object *pObj = NULL, *pPrevObj = NULL;
