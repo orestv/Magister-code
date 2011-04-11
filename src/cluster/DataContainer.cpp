@@ -31,6 +31,36 @@ std::list<int>& DataContainer::ids() {
 	return _ids;
 }
 
+void DataContainer::predictMissingData() {
+    Object *pObj;
+    for (list<Object*>::iterator iObject = _objects.begin();
+            iObject != _objects.end(); iObject++) {
+        pObj = *iObject;
+
+       for (int nAttr = 0; 
+               nAttr < pObj->attributeCount(); 
+               nAttr++) {
+           if (!pObj->isAttrValid(nAttr)) {
+               predictAttributes(pObj);
+               break;
+           }
+       }
+
+    }
+}
+
+void DataContainer::predictAttributes(Object *pCurrentObj) {
+   for (int nAttr = 0; nAttr < pCurrentObj->attributeCount();
+           nAttr++) {
+
+       if (pCurrentObj->isAttrValid(nAttr))
+           continue;
+
+
+       
+   }
+}
+
 void DataContainer::normalize() {
     int nAttrCount = 0;
     nAttrCount = _objects.begin()->second->attributeCount();
