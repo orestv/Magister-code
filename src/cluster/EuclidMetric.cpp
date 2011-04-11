@@ -119,6 +119,58 @@ Object* EuclidMetric::center(DataContainer *pContainer,
     return pResult;
 }
 
+void EuclidMetric::predictMissingData(DataContainer *pContainer) {
+    Object *pObj;
+    for (list<int>::iterator iID = pContainer->ids().begin();
+            iID != pContainer->ids().end(); iID++) {
+        pObj = pContainer->get(*iID);
+
+       for (int nAttr = 0; 
+               nAttr < pObj->attributeCount(); 
+               nAttr++) {
+           if (!pObj->isAttrValid(nAttr)) {
+               predictAttributes(pObj, pContainer);
+               break;
+           }
+       }
+
+    }
+}
+
+void EuclidMetric::predictAttributes(Object *pCurrentObj, DataContainer *pContainer) {
+    for (int nAttr = 0; nAttr < pCurrentObj->attributeCount();
+            nAttr++) {
+
+        if (pCurrentObj->isAttrValid(nAttr))
+            continue;
+
+        predictAttribute(pCurrentObj, nAttr, pContainer);
+    }
+}
+
+void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContainer *pContainer) {
+    list<ObjectRange> lsRanges;
+
+    Object *pObj;
+    double range;
+    for (list<int>::iterator iID = pContainer->ids().begin();
+            iID != pContainer->ids().end(); iID++) {
+        pObj = pContainer->get(*iID);
+
+        range = this->distance(*pObj, *pCurrentObj);
+
+        for (list<ObjectRange>::iterator iR = lsRanges.begin();
+                iR != lsRanges.end(); iR++) {
+            if (iR->nRange > range) {
+                lsRanges.insert(iR, ObjectRange(pObj, range));
+                break;
+            }
+        }
+
+    }
+
+}
+
 EuclidMetric::~EuclidMetric() {
     if (m_arrAverageDeltas)
         delete[] m_arrAverageDeltas;

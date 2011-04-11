@@ -12,9 +12,6 @@ class DataContainer {
         Object* get(int id);
         void add(int id, Object **ppObj);
         void normalize();
-        void predictMissingData();
-        void predictAttribute(Object *pObj);
-		
 		std::list<int>& ids();
 
         ~DataContainer();

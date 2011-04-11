@@ -19,6 +19,11 @@ public:
     double distance(Object &o1, Object &o2, bool bUseIntegratedPrediction = true);
     Object* center(DataContainer *pContainer, list<int> &indices);
 
+    void predictMissingData(DataContainer *pContainer);
+    void predictAttributes(Object *pObj, DataContainer *pContainer);
+    void predictAttribute(Object *pObj, int nAttr, DataContainer *pContainer);
+		
+
     virtual ~EuclidMetric();
 private:
     DataContainer *m_pContainer;
@@ -26,6 +31,16 @@ private:
     double *m_arrAverageDeltas;
     int *m_arrValidAttrCount;
 
+};
+
+struct ObjectRange {
+    Object *pObject;
+    double nRange;
+
+    ObjectRange (Object *pObject, double nRange) {
+        this->pObject = pObject;
+        this->nRange = nRange;
+    }
 };
 
 #endif	/* _EUCLIDMETRIC_H */
