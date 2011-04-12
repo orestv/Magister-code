@@ -50,6 +50,7 @@ int main(int argc, char** argv) {
     Upgma up(&container);
 	
 	AbstractMetric *pMetric = new EuclidMetric(&container);
+    pMetric->predictMissingData(&container);
 	
     time_t start, end;
     start = time(NULL);

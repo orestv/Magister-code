@@ -38,12 +38,13 @@ void KMeans::clusterize(AbstractMetric *pMetric) {
 	list<int> ids = _pContainer->ids();
 	
 	list<int> sample = KMeans::randomSample(ids, _clusterCount);
+    printf("ID selection for random sample: ");
     for (list<int>::iterator iEl = sample.begin();
             iEl != sample.end(); iEl++) {
 
-        printf("%i\r\n", *iEl);
-
+        printf("%i, ", *iEl);
     }
+    printf("\n");
 	int nCluster = 0;
 	for (list<int>::iterator iObjectId = sample.begin(); \
 		iObjectId != sample.end(); iObjectId++, nCluster++) {
@@ -57,8 +58,6 @@ void KMeans::clusterize(AbstractMetric *pMetric) {
 	
 	double dist, minDist;
 	int nSelectedCluster = 0;
-	vector<double> distances;
-	distances.resize(_clusterCount);
 	Object *pObj;
 	
 	int nClusterChanges = 0;
@@ -79,9 +78,11 @@ void KMeans::clusterize(AbstractMetric *pMetric) {
 			minDist = -1;
 			nCluster = 0;
 			nSelectedCluster = 0;
+            Object *pCenter = NULL;
 			for (nCluster = 0; nCluster < _clusterCount; nCluster++) {
+                pCenter = _clusters[nCluster].center(pMetric);
+
 				dist = pMetric->distance(*pObj, *_clusters[nCluster].center(pMetric));
-				distances[nCluster] = dist;
 				if (minDist < 0 || dist < minDist) {
 					nSelectedCluster = nCluster;
 					minDist = dist;
@@ -159,6 +160,7 @@ list<int> KMeans::randomSample(list<int> ids, int nIndexCount) {
 	int nRandomIndex = 0;
 	list<int>::iterator iList;
 	int nTemp = 0;
+    srand(time(NULL));
 	for (int i = 0; i < nIndexCount; i++) {
 		nItemIndex = (rand() % ids.size());
 		nTemp = 0;

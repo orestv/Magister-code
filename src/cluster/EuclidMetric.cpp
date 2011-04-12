@@ -80,6 +80,11 @@ double EuclidMetric::distance(Object& o1, Object& o2, bool bUseIntegratedPredict
                 dResult += m_arrAverageDeltas[nAttr]*m_arrAverageDeltas[nAttr];
             }
         }
+        else {
+            if (o1.isAttrValid(nAttr) && o2.isAttrValid(nAttr))
+                dResult += pow(o1.attr(nAttr) - o2.attr(nAttr), 2);
+
+        }
     }
     dResult = sqrt(dResult);
     return dResult;
@@ -152,26 +157,49 @@ void EuclidMetric::predictAttributes(Object *pCurrentObj, DataContainer *pContai
 }
 
 void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContainer *pContainer) {
-    list<ObjectRange> lsRanges;
+    list<ObjectRange> lsObjectRanges;
 
     Object *pObj;
     double range;
     for (list<int>::iterator iID = pContainer->ids().begin();
             iID != pContainer->ids().end(); iID++) {
         pObj = pContainer->get(*iID);
+        if (!pObj->isAttributeValid(nAttr))
+            continue;
 
         range = this->distance(*pObj, *pCurrentObj);
+        printf("%.2f\t", range);
 
-        for (list<ObjectRange>::iterator iR = lsRanges.begin();
-                iR != lsRanges.end(); iR++) {
-            if (iR->nRange > range) {
-                lsRanges.insert(iR, ObjectRange(pObj, range));
-                break;
-            }
-        }
-
+        lsObjectRanges.push_back(ObjectRange(pObj, range));
     }
+    lsObjectRanges.sort(EuclidMetric::compareObjectRanges);
 
+    list<ObjectRange>::iterator iR = lsObjectRanges.begin();
+    double diff = abs((++iR)->nRange - lsObjectRanges.begin()->nRange);
+    iR++;
+    while (iR != lsObjectRanges.end()) {
+        if (abs((++iR)->nRange - lsObjectRanges.begin()->nRange) > 3*diff) {
+            lsObjectRanges.erase(iR, lsObjectRanges.end());
+            break;
+        }
+    }
+    printf("\nResult: ");
+    for (iR = lsObjectRanges.begin(); iR != lsObjectRanges.end(); iR++) {
+        printf("%.2f, ", iR->nRange);
+    }
+    printf("\n");
+    int nAttributeCount = lsObjectRanges.begin()->pObject->attributeCount();
+    list<AttributeRange> lsAttributeRanges;
+    
+
+}
+
+bool EuclidMetric::compareObjectRanges(ObjectRange r1, ObjectRange r2) {
+    return r1.nRange < r2.nRange;
+}
+
+bool EuclidMetric::compareAttributeRanges(AttributeRange r1, AttributeRange r2) {
+    return r1.nRange < r2.nRange;
 }
 
 EuclidMetric::~EuclidMetric() {
