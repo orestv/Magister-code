@@ -15,20 +15,14 @@ struct ObjectRange {
     Object *pObject;
     double nRange;
 
-    ObjectRange (Object *pObject, double nRange) {
-        this->pObject = pObject;
-        this->nRange = nRange;
-    }
+    ObjectRange (Object *pObject, double nRange) ;
 };
 
 struct AttributeRange {
     int nAttribute;
     double nRange;
 
-    AttributeRange(int nAttribute, double nRange) {
-        this->nAttribute = nAttribute;
-        this->nRange = nRange;
-    }
+    AttributeRange(int nAttribute, double nRange) ;
 };
 
 class EuclidMetric : public AbstractMetric {

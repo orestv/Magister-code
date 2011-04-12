@@ -164,7 +164,7 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
     for (list<int>::iterator iID = pContainer->ids().begin();
             iID != pContainer->ids().end(); iID++) {
         pObj = pContainer->get(*iID);
-        if (!pObj->isAttributeValid(nAttr))
+        if (!pObj->isAttrValid(nAttr))
             continue;
 
         range = this->distance(*pObj, *pCurrentObj);
@@ -192,6 +192,7 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
     list<AttributeRange> lsAttributeRanges;
     
 
+
 }
 
 bool EuclidMetric::compareObjectRanges(ObjectRange r1, ObjectRange r2) {
@@ -207,5 +208,16 @@ EuclidMetric::~EuclidMetric() {
         delete[] m_arrAverageDeltas;
     if (m_arrValidAttrCount)
         delete[] m_arrValidAttrCount;
+}
+
+
+ObjectRange::ObjectRange (Object *pObject, double nRange) {
+    this->pObject = pObject;
+    this->nRange = nRange;
+}
+
+AttributeRange::AttributeRange (int nAttribute, double nRange) {
+    this->nAttribute = nAttribute;
+    this->nRange = nRange;
 }
 
