@@ -190,8 +190,9 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
     printf("\n");
     int nAttributeCount = lsObjectRanges.begin()->pObject->attributeCount();
     list<AttributeRange> lsAttributeRanges;
-    
+}
 
+double EuclidMetric::competence(Object &o1, Object &o2, int nAttr) {
 
 }
 

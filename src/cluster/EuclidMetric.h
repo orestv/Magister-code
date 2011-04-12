@@ -33,6 +33,8 @@ public:
     double distance(Object &o1, Object &o2, bool bUseIntegratedPrediction = false);
     Object* center(DataContainer *pContainer, list<int> &indices);
 
+    static double competence(Object &o1, Object &o2, int nAttr);
+
     void predictMissingData(DataContainer *pContainer);
     void predictAttributes(Object *pObj, DataContainer *pContainer);
     void predictAttribute(Object *pObj, int nAttr, DataContainer *pContainer);
