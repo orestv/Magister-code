@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 2.6)
 project (Magister)
 
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -march=native")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
 set (EXECUTABLE_OUTPUT_PATH "../bin/")
 set (CMAKE_BUILD_TYPE, "Debug")
 

@@ -25,6 +25,13 @@ struct AttributeRange {
     AttributeRange(int nAttribute, double nRange) ;
 };
 
+struct AttributeProbability {
+	map<double, int> occurrences;
+	
+	void add(double value); 	
+	int get(double value); 
+};
+
 class EuclidMetric : public AbstractMetric {
 public:
     EuclidMetric(DataContainer *);
@@ -33,7 +40,8 @@ public:
     double distance(Object &o1, Object &o2, bool bUseIntegratedPrediction = false);
     Object* center(DataContainer *pContainer, list<int> &indices);
 
-    static double competence(Object &o1, Object &o2, int nAttr);
+    static double competence(Object &o1, Object &o2);
+	static double competence(int attr1, int attr2, Object** ppObjects, int nObjects);
 
     void predictMissingData(DataContainer *pContainer);
     void predictAttributes(Object *pObj, DataContainer *pContainer);

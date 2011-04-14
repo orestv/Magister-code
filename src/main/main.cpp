@@ -5,6 +5,8 @@
  * Created on March 9, 2011, 12:04 PM
  */
 
+#define DEBUG
+
 #include <stdlib.h>
 #include <cstring>
 #include <iostream>
@@ -17,10 +19,10 @@
 #include "EuclidMetric.h"
 #include <time.h>
 
+
 using namespace std;
 
 int main(int argc, char** argv) {
-
 
     char *filename;
     int nClusters = 5;
@@ -44,7 +46,7 @@ int main(int argc, char** argv) {
     Reader rdr(filename);
     DataContainer container;
     rdr.fill(container);
-    //container.normalize();
+    container.normalize();
 	
 	KMeans km(&container, nClusters);
     Upgma up(&container);

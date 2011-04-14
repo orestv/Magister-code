@@ -4,6 +4,9 @@
  * 
  * Created on March 9, 2011, 4:14 PM
  */
+ 
+
+#define DEBUG
 
 #include "EuclidMetric.h"
 #include <stdio.h>
@@ -50,9 +53,13 @@ EuclidMetric::EuclidMetric(DataContainer *pContainer) {
     for (int i = 0; i < m_nAttributeCount; i++) {
         m_arrAverageDeltas[i] /= (double)m_arrValidAttrCount[i];
         //m_arrAverageDeltas[i] /= (double)ids.size();
+		#ifdef DEBUG
         printf("%f, ", m_arrAverageDeltas[i]);
+		#endif
     }
+	#ifdef DEBUG
     printf("Attribute count: %i\n", m_nAttributeCount);
+	#endif
 }
 
 EuclidMetric::EuclidMetric(const EuclidMetric& orig) {
@@ -161,14 +168,19 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
 
     Object *pObj;
     double range;
+	#ifdef DEBUG
+	printf("\nRange list for rows: ");
+	#endif
     for (list<int>::iterator iID = pContainer->ids().begin();
             iID != pContainer->ids().end(); iID++) {
         pObj = pContainer->get(*iID);
         if (!pObj->isAttrValid(nAttr))
             continue;
 
-        range = this->distance(*pObj, *pCurrentObj);
-        printf("%.2f\t", range);
+        range = this->competence(*pObj, *pCurrentObj);
+		#ifdef DEBUG
+        printf("%.2f, ", range);
+		#endif
 
         lsObjectRanges.push_back(ObjectRange(pObj, range));
     }
@@ -177,23 +189,63 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
     list<ObjectRange>::iterator iR = lsObjectRanges.begin();
     double diff = abs((++iR)->nRange - lsObjectRanges.begin()->nRange);
     iR++;
+	int nObjectCount = 2;
     while (iR != lsObjectRanges.end()) {
-        if (abs((++iR)->nRange - lsObjectRanges.begin()->nRange) > 3*diff) {
+		iR++;
+		nObjectCount++;
+        if (abs(iR->nRange - lsObjectRanges.begin()->nRange) > 3*diff) {
             lsObjectRanges.erase(iR, lsObjectRanges.end());
             break;
         }
     }
-    printf("\nResult: ");
+	#ifdef DEBUG
+    printf("\nSmallest ranges: ");
     for (iR = lsObjectRanges.begin(); iR != lsObjectRanges.end(); iR++) {
         printf("%.2f, ", iR->nRange);
     }
     printf("\n");
-    int nAttributeCount = lsObjectRanges.begin()->pObject->attributeCount();
-    list<AttributeRange> lsAttributeRanges;
+	
+	printf("\nObject count: %i\n", nObjectCount);
+	
+	#endif
+	//return;
+	Object **arrObjects = new Object*[nObjectCount];
+	int nObject = 0;
+	for (list<ObjectRange>::iterator iRange = lsObjectRanges.begin();
+		iRange != lsObjectRanges.end(); iRange++) {
+	
+		arrObjects[nObject] = iRange->pObject;	
+		#ifdef DEBUG
+		printf("%i, ", arrObjects[nObject]);
+		#endif
+		nObject++;
+	}
+	//return;
+	double d = this->competence(0, 1, arrObjects, nObjectCount);
+	delete[] arrObjects;
 }
 
-double EuclidMetric::competence(Object &o1, Object &o2, int nAttr) {
+double EuclidMetric::competence(Object &o1, Object &o2) {
+	double nResult = 0;
+	int nValidAttributes = 0;
+	for (int nAttr = 0; nAttr < o1.attributeCount(); nAttr++) {
+		if (o1.isAttrValid(nAttr) && o2.isAttrValid(nAttr)) {
+			nValidAttributes++;
+			nResult += pow(o1.attr(nAttr)-o2.attr(nAttr), 2);
+		}		
+	}
+	return (1. - sqrt(nResult)) * nValidAttributes;
+}
 
+double EuclidMetric::competence(int attr1, int attr2, Object** arrObjects, int nObjects) {
+	double exp1 = 0, exp2 = 0;
+	AttributeProbability prob1, prob2;
+	for (int nObject = 0; nObject < nObjects; nObject++) {
+		prob1.add((*(arrObjects+nObject))->attr(attr1));
+		prob2.add((*(arrObjects+nObject))->attr(attr2));
+	}
+	
+	return 0;
 }
 
 bool EuclidMetric::compareObjectRanges(ObjectRange r1, ObjectRange r2) {
@@ -222,3 +274,14 @@ AttributeRange::AttributeRange (int nAttribute, double nRange) {
     this->nRange = nRange;
 }
 
+void AttributeProbability::add(double value) {
+	map<double, int>::iterator i = occurrences.find(value);
+	if (i != occurrences.end())
+		i->second++;
+	else
+		occurrences[value] = 1;
+}
+	
+int AttributeProbability::get(double value) {
+	return occurrences[value];
+}

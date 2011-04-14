@@ -91,14 +91,14 @@ Object* Reader::parseObject(string sRow, int &id) {
         if (nNumberLength > 0)
             pObj->setAttr(nAttribute, attrValue);
 
-        if (nNumberLength > 0)
-            printf("%.2f, ", attrValue);
+        //if (nNumberLength > 0)
+        //    printf("%.2f, ", attrValue);
 
 
         nAttribute++;
         pRow += nNumberLength + 1;
     }
-    printf("\n");
+    //printf("\n");
     delete[] pRowStart;
     //cout<<endl<<endl;
     return pObj;

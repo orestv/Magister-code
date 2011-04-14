@@ -1,5 +1,6 @@
 #include "DataContainer.h"
 #include <stdlib.h>
+#include <stdio.h>
 #include <memory.h>
 using namespace std;
 
@@ -45,17 +46,19 @@ void DataContainer::normalize() {
         for (int i = 0; i < nAttrCount; i++) {
             if (pObj->isAttrValid(i)) {
                 arrCoeff[i] = max(arrCoeff[i], pObj->attr(i));
+				//printf("Coefficient: %.2f, ", arrCoeff[i]);
             }
         }
     }
     double value;
     for (map<int, Object*>::iterator obj = _objects.begin();
-            obj != _objects.end() && false; obj++) {
+            obj != _objects.end(); obj++) {
 
         pObj = obj->second;
         for (int i = 0; i < nAttrCount; i++) {
             if (pObj->isAttrValid(i)) {
                 value = pObj->attr(i) / arrCoeff[i];
+				//printf("value: %.2f, ", value);
                 pObj->setAttr(i, value);
             }
         }
