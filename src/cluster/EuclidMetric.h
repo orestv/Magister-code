@@ -46,6 +46,7 @@ public:
     void predictMissingData(DataContainer *pContainer);
     void predictAttributes(Object *pObj, DataContainer *pContainer);
     void predictAttribute(Object *pObj, int nAttr, DataContainer *pContainer);
+    static double expectation (double *arrValues, int nValueCount);
 		
     virtual ~EuclidMetric();
 private:

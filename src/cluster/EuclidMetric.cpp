@@ -238,14 +238,54 @@ double EuclidMetric::competence(Object &o1, Object &o2) {
 }
 
 double EuclidMetric::competence(int attr1, int attr2, Object** arrObjects, int nObjects) {
-	double exp1 = 0, exp2 = 0;
-	AttributeProbability prob1, prob2;
-	for (int nObject = 0; nObject < nObjects; nObject++) {
-		prob1.add((*(arrObjects+nObject))->attr(attr1));
-		prob2.add((*(arrObjects+nObject))->attr(attr2));
-	}
-	
+    double *arrValues1 = new double[nObjects];
+    double *arrValues2 = new double[nObjects];
+
+    for (int nObject = 0; nObject < nObjects; nObject++) {
+        arrValues1[nObject] = arrObjects[nObject]->attr(attr1);
+        arrValues2[nObject] = arrObjects[nObject]->attr(attr2);
+    }
+    double exp1 = EuclidMetric::expectation(arrValues1, nObjects);
+    double exp2 = EuclidMetric::expectation(arrValues2, nObjects);
+
+    memset(arrValues1, 0, nObjects*sizeof(double));
+    memset(arrValues2, 0, nObjects*sizeof(double));
+
+    for (int nObject = 0; nObject < nObjects; nObject++) {
+        arrValues1[nObject] = pow(arrObjects[nObject]->attr(attr1) - exp1, 2);
+        arrValues2[nObject] = pow(arrObjects[nObject]->attr(attr2) - exp2, 2);
+    }
+
+    double disp1 = EuclidMetric::expectation(arrValues1, nObjects);
+    double disp2 = EuclidMetric::expectation(arrValues2, nObjects);
+
+    memset(arrValues1, 0, nObjects*sizeof(double));
+
+    for (int nObject = 0; nObject < nObjects; nObject++) {
+        arrValues1[nObject] = (arrObjects[nObject]->attr(attr1) - exp1) *
+            (arrObjects[nObject]->attr(attr2) - exp2);
+    }
+    double cov = EuclidMetric::expectation(arrValues1, nObjects);
+
+    delete[] arrValues1, arrValues2;
+
 	return 0;
+}
+
+double EuclidMetric::expectation(double *arrValues, int nValueCount) {
+    map<double, int> mp;
+    map<double, int>::iterator iter;
+    for (int i = 0; i < nValueCount; i++) {
+        if ((iter = mp.find(arrValues[i])) != mp.end())
+            iter->second++;
+        else
+            mp[arrValues[i]] = 1;
+    }
+    double result = 0;
+    for (iter = mp.begin(); iter != mp.end(); iter++) {
+        result += iter->second * (double)iter->first / (double)nValueCount;
+    }
+    return result;
 }
 
 bool EuclidMetric::compareObjectRanges(ObjectRange r1, ObjectRange r2) {
