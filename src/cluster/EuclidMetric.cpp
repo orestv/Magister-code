@@ -245,6 +245,9 @@ double EuclidMetric::competence(int attr1, int attr2, Object** arrObjects, int n
         arrValues1[nObject] = arrObjects[nObject]->attr(attr1);
         arrValues2[nObject] = arrObjects[nObject]->attr(attr2);
     }
+
+    //TODO: this function must only use valid attributes
+
     double exp1 = EuclidMetric::expectation(arrValues1, nObjects);
     double exp2 = EuclidMetric::expectation(arrValues2, nObjects);
 
@@ -256,8 +259,8 @@ double EuclidMetric::competence(int attr1, int attr2, Object** arrObjects, int n
         arrValues2[nObject] = pow(arrObjects[nObject]->attr(attr2) - exp2, 2);
     }
 
-    double disp1 = EuclidMetric::expectation(arrValues1, nObjects);
-    double disp2 = EuclidMetric::expectation(arrValues2, nObjects);
+    double dispersion1 = EuclidMetric::expectation(arrValues1, nObjects);
+    double dispersion2 = EuclidMetric::expectation(arrValues2, nObjects);
 
     memset(arrValues1, 0, nObjects*sizeof(double));
 
@@ -265,11 +268,21 @@ double EuclidMetric::competence(int attr1, int attr2, Object** arrObjects, int n
         arrValues1[nObject] = (arrObjects[nObject]->attr(attr1) - exp1) *
             (arrObjects[nObject]->attr(attr2) - exp2);
     }
-    double cov = EuclidMetric::expectation(arrValues1, nObjects);
+    double covariance = EuclidMetric::expectation(arrValues1, nObjects);
 
     delete[] arrValues1, arrValues2;
 
-	return 0;
+    double correlation = abs(covariance / (sqrt(dispersion1) * sqrt(dispersion2)));
+
+    int nCoefficient = 0;   //number of values known for both attributes
+
+    for (int nObject = 0; nObject < nObjects; nObject++) {
+        if (arrObjects[nObject]->isAttrValid(attr1) &&
+                arrObjects[nObject]->isAttrValid(attr2))
+            nCoefficient++;
+    }
+
+	return correlation*nCoefficient;
 }
 
 double EuclidMetric::expectation(double *arrValues, int nValueCount) {
