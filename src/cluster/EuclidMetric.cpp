@@ -241,34 +241,56 @@ double EuclidMetric::competence(int attr1, int attr2, Object** arrObjects, int n
     double *arrValues1 = new double[nObjects];
     double *arrValues2 = new double[nObjects];
 
+    int nValidObjects1 = 0, nValidObjects2 = 0;
+
     for (int nObject = 0; nObject < nObjects; nObject++) {
-        arrValues1[nObject] = arrObjects[nObject]->attr(attr1);
-        arrValues2[nObject] = arrObjects[nObject]->attr(attr2);
+        if (arrObjects[nObject]->isAttrValid(attr1)) {
+            arrValues1[nValidObjects1] = arrObjects[nObject]->attr(attr1);
+            nValidObjects1++;
+        }
+        if (arrObjects[nObject]->isAttrValid(attr2)) {
+            arrValues2[nValidObjects2] = arrObjects[nObject]->attr(attr2);
+            nValidObjects2++;
+        }
     }
 
     //TODO: this function must only use valid attributes
 
-    double exp1 = EuclidMetric::expectation(arrValues1, nObjects);
-    double exp2 = EuclidMetric::expectation(arrValues2, nObjects);
+    double exp1 = EuclidMetric::expectation(arrValues1, nValidObjects1);
+    double exp2 = EuclidMetric::expectation(arrValues2, nValidObjects2);
 
     memset(arrValues1, 0, nObjects*sizeof(double));
     memset(arrValues2, 0, nObjects*sizeof(double));
 
+    nValidObjects1 = 0;
+    nValidObjects2 = 0;
     for (int nObject = 0; nObject < nObjects; nObject++) {
-        arrValues1[nObject] = pow(arrObjects[nObject]->attr(attr1) - exp1, 2);
-        arrValues2[nObject] = pow(arrObjects[nObject]->attr(attr2) - exp2, 2);
+        if (arrObjects[nObject]->isAttrValid(attr1)) {
+            arrValues1[nValidObjects1] = pow(arrObjects[nObject]->attr(attr1) - exp1, 2);
+            nValidObjects1++;
+        }
+        if (arrObjects[nObject]->isAttrValid(attr2)) {
+            arrValues2[nValidObjects2] = pow(arrObjects[nObject]->attr(attr2) - exp2, 2);
+            nValidObjects2++;
+        }
     }
 
-    double dispersion1 = EuclidMetric::expectation(arrValues1, nObjects);
-    double dispersion2 = EuclidMetric::expectation(arrValues2, nObjects);
+    double dispersion1 = EuclidMetric::expectation(arrValues1, nValidObjects1);
+    double dispersion2 = EuclidMetric::expectation(arrValues2, nValidObjects2);
 
     memset(arrValues1, 0, nObjects*sizeof(double));
+    nValidObjects1 = 0;
 
     for (int nObject = 0; nObject < nObjects; nObject++) {
-        arrValues1[nObject] = (arrObjects[nObject]->attr(attr1) - exp1) *
-            (arrObjects[nObject]->attr(attr2) - exp2);
+        if (arrObjects[nObject]->isAttrValid(attr1) &&
+                arrObjects[nObject]->isAttrValid(attr2)) {
+
+            arrValues1[nValidObjects1] = (arrObjects[nObject]->attr(attr1) - exp1) *
+                (arrObjects[nObject]->attr(attr2) - exp2);
+            nValidObjects1++;
+        }
     }
-    double covariance = EuclidMetric::expectation(arrValues1, nObjects);
+    double covariance = EuclidMetric::expectation(arrValues1, nValidObjects1);
 
     delete[] arrValues1, arrValues2;
 
