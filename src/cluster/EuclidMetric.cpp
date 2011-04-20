@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <cmath>
 #include <memory.h>
 
 EuclidMetric::EuclidMetric(DataContainer *pContainer) {
@@ -187,13 +188,14 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
     lsObjectRanges.sort(EuclidMetric::compareObjectRanges);
 
     list<ObjectRange>::iterator iR = lsObjectRanges.begin();
-    double diff = abs((++iR)->nRange - lsObjectRanges.begin()->nRange);
+    iR++;
+    double diff = abs((*iR).nRange - (*(lsObjectRanges.begin())).nRange);
     iR++;
 	int nObjectCount = 2;
     while (iR != lsObjectRanges.end()) {
 		iR++;
 		nObjectCount++;
-        if (abs(iR->nRange - lsObjectRanges.begin()->nRange) > 3*diff) {
+        if (abs((*iR).nRange - (*lsObjectRanges.begin()).nRange) > 3*diff) {
             lsObjectRanges.erase(iR, lsObjectRanges.end());
             break;
         }
@@ -220,9 +222,38 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
 		#endif
 		nObject++;
 	}
-	//return;
-	double d = this->competence(0, 1, arrObjects, nObjectCount);
+    list<AttributeRange> lsAttrRanges;
+    double c;
+    for (int i = 0; i < pCurrentObj->attributeCount(); i++) {
+        if (i != nAttr) {
+            c = this->competence(i, nAttr, arrObjects, nObjectCount);
+            lsAttrRanges.push_back(AttributeRange(i, c));
+        }
+    }
+    lsAttrRanges.sort(EuclidMetric::compareAttributeRanges);
+    list<AttributeRange>::iterator iA = lsAttrRanges.begin();
+    diff = abs((++iA)->nRange - lsAttrRanges.begin()->nRange);
+    iA++;
+
+    for (int i = 0; i < pCurrentObj->attributeCount(); i++) {
+        if (abs(iA->nRange - lsAttrRanges.begin()->nRange) > 5*diff) {
+            lsAttrRanges.erase(++iA);
+        }
+    }
+    int nAttributeCount = lsAttrRanges.size();
+    int *arrAttrs = new int[nAttributeCount];
+    {
+        iA = lsAttrRanges.begin();
+        int i = 0;
+        while (iA != lsAttrRanges.end()) {
+            arrAttrs[i] = iA->nAttribute;
+            i++;
+            iA++;
+        }
+    }
+
 	delete[] arrObjects;
+    delete[] arrAttrs;
 }
 
 double EuclidMetric::competence(Object &o1, Object &o2) {
