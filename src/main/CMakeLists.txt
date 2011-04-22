@@ -2,6 +2,7 @@ include_directories (${PROJECT_SOURCE_DIR}/cluster)
 add_executable (magister main)
 
 add_library (Reader Reader.cpp)
+add_library (Regression Regression.cpp)
 
 target_link_libraries (Reader Object)
 target_link_libraries (magister Object)

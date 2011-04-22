@@ -18,3 +18,4 @@ target_link_libraries (Upgma DataContainer)
 target_link_libraries (Upgma Cluster)
 
 add_library (EuclidMetric EuclidMetric.cpp)
+target_link_libraries (EuclidMetric Regression)

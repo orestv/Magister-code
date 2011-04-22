@@ -46,7 +46,7 @@ int main(int argc, char** argv) {
     Reader rdr(filename);
     DataContainer container;
     rdr.fill(container);
-    container.normalize();
+    //container.normalize();
 	
 	KMeans km(&container, nClusters);
     Upgma up(&container);

@@ -233,6 +233,8 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
             }
             if (!bAllAttributesValid)
                 continue;
+			if (!pCurrentObj->isAttrValid(i))
+				continue;
             c = this->competence(i, nAttr, arrObjects, nObjectCount);
             lsAttrRanges.push_back(AttributeRange(i, c));
         }
@@ -265,7 +267,7 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
     FILE *pFile = fopen("competence.txt", "w");
     fprintf(pFile, "Object to be filled: \n");
     for (int i = 0; i < pCurrentObj->attributeCount(); i++) {
-        if (pCurrentObj->isAttrValid(i))
+        if (pCurrentObj->isAttrValid(arrAttrs[i]))
             fprintf(pFile, "%.3f,\t", pCurrentObj->attr(arrAttrs[i]));
         else
             fprintf(pFile, "N/A,\t");
