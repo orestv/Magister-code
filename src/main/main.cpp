@@ -5,19 +5,20 @@
  * Created on March 9, 2011, 12:04 PM
  */
 
-#define DEBUG
 
 #include <stdlib.h>
 #include <cstring>
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <stdio.h>
 
 #include "Reader.h"
 #include "KMeans.h"
 #include "Upgma.h"
 #include "EuclidMetric.h"
 #include <time.h>
+#include <list>
 
 
 using namespace std;
@@ -53,6 +54,21 @@ int main(int argc, char** argv) {
 	
 	AbstractMetric *pMetric = new EuclidMetric(&container);
     pMetric->predictMissingData(&container);
+
+    list<int> ids = container.ids();
+    Object *pObj;
+    FILE *pFile = fopen("predicted_data.txt", "w");
+    for (list<int>::iterator id = ids.begin();
+            id != ids.end(); id++) {
+        
+        pObj = container.get(*id);
+        fprintf(pFile, "%i;%i;", *id, pObj->actualClass());
+        for (int i = 0; i < pObj->attributeCount(); i++) {
+            fprintf(pFile, "%.2f;", pObj->attr(i));
+        }
+        fprintf(pFile, "\n");
+    }
+    fclose(pFile);
 	
     time_t start, end;
     start = time(NULL);

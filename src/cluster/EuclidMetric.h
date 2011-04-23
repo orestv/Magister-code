@@ -16,6 +16,7 @@ struct ObjectRange {
     double nRange;
 
     ObjectRange (Object *pObject, double nRange) ;
+    ObjectRange();
 };
 
 struct AttributeRange {
