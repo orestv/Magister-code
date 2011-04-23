@@ -56,7 +56,7 @@ void KMeans::clusterize(AbstractMetric *pMetric) {
 	for (int i = 0; i < _clusterCount; i++)
 		pTempClusters[i].setContainer(_pContainer);
 	
-	double dist, minDist;
+	float dist, minDist;
 	int nSelectedCluster = 0;
 	Object *pObj;
 	

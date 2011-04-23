@@ -45,8 +45,8 @@ std::list<int>& DataContainer::ids() {
 void DataContainer::normalize() {
     int nAttrCount = 0;
     nAttrCount = _objects.begin()->second->attributeCount();
-    double *arrCoeff = new double[nAttrCount];
-    memset(arrCoeff, 0, nAttrCount*sizeof(double));
+    float *arrCoeff = new float[nAttrCount];
+    memset(arrCoeff, 0, nAttrCount*sizeof(float));
 
     Object *pObj = NULL;
     for (map<int, Object*>::iterator obj = _objects.begin();
@@ -60,7 +60,7 @@ void DataContainer::normalize() {
             }
         }
     }
-    double value;
+    float value;
     if (_objs != NULL)
         delete[] _objs;
     _objs = new Object*[_objects.size()];

@@ -22,7 +22,7 @@ public:
     virtual ~Reader();
     static Object* parseObject(string data, int &id);
 private:
-    static double getNumber(char **data, int &length, char delimiter = ';');
+    static float getNumber(char **data, int &length, char delimiter = ';');
 
     std::ifstream _dataFile;
     std::string _filename;

@@ -145,8 +145,8 @@ Object *Cluster::get(int id) {
     return _pContainer->get(id);
 }
 
-double Cluster::distance(Cluster &c1, Cluster &c2, AbstractMetric *pMetric) {
-    double result = 0.;
+float Cluster::distance(Cluster &c1, Cluster &c2, AbstractMetric *pMetric) {
+    float result = 0.;
     list<int> ids1 = c1.ids();
     list<int> ids2 = c2.ids();
 
@@ -158,7 +158,7 @@ double Cluster::distance(Cluster &c1, Cluster &c2, AbstractMetric *pMetric) {
             result += pMetric->distance(*c1.get(*iOuter), *c2.get(*iInner));
         }
     }
-    result /= (double) (ids1.size() + ids2.size());
+    result /= (float) (ids1.size() + ids2.size());
     return result;
 }
 

@@ -11,18 +11,18 @@
 class Attribute {
 public:
     Attribute();
-    Attribute(double value);
+    Attribute(float value);
     Attribute(const Attribute& orig);
 
-    void setValue(double value);
+    void setValue(float value);
     void setValid(bool valid);
 
-    double value();
+    float value();
     bool valid();
 
     virtual ~Attribute();
 private:
-    double _value;
+    float _value;
     bool _valid;
 
 };

@@ -17,7 +17,7 @@ Attribute::Attribute(const Attribute& orig) {
     this->_valid = orig._valid;
 }
 
-Attribute::Attribute(double value) {
+Attribute::Attribute(float value) {
     this->_value = value;
 }
 
@@ -25,12 +25,12 @@ void Attribute::setValid(bool valid) {
     this->_valid = valid;
 }
 
-void Attribute::setValue(double value) {
+void Attribute::setValue(float value) {
     this->_value = value;
     this->_valid = true;
 }
 
-double Attribute::value() {
+float Attribute::value() {
     return this->_value;
 }
 

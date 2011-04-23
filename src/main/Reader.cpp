@@ -47,7 +47,7 @@ void Reader::fill(DataContainer &container) {
             cout << nCounter << " lines read!" << endl;
     }
     time(&end);
-    double dif = difftime(end, start);
+    float dif = difftime(end, start);
     printf("Done! Processing %i lines took %.2lf seconds\r\n", nCounter, dif);
     _dataFile.close();
 }
@@ -80,7 +80,7 @@ Object* Reader::parseObject(string sRow, int &id) {
 
     Object *pObj = new Object(nAttributeCount);
     pObj->setActualClass(nActualClass);
-    double attrValue = 0;
+    float attrValue = 0;
     int nAttribute = 0;
 
     while (pRow < pEnd) {
@@ -104,7 +104,7 @@ Object* Reader::parseObject(string sRow, int &id) {
     return pObj;
 }
 
-double Reader::getNumber(char **data, int &length, char delimiter) {
+float Reader::getNumber(char **data, int &length, char delimiter) {
     length = 0;
     char *pIndex = *data;
     while (pIndex < *data + strlen(*data)) {
@@ -117,7 +117,7 @@ double Reader::getNumber(char **data, int &length, char delimiter) {
     }
     if (length > 0) {
         (*data)[length] = '\0';
-        double result = atof(*data);
+        float result = atof(*data);
         return result;
     } else
         return 0;

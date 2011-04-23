@@ -16,7 +16,7 @@
 #include <memory.h>
 #include <sys/time.h>
 
-double timeSpan(timeval start, timeval end) {
+float timeSpan(timeval start, timeval end) {
     return end.tv_sec-start.tv_sec + (end.tv_usec-start.tv_usec)/1000000.;
 }
 
@@ -30,23 +30,23 @@ EuclidMetric::EuclidMetric(DataContainer *pContainer) {
 
 EuclidMetric::EuclidMetric(const EuclidMetric& orig) {
     m_nAttributeCount = orig.m_nAttributeCount;
-    m_arrAverageDeltas = new double[m_nAttributeCount];
+    m_arrAverageDeltas = new float[m_nAttributeCount];
     m_arrValidAttrCount = new int[m_nAttributeCount];
 
-    memcpy(m_arrAverageDeltas, orig.m_arrAverageDeltas, m_nAttributeCount*sizeof(double));
+    memcpy(m_arrAverageDeltas, orig.m_arrAverageDeltas, m_nAttributeCount*sizeof(float));
     memcpy(m_arrValidAttrCount, orig.m_arrValidAttrCount, m_nAttributeCount*sizeof(int));
 
     m_pContainer = orig.m_pContainer;
 }
 
-double EuclidMetric::distance(Object& o1, Object& o2, bool bUseIntegratedPrediction) {
-    double dResult = 0;
+float EuclidMetric::distance(Object& o1, Object& o2, bool bUseIntegratedPrediction) {
+    float dResult = 0;
     int nAttributeCount = max(o1.attributeCount(), o2.attributeCount());
     for (int nAttr = 0; nAttr < nAttributeCount; nAttr++) {
         if (bUseIntegratedPrediction) {
             if (o1.isAttrValid(nAttr) && o2.isAttrValid(nAttr)) {
-                double d1 = o1.isAttrValid(nAttr) ? o1.attr(nAttr) : m_arrAverageDeltas[nAttr];
-                double d2 = o2.isAttrValid(nAttr) ? o2.attr(nAttr) : m_arrAverageDeltas[nAttr];
+                float d1 = o1.isAttrValid(nAttr) ? o1.attr(nAttr) : m_arrAverageDeltas[nAttr];
+                float d2 = o2.isAttrValid(nAttr) ? o2.attr(nAttr) : m_arrAverageDeltas[nAttr];
                 dResult += pow(d1 - d2, 2);
                 }
             else {
@@ -73,9 +73,9 @@ Object* EuclidMetric::center(DataContainer *pContainer,
     Object *pResult = new Object(nAttributeCount);
 
     Object *pObj;
-    double *pAttributes = new double[nAttributeCount];
+    float *pAttributes = new float[nAttributeCount];
     bool *pValids = new bool[nAttributeCount];
-    memset(pAttributes, 0, nAttributeCount*sizeof(double));
+    memset(pAttributes, 0, nAttributeCount*sizeof(float));
     memset(pValids, 0, nAttributeCount*sizeof(bool));
     for (iIndex = indices.begin();  \
             iIndex != indices.end(); iIndex++) {
@@ -91,7 +91,7 @@ Object* EuclidMetric::center(DataContainer *pContainer,
 
     int nIndexCount = indices.size();
     for (int nAttribute = 0; nAttribute < nAttributeCount; nAttribute++) {
-        pAttributes[nAttribute] /= (double)nIndexCount;
+        pAttributes[nAttribute] /= (float)nIndexCount;
         if (pValids[nAttribute])
             pResult->setAttr(nAttribute, pAttributes[nAttribute]);
     }
@@ -143,16 +143,16 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
     gettimeofday(&start, NULL);
     list<ObjectRange> lsObjectRanges;
 
-    double nBias = 2.;
+    float nBias = 2.;
 
     Object *pObj;
-    double range;
+    float range;
 
     int nMaxRanges = 15;
     ObjectRange *arrRanges = new ObjectRange[nMaxRanges];
     gettimeofday(&s, NULL);
     ObjectRange *pRange;
-    double dFindSpan = 0;
+    float dFindSpan = 0;
     int nObjectCount = pContainer->ids().size();
     for (int i = 0; i < nObjectCount; i++) {
         gettimeofday(&s1, NULL);
@@ -188,22 +188,22 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
 	//Object **arrObjects = new Object*[nObjectCount];
 	int nObject = 0;
     int nRangeCount = 0;
-    double dValue = 0;
+    float dValue = 0;
 	for (int nRange = 0; nRange < nMaxRanges; nRange++) {
         if (arrRanges[nRange].pObject == NULL)
             continue;
         dValue += arrRanges[nRange].pObject->attr(nAttr);
         nRangeCount++;
 	}
-    dValue /= (double)nRangeCount;
+    dValue /= (float)nRangeCount;
     pCurrentObj->setAttr(nAttr, dValue);
     gettimeofday(&end, NULL);
-    double d = timeSpan(start, end);
+    float d = timeSpan(start, end);
     printf("Attribute %i predicted, %.4f seconds spent.\n\n", nAttr, d);
 
 /*
         list<AttributeRange> lsAttrRanges;
-        double c;
+        float c;
         for (int i = 0; i < pCurrentObj->attributeCount(); i++) {
             if (i != nAttr) {
                 bool bAllAttributesValid = true;
@@ -273,8 +273,8 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
 */
 }
 
-double EuclidMetric::competence(Object &o1, Object &o2) {
-	double nResult = 0;
+float EuclidMetric::competence(Object &o1, Object &o2) {
+	float nResult = 0;
 	int nValidAttributes = 0;
     int nCount = o1.attributeCount();
     timeval s, e;
@@ -292,9 +292,9 @@ double EuclidMetric::competence(Object &o1, Object &o2) {
 	return nResult;
 }
 
-double EuclidMetric::competence(int attr1, int attr2, Object** arrObjects, int nObjects) {
-    double *arrValues1 = new double[nObjects];
-    double *arrValues2 = new double[nObjects];
+float EuclidMetric::competence(int attr1, int attr2, Object** arrObjects, int nObjects) {
+    float *arrValues1 = new float[nObjects];
+    float *arrValues2 = new float[nObjects];
 
     int nValidObjects1 = 0, nValidObjects2 = 0;
 
@@ -311,11 +311,11 @@ double EuclidMetric::competence(int attr1, int attr2, Object** arrObjects, int n
 
     //TODO: this function must only use valid attributes
 
-    double exp1 = EuclidMetric::expectation(arrValues1, nValidObjects1);
-    double exp2 = EuclidMetric::expectation(arrValues2, nValidObjects2);
+    float exp1 = EuclidMetric::expectation(arrValues1, nValidObjects1);
+    float exp2 = EuclidMetric::expectation(arrValues2, nValidObjects2);
 
-    memset(arrValues1, 0, nObjects*sizeof(double));
-    memset(arrValues2, 0, nObjects*sizeof(double));
+    memset(arrValues1, 0, nObjects*sizeof(float));
+    memset(arrValues2, 0, nObjects*sizeof(float));
 
     nValidObjects1 = 0;
     nValidObjects2 = 0;
@@ -330,10 +330,10 @@ double EuclidMetric::competence(int attr1, int attr2, Object** arrObjects, int n
         }
     }
 
-    double dispersion1 = EuclidMetric::expectation(arrValues1, nValidObjects1);
-    double dispersion2 = EuclidMetric::expectation(arrValues2, nValidObjects2);
+    float dispersion1 = EuclidMetric::expectation(arrValues1, nValidObjects1);
+    float dispersion2 = EuclidMetric::expectation(arrValues2, nValidObjects2);
 
-    memset(arrValues1, 0, nObjects*sizeof(double));
+    memset(arrValues1, 0, nObjects*sizeof(float));
     nValidObjects1 = 0;
 
     for (int nObject = 0; nObject < nObjects; nObject++) {
@@ -345,11 +345,11 @@ double EuclidMetric::competence(int attr1, int attr2, Object** arrObjects, int n
             nValidObjects1++;
         }
     }
-    double covariance = EuclidMetric::expectation(arrValues1, nValidObjects1);
+    float covariance = EuclidMetric::expectation(arrValues1, nValidObjects1);
 
     delete[] arrValues1, arrValues2;
 
-    double correlation = abs(covariance / (sqrt(dispersion1) * sqrt(dispersion2)));
+    float correlation = abs(covariance / (sqrt(dispersion1) * sqrt(dispersion2)));
 
     int nCoefficient = 0;   //number of values known for both attributes
 
@@ -362,18 +362,18 @@ double EuclidMetric::competence(int attr1, int attr2, Object** arrObjects, int n
 	return correlation*nCoefficient;
 }
 
-double EuclidMetric::expectation(double *arrValues, int nValueCount) {
-    map<double, int> mp;
-    map<double, int>::iterator iter;
+float EuclidMetric::expectation(float *arrValues, int nValueCount) {
+    map<float, int> mp;
+    map<float, int>::iterator iter;
     for (int i = 0; i < nValueCount; i++) {
         if ((iter = mp.find(arrValues[i])) != mp.end())
             iter->second++;
         else
             mp[arrValues[i]] = 1;
     }
-    double result = 0;
+    float result = 0;
     for (iter = mp.begin(); iter != mp.end(); iter++) {
-        result += iter->second * (double)iter->first / (double)nValueCount;
+        result += iter->second * (float)iter->first / (float)nValueCount;
     }
     return result;
 }
@@ -394,7 +394,7 @@ EuclidMetric::~EuclidMetric() {
 }
 
 
-ObjectRange::ObjectRange (Object *pObject, double nRange) {
+ObjectRange::ObjectRange (Object *pObject, float nRange) {
     this->pObject = pObject;
     this->nRange = nRange;
 }
@@ -404,19 +404,19 @@ ObjectRange::ObjectRange() {
     this->nRange = 0;
 }
 
-AttributeRange::AttributeRange (int nAttribute, double nRange) {
+AttributeRange::AttributeRange (int nAttribute, float nRange) {
     this->nAttribute = nAttribute;
     this->nRange = nRange;
 }
 
-void AttributeProbability::add(double value) {
-	map<double, int>::iterator i = occurrences.find(value);
+void AttributeProbability::add(float value) {
+	map<float, int>::iterator i = occurrences.find(value);
 	if (i != occurrences.end())
 		i->second++;
 	else
 		occurrences[value] = 1;
 }
 	
-int AttributeProbability::get(double value) {
+int AttributeProbability::get(float value) {
 	return occurrences[value];
 }

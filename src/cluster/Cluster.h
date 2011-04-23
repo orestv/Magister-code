@@ -40,7 +40,7 @@ public:
     bool operator==(Cluster &other);
     Cluster& operator=(Cluster &other);
 
-    static double distance(Cluster &c1, Cluster &c2, AbstractMetric *pMetric);
+    static float distance(Cluster &c1, Cluster &c2, AbstractMetric *pMetric);
 
 private:
     Object *calculateCenter(AbstractMetric *pMetric);
