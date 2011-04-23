@@ -178,18 +178,17 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
         dTimeSpan += timeSpan(s1, e1);
         //gettimeofday(&s2, NULL);
         for (int nRange = 0; nRange < nMaxRanges; nRange++) {
-            pRange = arrRanges + nRange;
-            if (pRange->pObject == NULL) {
-                pRange->pObject = pObj;
-                pRange->nRange = range;
+            if (arrRanges[nRange].pObject == NULL) {
+                arrRanges[nRange].pObject = pObj;
+                arrRanges[nRange].nRange = range;
                 break;
-            } else if (pRange->nRange > range) {
+            } else if (arrRanges[nRange].nRange > range) {
                 for (int i = nMaxRanges-1;
                         i >= nRange; i--) {
                     if (i>0)
                         arrRanges[i] = arrRanges[i-1];
                 }
-                *pRange = ObjectRange(pObj, range);
+                arrRanges[nRange] = ObjectRange(pObj, range);
                 break;
             }
         }
