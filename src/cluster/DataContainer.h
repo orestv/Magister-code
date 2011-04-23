@@ -13,9 +13,12 @@ class DataContainer {
         void add(int id, Object **ppObj);
         void normalize();
 		std::list<int>& ids();
+        Object* getByIndex(int index);
 
         ~DataContainer();
     private:
+        Object** _objs;
+        int _objectCount;
         std::map<int, Object*> _objects;
         std::list<int> _ids;
 

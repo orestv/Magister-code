@@ -26,46 +26,6 @@ EuclidMetric::EuclidMetric(DataContainer *pContainer) {
     m_arrValidAttrCount = NULL;
     m_arrAverageDeltas = NULL;
     return;
-
-    list<int> &ids = pContainer->ids();
-    Object *pObj = NULL, *pPrevObj = NULL;
-    m_nAttributeCount = pContainer->get(*ids.begin())->attributeCount();
-
-    m_arrValidAttrCount = new int[m_nAttributeCount];
-    m_arrAverageDeltas = new double[m_nAttributeCount];
-
-    memset(m_arrValidAttrCount, 0, m_nAttributeCount*sizeof(int));
-    memset(m_arrAverageDeltas, 0, m_nAttributeCount*sizeof(double));
-
-    for (list<int>::iterator iID = ids.begin();
-            iID != ids.end(); iID++) {
-
-        pObj = pContainer->get(*iID);
-
-        if (!pPrevObj) {
-            pPrevObj = pObj;
-            continue;
-        }
-
-        for (int i = 0; i < m_nAttributeCount; i++) {
-            if (pObj->isAttrValid(i)) {
-                m_arrValidAttrCount[i]++;
-                m_arrAverageDeltas[i] += abs(pObj->attr(i) - pPrevObj->attr(i));
-                //m_arrAverageDeltas[i] += pObj->attr(i);
-            }
-        }
-        pPrevObj = pObj;
-    }
-    for (int i = 0; i < m_nAttributeCount; i++) {
-        m_arrAverageDeltas[i] /= (double)m_arrValidAttrCount[i];
-        //m_arrAverageDeltas[i] /= (double)ids.size();
-		#ifdef DEBUG
-        printf("%f, ", m_arrAverageDeltas[i]);
-		#endif
-    }
-	#ifdef DEBUG
-    printf("Attribute count: %i\n", m_nAttributeCount);
-	#endif
 }
 
 EuclidMetric::EuclidMetric(const EuclidMetric& orig) {
@@ -145,9 +105,8 @@ void EuclidMetric::predictMissingData(DataContainer *pContainer) {
     int i = 0;
     int nAttributeCount = 0;
     int nObjectCount = pContainer->ids().size();
-    for (list<int>::iterator iID = pContainer->ids().begin();
-            iID != pContainer->ids().end(); iID++) {
-        pObj = pContainer->get(*iID);
+    for (int nObject = 0; nObject < nObjectCount; nObject++) {
+        pObj = pContainer->getByIndex(nObject);
         if (nAttributeCount == 0)
             nAttributeCount = pObj->attributeCount();
         printf("Object %i of %i: ", i, nObjectCount);
@@ -194,10 +153,10 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
     gettimeofday(&s, NULL);
     ObjectRange *pRange;
     double dFindSpan = 0;
-    for (list<int>::iterator iID = pContainer->ids().begin();
-            iID != pContainer->ids().end(); iID++) {
+    int nObjectCount = pContainer->ids().size();
+    for (int i = 0; i < nObjectCount; i++) {
         gettimeofday(&s1, NULL);
-        pObj = pContainer->get(*iID);
+        pObj = pContainer->getByIndex(i);
         gettimeofday(&e1, NULL);
         dFindSpan += timeSpan(s1, e1);
         if (!pObj->isAttrValid(nAttr))
@@ -224,7 +183,7 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
     }
     printf("Time spent finding objects by IDs: %.4f.\n", dFindSpan);
     gettimeofday(&e, NULL);
-    printf("Calculated competences: %.2f.\n", timeSpan(s, e));
+    printf("Calculated competences: %.4f.\n", timeSpan(s, e));
 
 	//Object **arrObjects = new Object*[nObjectCount];
 	int nObject = 0;

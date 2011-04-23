@@ -5,6 +5,7 @@
 using namespace std;
 
 DataContainer::DataContainer(){
+    _objs = NULL;
 }
 
 DataContainer::~DataContainer(){
@@ -13,6 +14,8 @@ DataContainer::~DataContainer(){
         if (iObj->second)
             delete iObj->second;
     }
+    if (_objs)
+        delete[] _objs;
 }
 
 void DataContainer::add(int id, Object **ppObj) {
@@ -26,6 +29,13 @@ Object* DataContainer::get(int id) {
         return ret->second;
     else
         return 0;
+}
+
+Object* DataContainer::getByIndex(int index) {
+    if (_objs)
+        return _objs[index];
+    else
+        return NULL;
 }
 
 std::list<int>& DataContainer::ids() {
@@ -51,6 +61,10 @@ void DataContainer::normalize() {
         }
     }
     double value;
+    if (_objs != NULL)
+        delete[] _objs;
+    _objs = new Object*[_objects.size()];
+    int nObject = 0;
     for (map<int, Object*>::iterator obj = _objects.begin();
             obj != _objects.end(); obj++) {
 
@@ -62,6 +76,8 @@ void DataContainer::normalize() {
                 pObj->setAttr(i, value);
             }
         }
+        _objs[nObject] = pObj;
+        nObject++;
     }
 
     delete[] arrCoeff;
