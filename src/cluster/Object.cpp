@@ -6,6 +6,7 @@
  */
 
 #include "Object.h"
+#include <memory.h>
 
 Object::Object() {
 }
@@ -16,8 +17,10 @@ Object::Object(int attributeCount) {
 }
 
 Object::Object(const Object& orig) {
-    this->_attributes = orig._attributes;
     this->_attributeCount = orig._attributeCount;
+    this->_attributes = new Attribute[_attributeCount];
+    memcpy(orig._attributes, _attributes, _attributeCount*sizeof(Attribute));
+    //this->_attributes = orig._attributes;
 }
 
 int Object::attributeCount() {

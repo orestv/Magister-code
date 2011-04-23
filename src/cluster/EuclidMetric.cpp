@@ -20,6 +20,15 @@ float timeSpan(timeval start, timeval end) {
     return end.tv_sec-start.tv_sec + (end.tv_usec-start.tv_usec)/1000000.;
 }
 
+void recordObject(char *filename, Object *pObj) {
+    FILE *pFile = fopen(filename, "w");
+    for (int i = 0; i < pObj->attributeCount(); i++) {
+        fprintf(pFile, "%i;", pObj->attr(i));
+    }
+    fprintf(pFile, "\n");
+    fclose(pFile);
+}
+
 EuclidMetric::EuclidMetric(DataContainer *pContainer) {
     m_pContainer = pContainer;
     m_nAttributeCount = 0;
@@ -105,6 +114,7 @@ void EuclidMetric::predictMissingData(DataContainer *pContainer) {
     int i = 0;
     int nAttributeCount = 0;
     int nObjectCount = pContainer->ids().size();
+    timeval s, e;
     for (int nObject = 0; nObject < nObjectCount; nObject++) {
         pObj = pContainer->getByIndex(nObject);
         if (nAttributeCount == 0)
@@ -116,8 +126,11 @@ void EuclidMetric::predictMissingData(DataContainer *pContainer) {
                 nAttr < nAttributeCount;
                 nAttr++) {
             if (!pObj->isAttrValid(nAttr)) {
-                printf("predicting.\n");
+                printf("predicting...");
+                gettimeofday(&s, NULL);
                 predictAttributes(pObj, pContainer);
+                gettimeofday(&e, NULL);
+                printf(" done! spent %.5f seconds.\n", timeSpan(s, e));
                 break;
             }
 
@@ -139,8 +152,8 @@ void EuclidMetric::predictAttributes(Object *pCurrentObj, DataContainer *pContai
 
 void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContainer *pContainer) {
     timeval start, end;
-    timeval s, e, s1, e1;
-    gettimeofday(&start, NULL);
+    timeval s, e, s1, e1, s2, e2;
+    //gettimeofday(&start, NULL);
     list<ObjectRange> lsObjectRanges;
 
     float nBias = 2.;
@@ -150,19 +163,20 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
 
     int nMaxRanges = 15;
     ObjectRange *arrRanges = new ObjectRange[nMaxRanges];
-    gettimeofday(&s, NULL);
+    //gettimeofday(&s, NULL);
     ObjectRange *pRange;
-    float dFindSpan = 0;
+    float dTimeSpan = 0, dTimeSpan2 = 0;
     int nObjectCount = pContainer->ids().size();
     for (int i = 0; i < nObjectCount; i++) {
-        gettimeofday(&s1, NULL);
         pObj = pContainer->getByIndex(i);
-        gettimeofday(&e1, NULL);
-        dFindSpan += timeSpan(s1, e1);
         if (!pObj->isAttrValid(nAttr))
             continue;
 
+        //gettimeofday(&s1, NULL);
         range = this->competence(*pObj, *pCurrentObj);
+        //gettimeofday(&e1, NULL);
+        dTimeSpan += timeSpan(s1, e1);
+        //gettimeofday(&s2, NULL);
         for (int nRange = 0; nRange < nMaxRanges; nRange++) {
             pRange = arrRanges + nRange;
             if (pRange->pObject == NULL) {
@@ -179,11 +193,14 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
                 break;
             }
         }
+        //gettimeofday(&e2, NULL);
+        dTimeSpan2 += timeSpan(s2, e2);
         //lsObjectRanges.push_back(ObjectRange(pObj, range));
     }
-    printf("Time spent finding objects by IDs: %.4f.\n", dFindSpan);
-    gettimeofday(&e, NULL);
-    printf("Calculated competences: %.4f.\n", timeSpan(s, e));
+    //gettimeofday(&e, NULL);
+    //printf("Actual competence calculation time: %.4f.\n", dTimeSpan);
+    //printf("Time spent putting the object in place: %.4f.\n", dTimeSpan2);
+    //printf("Calculated competences: %.4f.\n", timeSpan(s, e));
 
 	//Object **arrObjects = new Object*[nObjectCount];
 	int nObject = 0;
@@ -197,9 +214,9 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
 	}
     dValue /= (float)nRangeCount;
     pCurrentObj->setAttr(nAttr, dValue);
-    gettimeofday(&end, NULL);
-    float d = timeSpan(start, end);
-    printf("Attribute %i predicted, %.4f seconds spent.\n\n", nAttr, d);
+    //gettimeofday(&end, NULL);
+    //float d = timeSpan(start, end);
+    //printf("Attribute %i predicted, %.4f seconds spent.\n\n", nAttr, d);
 
 /*
         list<AttributeRange> lsAttrRanges;
@@ -285,6 +302,7 @@ float EuclidMetric::competence(Object &o1, Object &o2) {
 		}		
 	}
     //gettimeofday(&s, NULL);
+    //nResult = (1. - sqrt(nResult)) * nValidAttributes;
     nResult = (1. - sqrt(nResult)) * nValidAttributes;
     //gettimeofday(&e, NULL);
     //printf("Range calculated: %.8f.\n", timeSpan(s, e));
