@@ -153,7 +153,7 @@ void EuclidMetric::predictAttributes(Object *pCurrentObj, DataContainer *pContai
 void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContainer *pContainer) {
     timeval start, end;
     timeval s, e, s1, e1, s2, e2;
-    //gettimeofday(&start, NULL);
+    gettimeofday(&start, NULL);
     list<ObjectRange> lsObjectRanges;
 
     float nBias = 2.;
@@ -163,7 +163,7 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
 
     int nMaxRanges = 15;
     ObjectRange *arrRanges = new ObjectRange[nMaxRanges];
-    //gettimeofday(&s, NULL);
+    gettimeofday(&s, NULL);
     ObjectRange *pRange;
     float dTimeSpan = 0, dTimeSpan2 = 0;
     int nObjectCount = pContainer->ids().size();
@@ -172,11 +172,11 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
         if (!pObj->isAttrValid(nAttr))
             continue;
 
-        //gettimeofday(&s1, NULL);
+        gettimeofday(&s1, NULL);
         range = this->competence(*pObj, *pCurrentObj);
-        //gettimeofday(&e1, NULL);
+        gettimeofday(&e1, NULL);
         dTimeSpan += timeSpan(s1, e1);
-        //gettimeofday(&s2, NULL);
+        gettimeofday(&s2, NULL);
         for (int nRange = 0; nRange < nMaxRanges; nRange++) {
             if (arrRanges[nRange].pObject == NULL) {
                 arrRanges[nRange].pObject = pObj;
@@ -192,14 +192,14 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
                 break;
             }
         }
-        //gettimeofday(&e2, NULL);
+        gettimeofday(&e2, NULL);
         dTimeSpan2 += timeSpan(s2, e2);
         //lsObjectRanges.push_back(ObjectRange(pObj, range));
     }
-    //gettimeofday(&e, NULL);
-    //printf("Actual competence calculation time: %.4f.\n", dTimeSpan);
-    //printf("Time spent putting the object in place: %.4f.\n", dTimeSpan2);
-    //printf("Calculated competences: %.4f.\n", timeSpan(s, e));
+    gettimeofday(&e, NULL);
+    printf("Actual competence calculation time: %.4f.\n", dTimeSpan);
+    printf("Time spent putting the object in place: %.4f.\n", dTimeSpan2);
+    printf("Calculated competences: %.4f.\n", timeSpan(s, e));
 
 	//Object **arrObjects = new Object*[nObjectCount];
 	int nObject = 0;
@@ -213,9 +213,9 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
 	}
     dValue /= (float)nRangeCount;
     pCurrentObj->setAttr(nAttr, dValue);
-    //gettimeofday(&end, NULL);
-    //float d = timeSpan(start, end);
-    //printf("Attribute %i predicted, %.4f seconds spent.\n\n", nAttr, d);
+    gettimeofday(&end, NULL);
+    float d = timeSpan(start, end);
+    printf("Attribute %i predicted, %.4f seconds spent.\n\n", nAttr, d);
 
 /*
         list<AttributeRange> lsAttrRanges;
