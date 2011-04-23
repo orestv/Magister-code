@@ -14,6 +14,11 @@
 #include <math.h>
 #include <cmath>
 #include <memory.h>
+#include <sys/time.h>
+
+double timeSpan(timeval start, timeval end) {
+    return end.tv_sec-start.tv_sec + (end.tv_usec-start.tv_usec)/1000000.;
+}
 
 EuclidMetric::EuclidMetric(DataContainer *pContainer) {
     m_pContainer = pContainer;
@@ -152,7 +157,7 @@ void EuclidMetric::predictMissingData(DataContainer *pContainer) {
                 nAttr < nAttributeCount;
                 nAttr++) {
             if (!pObj->isAttrValid(nAttr)) {
-                printf("predicting.");
+                printf("predicting.\n");
                 predictAttributes(pObj, pContainer);
                 break;
             }
@@ -174,6 +179,9 @@ void EuclidMetric::predictAttributes(Object *pCurrentObj, DataContainer *pContai
 }
 
 void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContainer *pContainer) {
+    timeval start, end;
+    timeval s, e, s1, e1;
+    gettimeofday(&start, NULL);
     list<ObjectRange> lsObjectRanges;
 
     double nBias = 2.;
@@ -181,42 +189,60 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
     Object *pObj;
     double range;
 
-    int nMaxObjects = 10;
-    ObjectRange* arrObjectRanges = new ObjectRange[nMaxObjects];
+    int nMaxRanges = 15;
+    ObjectRange *arrRanges = new ObjectRange[nMaxRanges];
+    gettimeofday(&s, NULL);
+    ObjectRange *pRange;
+    double dFindSpan = 0;
     for (list<int>::iterator iID = pContainer->ids().begin();
             iID != pContainer->ids().end(); iID++) {
+        gettimeofday(&s1, NULL);
         pObj = pContainer->get(*iID);
+        gettimeofday(&e1, NULL);
+        dFindSpan += timeSpan(s1, e1);
         if (!pObj->isAttrValid(nAttr))
             continue;
 
         range = this->competence(*pObj, *pCurrentObj);
-        lsObjectRanges.push_back(ObjectRange(pObj, range));
-    }
-    lsObjectRanges.sort(EuclidMetric::compareObjectRanges);
-
-    list<ObjectRange>::iterator iR = lsObjectRanges.begin();
-    iR++;
-    double diff = abs((*iR).nRange - (*(lsObjectRanges.begin())).nRange);
-    iR++;
-	int nObjectCount = 2;
-    while (iR != lsObjectRanges.end()) {
-		iR++;
-		nObjectCount++;
-        if (abs((*iR).nRange - (*lsObjectRanges.begin()).nRange) > nBias*diff) {
-            lsObjectRanges.erase(iR, lsObjectRanges.end());
-            break;
+        for (int nRange = 0; nRange < nMaxRanges; nRange++) {
+            pRange = arrRanges + nRange;
+            if (pRange->pObject == NULL) {
+                pRange->pObject = pObj;
+                pRange->nRange = range;
+                break;
+            } else if (pRange->nRange > range) {
+                for (int i = nMaxRanges-1;
+                        i >= nRange; i--) {
+                    if (i>0)
+                        arrRanges[i] = arrRanges[i-1];
+                }
+                *pRange = ObjectRange(pObj, range);
+                break;
+            }
         }
+        //lsObjectRanges.push_back(ObjectRange(pObj, range));
     }
-	Object **arrObjects = new Object*[nObjectCount];
-	int nObject = 0;
-	for (list<ObjectRange>::iterator iRange = lsObjectRanges.begin();
-		iRange != lsObjectRanges.end(); iRange++) {
-	
-		arrObjects[nObject] = iRange->pObject;	
-        nObject++;
-	}
+    printf("Time spent finding objects by IDs: %.4f.\n", dFindSpan);
+    gettimeofday(&e, NULL);
+    printf("Calculated competences: %.2f.\n", timeSpan(s, e));
 
-    if (false) {
+	//Object **arrObjects = new Object*[nObjectCount];
+	int nObject = 0;
+    int nRangeCount = 0;
+    double dValue = 0;
+	for (int nRange = 0; nRange < nMaxRanges; nRange++) {
+        if (arrRanges[nRange].pObject == NULL)
+            continue;
+        dValue += arrRanges[nRange].pObject->attr(nAttr);
+        nRangeCount++;
+	}
+    dValue /= (double)nRangeCount;
+    pCurrentObj->setAttr(nAttr, dValue);
+    gettimeofday(&end, NULL);
+    double d = timeSpan(start, end);
+    printf("Attribute %i predicted, %.4f seconds spent.\n\n", nAttr, d);
+
+/*
         list<AttributeRange> lsAttrRanges;
         double c;
         for (int i = 0; i < pCurrentObj->attributeCount(); i++) {
@@ -285,28 +311,26 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
 
         fclose(pFile);
         delete[] arrAttrs;
-    }
-
-    double dValue = 0;
-    for (int nObject = 0; nObject < nObjectCount; nObject++) {
-        dValue += arrObjects[nObject]->attr(nAttr);
-    }
-    dValue /= (double)nObjectCount;
-    pCurrentObj->setAttr(nAttr, dValue);
-
-	delete[] arrObjects;
+*/
 }
 
 double EuclidMetric::competence(Object &o1, Object &o2) {
 	double nResult = 0;
 	int nValidAttributes = 0;
-	for (int nAttr = 0; nAttr < o1.attributeCount(); nAttr++) {
+    int nCount = o1.attributeCount();
+    timeval s, e;
+	for (int nAttr = 0; nAttr < nCount; nAttr++) {
 		if (o1.isAttrValid(nAttr) && o2.isAttrValid(nAttr)) {
 			nValidAttributes++;
 			nResult += pow(o1.attr(nAttr)-o2.attr(nAttr), 2);
 		}		
 	}
-	return (1. - sqrt(nResult)) * nValidAttributes;
+    //gettimeofday(&s, NULL);
+    nResult = (1. - sqrt(nResult)) * nValidAttributes;
+    //gettimeofday(&e, NULL);
+    //printf("Range calculated: %.8f.\n", timeSpan(s, e));
+
+	return nResult;
 }
 
 double EuclidMetric::competence(int attr1, int attr2, Object** arrObjects, int nObjects) {
