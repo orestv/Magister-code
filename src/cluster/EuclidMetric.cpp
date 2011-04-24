@@ -14,6 +14,7 @@
 #include <math.h>
 #include <cmath>
 #include <memory.h>
+#include <pthread.h>
 
 void recordObject(char *filename, Object *pObj) {
     FILE *pFile = fopen(filename, "w");
@@ -41,6 +42,39 @@ EuclidMetric::EuclidMetric(const EuclidMetric& orig) {
     memcpy(m_arrValidAttrCount, orig.m_arrValidAttrCount, m_nAttributeCount*sizeof(int));
 
     m_pContainer = orig.m_pContainer;
+}
+
+struct Thread_competence_data {
+    Object **arrObjects;
+    Object *pCurrentObj;
+    int nObjectCount;
+    ObjectRange *arrRanges;
+
+    Thread_competence_data(Object **arrObjects, Object *pCurrentObj, int nObjectCount) {
+        this->arrObjects = arrObjects;
+        this->nObjectCount = nObjectCount;
+        this->pCurrentObj = pCurrentObj;
+    }
+
+    ~Thread_competence_data() {
+        delete[] arrRanges;
+        delete[] arrObjects;
+    }
+};
+
+void* thrd_object_competence(void *data) {
+    Thread_competence_data *pData = (Thread_competence_data*)data;
+    Object *pCurrentObj = pData->pCurrentObj;
+    int nObjectCount = pData->nObjectCount;
+    Object **arrObjects = pData->arrObjects;
+    pData->arrRanges = new ObjectRange[nObjectCount];
+    double range = 0;
+    for (int i = 0; i < nObjectCount; i++) {
+        range = EuclidMetric::competence(*arrObjects[i], *pCurrentObj);
+        pData->arrRanges[i].pObject = arrObjects[i];
+        pData->arrRanges[i].nRange = range;
+    }
+    pthread_exit((void*)pData);
 }
 
 float EuclidMetric::distance(Object& o1, Object& o2, bool bUseIntegratedPrediction) {
@@ -150,32 +184,67 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
     float range;
 
     int nMaxRanges = 15;
+    int nObjectCount = pContainer->ids().size();
+
+    int nThreadCount = 5;
+    int nObjectsPerThread = nObjectCount / nThreadCount;
+
     ObjectRange *arrRanges = new ObjectRange[nMaxRanges];
     ObjectRange *pRange;
-    float dTimeSpan = 0, dTimeSpan2 = 0;
-    int nObjectCount = pContainer->ids().size();
+    Object **arrObjects = new Object*[nObjectsPerThread];
+
+    int nObjectForThread = 0;
+    list<pthread_t> lsThreads;
     for (int i = 0; i < nObjectCount; i++) {
         pObj = pContainer->getByIndex(i);
         if (!pObj->isAttrValid(nAttr))
             continue;
+        if (arrObjects == NULL)
+            arrObjects = new Object*[nObjectsPerThread];
 
-        range = this->competence(*pObj, *pCurrentObj);
-        for (int nRange = 0; nRange < nMaxRanges; nRange++) {
-            if (arrRanges[nRange].pObject == NULL) {
-                arrRanges[nRange].pObject = pObj;
-                arrRanges[nRange].nRange = range;
-                break;
-            } else if (arrRanges[nRange].nRange > range) {
-                for (int i = nMaxRanges-1;
-                        i >= nRange; i--) {
-                    if (i>0)
-                        arrRanges[i] = arrRanges[i-1];
+        arrObjects[nObjectForThread] = pObj;
+        nObjectForThread++;
+        if (nObjectForThread == nObjectsPerThread || 
+               i == nObjectCount-1) {
+            Thread_competence_data *pData = 
+                new Thread_competence_data(arrObjects, 
+                        pCurrentObj, nObjectForThread);
+
+            pthread_t thrd;
+            pthread_create(&thrd, NULL, thrd_object_competence, (void*)pData);
+            lsThreads.push_back(thrd);
+            nObjectForThread = 0;
+            arrObjects = NULL;
+        }
+
+        //lsObjectRanges.push_back(ObjectRange(pObj, range));
+    }
+    for (list<pthread_t>::iterator iThread = lsThreads.begin();
+            iThread != lsThreads.end(); iThread++) {
+
+        void *data;
+        pthread_join(*iThread, &data);
+        Thread_competence_data *pData = (Thread_competence_data*)data;
+        for (int i = 0; i < pData->nObjectCount; i++) {
+            Object *pObj = pData->arrObjects[i];
+            double range = pData->arrRanges[i].nRange;
+            for (int nRange = 0; nRange < nMaxRanges; nRange++) {
+                if (arrRanges[nRange].pObject == NULL) {
+                    arrRanges[nRange].pObject = pObj;
+                    arrRanges[nRange].nRange = range;
+                    break;
+                } else if (arrRanges[nRange].nRange > range) {
+                    for (int i = nMaxRanges-1;
+                            i >= nRange; i--) {
+                        if (i>0)
+                            arrRanges[i] = arrRanges[i-1];
+                    }
+                    arrRanges[nRange] = ObjectRange(pObj, range);
+                    break;
                 }
-                arrRanges[nRange] = ObjectRange(pObj, range);
-                break;
             }
         }
-        //lsObjectRanges.push_back(ObjectRange(pObj, range));
+        delete pData;
     }
 	//Object **arrObjects = new Object*[nObjectCount];
 	int nObject = 0;
@@ -187,6 +256,7 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
         dValue += arrRanges[nRange].pObject->attr(nAttr);
         nRangeCount++;
 	}
+    delete[] arrRanges;
     dValue /= (float)nRangeCount;
     pCurrentObj->setAttr(nAttr, dValue);
     //printf("Attribute %i predicted, %.4f seconds spent.\n\n", nAttr, d);
