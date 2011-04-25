@@ -38,8 +38,8 @@ bool Object::isAttrValid(int id) {
 }
 
 float Object::attr(int id) {
-    if (!isAttrValid(id))
-        return 0;
+    //if (!isAttrValid(id))
+    //    return 0;
     return _attrValues[id];
     //return _attributes[id].value();
 }
