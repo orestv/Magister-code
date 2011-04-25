@@ -73,7 +73,7 @@ void DataContainer::normalize() {
             if (pObj->isAttrValid(i)) {
                 value = pObj->attr(i) / arrCoeff[i];
 				//printf("value: %.2f, ", value);
-                pObj->setAttr(i, value);
+                //pObj->setAttr(i, value);
             }
         }
         _objs[nObject] = pObj;
