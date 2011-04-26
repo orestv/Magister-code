@@ -27,6 +27,7 @@ int main(int argc, char** argv) {
 
     char *filename;
     int nClusters = 5;
+    int nMethod = 0;
     if (argc > 1) {
         if (strcmp(argv[1], "short") == 0)
             filename = "../../data/dmc2008_train_short.txt";
@@ -41,8 +42,12 @@ int main(int argc, char** argv) {
         else
             filename = "../../data/dmc2008_train.txt";
 
-        if (strcmp(argv[2], "kmeans") == 0)
+        if (strcmp(argv[2], "kmeans") == 0) {
+            nMethod = 0;
             nClusters = atoi(argv[3]);
+        } else if (strcmp(argv[2], "upgma") == 0) {
+            nMethod = 1;
+        }
     }
     else
         return 0;
@@ -76,8 +81,14 @@ int main(int argc, char** argv) {
     time_t start, end;
     start = time(NULL);
 
-	km.clusterize(pMetric);
-    //up.clusterize(pMetric);
+    switch (nMethod) {
+        case 0:
+            km.clusterize(pMetric);
+            break;
+        case 1:
+            up.clusterize(pMetric);
+            break;
+    };
 
     end = time(NULL);
 
