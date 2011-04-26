@@ -147,20 +147,19 @@ void EuclidMetric::predictMissingData(DataContainer *pContainer) {
         pObj = pContainer->getByIndex(nObject);
         if (nAttributeCount == 0)
             nAttributeCount = pObj->attributeCount();
-        printf("Object %i of %i: ", i, nObjectCount);
         i++;
 
         for (int nAttr = 0; 
                 nAttr < nAttributeCount;
                 nAttr++) {
             if (!pObj->isAttrValid(nAttr)) {
-                printf("predicting...");
+                printf("Object %i of %i being predicted... ", i, nObjectCount);
+                gettimeofday(&s, NULL);
                 predictAttributes(pObj, pContainer);
                 break;
             }
 
         }
-        printf("\n");
     }
 }
 
