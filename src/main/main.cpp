@@ -38,7 +38,9 @@ int main(int argc, char** argv) {
         else if (strcmp(argv[1], "p") == 0)
             filename = "../../data/dmc2008_train_predicted.txt";
         else if (strcmp(argv[1], "np") == 0)
-                filename = "../../data/dmc2008_train_predicted_normalized.txt";
+            filename = "../../data/dmc2008_train_predicted_normalized.txt";
+        else if (strcmp(argv[1], "snp") == 0)
+            filename = "../../data/short_normalized.txt";
         else
             filename = "../../data/dmc2008_train.txt";
 
