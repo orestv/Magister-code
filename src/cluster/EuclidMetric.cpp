@@ -152,14 +152,13 @@ void EuclidMetric::predictMissingData(DataContainer *pContainer) {
         pObj = pContainer->getByIndex(nObject);
         if (nAttributeCount == 0)
             nAttributeCount = pObj->attributeCount();
-        printf("Object %i of %i: ", i, nObjectCount);
         i++;
 
         for (int nAttr = 0; 
                 nAttr < nAttributeCount;
                 nAttr++) {
             if (!pObj->isAttrValid(nAttr)) {
-                printf("predicting...");
+                printf("Object %i of %i being predicted... ", i, nObjectCount);
                 gettimeofday(&s, NULL);
                 predictAttributes(pObj, pContainer);
                 gettimeofday(&e, NULL);
@@ -168,7 +167,6 @@ void EuclidMetric::predictMissingData(DataContainer *pContainer) {
             }
 
         }
-        printf("\n");
     }
 }
 
@@ -197,7 +195,7 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
     int nMaxRanges = 15;
     int nObjectCount = pContainer->ids().size();
 
-    int nThreadCount = 10;
+    int nThreadCount = 5;
     int nObjectsPerThread = nObjectCount / nThreadCount;
 
     ObjectRange *arrRanges = new ObjectRange[nMaxRanges];
