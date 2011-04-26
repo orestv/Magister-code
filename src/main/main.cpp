@@ -34,12 +34,15 @@ int main(int argc, char** argv) {
             filename = "../../data/dmc2008_train_medium.txt";
         else if (strcmp(argv[1], "test") == 0)
             filename = "../../data/train.txt";
+        else if (strcmp(argv[1], "p") == 0)
+            filename = "../../data/dmc2008_train_predicted.txt";
+        else if (strcmp(argv[1], "np") == 0)
+                filename = "../../data/dmc2008_train_predicted_normalized.txt";
         else
             filename = "../../data/dmc2008_train.txt";
 
         if (strcmp(argv[2], "kmeans") == 0)
             nClusters = atoi(argv[3]);
-
     }
     else
         return 0;
