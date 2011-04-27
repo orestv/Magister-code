@@ -1,5 +1,6 @@
 #include "Upgma.h"
 #include <iostream>
+#include <pthread.h>
 
 Upgma::Upgma(DataContainer *pContainer) {
     _pContainer = pContainer;
@@ -21,6 +22,15 @@ Upgma::~Upgma() {
 
 Cluster* Upgma::result() {
     return _pCluster;
+}
+
+void* findLeastDistance(void *p) {
+    Upgma::ThreadData *pData = (Upgma::ThreadData*)p;
+
+
+
+    pthread_exit(pData);
+    return NULL;
 }
 
 void Upgma::clusterize(AbstractMetric *pMetric) {

@@ -15,6 +15,14 @@ class Upgma {
 
         Cluster* result();
 
+        struct ThreadData {
+            list<Cluster*> *plsClusters;
+            list<Cluster*>::iterator iStart, iEnd;
+            int nObjectCount;
+            Cluster *pStart, *pEnd;
+            double dResult;
+        };
+
     private:
         DataContainer *_pContainer;
         list<Cluster*> _clusters;
