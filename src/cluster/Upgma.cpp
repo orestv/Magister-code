@@ -26,8 +26,25 @@ Cluster* Upgma::result() {
 
 void* findLeastDistance(void *p) {
     Upgma::ThreadData *pData = (Upgma::ThreadData*)p;
+    list<Cluster*>::iterator iOuter = pData->iStart, iInner = pData->iStart;
+    iInner++;
+    float dist = Cluster::distance(**iOuter, **iInner, pData->pMetric);
 
 
+    for (list<Cluster*>::iterator iOuter = pData->iStart;
+            iOuter != pData->plsClusters->end(); iOuter++) {
+
+        for (list<Cluster*>::iterator iInner = iOuter;
+                iInner != pData->plsClusters->end(); iInner++) {
+
+            if (iInner == iOuter)
+                continue;
+
+
+            //TODO: add actual distance computation
+
+        }
+    }
 
     pthread_exit(pData);
     return NULL;
@@ -44,30 +61,46 @@ void Upgma::clusterize(AbstractMetric *pMetric) {
         pCluster->add(*iId);
         _clusters.push_back(pCluster);
     }
-    int nClusterCount = ids.size();
-    list<Cluster*>::iterator iJoin1, iJoin2;
-    iJoin1 = _clusters.begin();
-    iJoin2 = _clusters.begin();
-    iJoin2++;
-    int nDist = Cluster::distance(**iJoin1, **iJoin2, pMetric);
-    int nCurrentDist;
-    std::cout<<"Distance: "<<nDist<<std::endl;
 
-    list<Cluster*>::iterator iOuter, iInner;
-    int n = 0;
-    for (iOuter = _clusters.begin(); iOuter != _clusters.end();
-            iOuter++) {
-        for (iInner = iOuter; iInner != _clusters.end();
-                iInner++) {
-            if (iOuter == iInner)
-                continue;
-            nCurrentDist = Cluster::distance(**iOuter, **iInner, pMetric);
-        }
-        n++;
-        std::cout<<"Another cluster done: "<<n<<std::endl;
-    }
+    int nThreads = 5;
+
+    list<pthread_t> lsThreads;
 
     while (_clusters.size() > 0) {
+        int nClustersPerThread = _clusters.size()/nThreads;
+        int nCluster = 0;
+        list<Cluster*>::iterator iStart, iEnd;
+        iStart = _clusters.begin();
+        iEnd = iStart;
+        while (iEnd != _clusters.end()) {
+            for (nCluster = 0; nCluster < nClustersPerThread && iEnd != _clusters.end();
+                    nCluster++) {
+                iEnd++;
+            }
+            ThreadData *pData = new ThreadData;
+            pData->iStart = iStart;
+            pData->iEnd = iEnd;
+            pData->plsClusters = &_clusters;
+            pData->pMetric = pMetric;
+
+            pthread_t thrd;
+            pthread_create(&thrd, NULL, findLeastDistance, (void*)pData);
+            lsThreads.push_back(thrd);
+
+            iStart = iEnd;
+
+        }
+
+        for (list<pthread_t>::iterator iThread = lsThreads.begin();
+                iThread != lsThreads.end(); iThread++) {
+
+            ThreadData *pData = NULL;
+            pthread_join(*iThread, (void**)&pData);
+            //TODO: process output data
+            
+
+            delete pData;
+        }
 
         break;
     }

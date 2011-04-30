@@ -20,7 +20,8 @@ class Upgma {
             list<Cluster*>::iterator iStart, iEnd;
             int nObjectCount;
             Cluster *pStart, *pEnd;
-            double dResult;
+            float nResult;
+            AbstractMetric *pMetric;
         };
 
     private:
