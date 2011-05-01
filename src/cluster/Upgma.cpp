@@ -69,7 +69,7 @@ void Upgma::clusterize(AbstractMetric *pMetric) {
         _clusters.push_back(pCluster);
     }
 
-    int nThreads = 20;
+    int nThreads = 8;
 
 
     while (_clusters.size() > 2) {
@@ -89,7 +89,7 @@ void Upgma::clusterize(AbstractMetric *pMetric) {
                 iEnd++;
             }
             nProcessedClusters += nCluster;
-            fprintf(stderr, "Processed %i of %i clusters.\n", nProcessedClusters, nClusters);
+            //fprintf(stderr, "Processed %i of %i clusters.\n", nProcessedClusters, nClusters);
             if (nClusters - nProcessedClusters > 0 && nClusters - nProcessedClusters < 3)
                 iEnd = iTotalEnd;
 
