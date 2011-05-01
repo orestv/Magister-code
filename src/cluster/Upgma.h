@@ -17,9 +17,9 @@ class Upgma {
 
         struct ThreadData {
             list<Cluster*> *plsClusters;
-            list<Cluster*>::iterator iStart, iEnd;
-            int nObjectCount;
             Cluster *pStart, *pEnd;
+            int nObjectCount;
+            Cluster *pResult1, *pResult2;
             float nResult;
             AbstractMetric *pMetric;
         };
