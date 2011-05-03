@@ -3,7 +3,7 @@
 
 class Regression {
 	public:
-		static float predict (float **, float*, float*, int nRows, int nCols);
+        static float predict(float *x, float *y, float arg, int n);
 };
 
 #endif
