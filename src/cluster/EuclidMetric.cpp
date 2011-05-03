@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /* 
  * File:   EuclidMetric.cpp
  * Author: ovoloshchuk
