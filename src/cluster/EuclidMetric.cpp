@@ -9,6 +9,7 @@
 #define DEBUG
 
 #include "EuclidMetric.h"
+#include "Regression.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -230,7 +231,7 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
                     arrRanges[nRange].pObject = pObj;
                     arrRanges[nRange].nRange = range;
                     break;
-                } else if (arrRanges[nRange].nRange > range) {
+                } else if (arrRanges[nRange].nRange < range) {
                     for (int i = nMaxRanges-1;
                             i >= nRange; i--) {
                         if (i>0)
@@ -244,6 +245,19 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
         delete[] pData->arrObjects;
         delete pData;
     }
+
+    if (arrRanges[0].pObject != NULL && arrRanges[1].pObject != NULL) {
+        float diff = 0;
+        diff = abs(arrRanges[1].nRange - arrRanges[0].nRange);
+        //printf("diff = %.4f\n", diff);
+        for (int i = 2; i < nMaxRanges && arrRanges[i].pObject != NULL; i++) {
+            if (abs(arrRanges[i].nRange - arrRanges[0].nRange) > 10*nBias * diff) {
+                arrRanges[i].pObject = NULL;
+                break;
+            }
+        }
+    }
+
 
     //arrRanges contains at least nMaxRanges of ObjectRange's
     //Find out the exact number
@@ -274,7 +288,7 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
             if (!pCurrentObj->isAttrValid(i))
                 continue;
             c = this->competence(i, nAttr, arrObjects, nObjectCount);
-            printf("%.2f, \t", c);
+            //printf("%.2f, \t", c);
             lsAttrRanges.push_back(AttributeRange(i, c));
         }
     }
@@ -291,24 +305,56 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
         iA++;
     }
     int nAttributeCount = lsAttrRanges.size();
-    printf("Valid attribute count: %i\n", nAttributeCount);
+    //printf("Valid attribute count: %i\n", nAttributeCount);
     int *arrAttrs = new int[nAttributeCount];
     {
         iA = lsAttrRanges.begin();
         int i = 0;
         while (iA != lsAttrRanges.end()) {
             arrAttrs[i] = iA->nAttribute;
-            printf("Attribute %i has range %.2f;\t", iA->nAttribute, iA->nRange);
+            //printf("Attribute %i has range %.2f;\t", iA->nAttribute, iA->nRange);
             i++;
             iA++;
         }
-        printf("\n");
+        //printf("\n");
     }
     
     //at this point we have a submatrix of competent objects and their attributes
 
     //TODO: add prediction based on arrAttrs and arrObjects here
+    
+    float *arrHints = new float[nAttributeCount];   //results
+    float *arrKnown = new float[nObjectCount];      //known values for predicted attribute
+    float *arrArgs = new float[nObjectCount];       //known values for competent attribute
 
+
+    for (int i = 0; i < nObjectCount; i++) {
+        arrKnown[i] = arrObjects[i]->attr(nAttr);
+        //printf("known value: %.2f\n", arrKnown[i]);
+    }
+
+    for (int i = 0; i < nAttributeCount; i++) {
+        int nAttributeIndex = arrAttrs[i];
+        //printf("Attribute index: %i\n", nAttributeIndex);
+        for (int nObject = 0; nObject < nObjectCount; nObject++)  {
+            arrArgs[nObject] = arrObjects[nObject]->attr(nAttributeIndex);
+            //printf("argument value: %.2f\n", arrArgs[nObject]);
+        }
+        float arg = pCurrentObj->attr(nAttributeIndex);
+        arrHints[i] = Regression::predict(arrArgs, arrKnown, arg, nObjectCount);
+        //printf("Partial result: %.4f\n\n", arrHints[i]);
+    }
+
+    float result = 0;
+    for (int i = 0; i < nAttributeCount; i++)
+        result += arrHints[i];
+    result /= (float)nAttributeCount;
+    //printf("Predicted value: %.2f\n", result);
+    pCurrentObj->setAttr(nAttr, result);
+
+    delete[] arrArgs;
+    delete[] arrKnown;
+    delete[] arrHints;
     delete[] arrAttrs;
     delete[] arrObjects;
 }
@@ -420,7 +466,7 @@ bool EuclidMetric::compareObjectRanges(ObjectRange r1, ObjectRange r2) {
 }
 
 bool EuclidMetric::compareAttributeRanges(AttributeRange r1, AttributeRange r2) {
-    return r1.nRange > r2.nRange;
+    return r1.nRange < r2.nRange;
 }
 
 EuclidMetric::~EuclidMetric() {

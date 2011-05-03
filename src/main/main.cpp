@@ -17,8 +17,10 @@
 #include "KMeans.h"
 #include "Upgma.h"
 #include "EuclidMetric.h"
+#include "Regression.h"
 #include <time.h>
 #include <list>
+#include <cmath>
 
 
 using namespace std;
