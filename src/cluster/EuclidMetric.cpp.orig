@@ -14,8 +14,17 @@
 #include <math.h>
 #include <cmath>
 #include <memory.h>
+<<<<<<< HEAD
 #include <pthread.h>
 
+=======
+#include <sys/time.h>
+#include <pthread.h>
+
+float timeSpan(timeval start, timeval end) {
+    return end.tv_sec-start.tv_sec + (end.tv_usec-start.tv_usec)/1000000.;
+}
+>>>>>>> ce3317ced0e9887c2832ec78fb8b67b84a37ac96
 void recordObject(char *filename, Object *pObj) {
     FILE *pFile = fopen(filename, "w");
     for (int i = 0; i < pObj->attributeCount(); i++) {
@@ -58,6 +67,7 @@ struct Thread_competence_data {
 
     ~Thread_competence_data() {
         delete[] arrRanges;
+        delete[] arrObjects;
     }
 };
 
@@ -153,6 +163,10 @@ void EuclidMetric::predictMissingData(DataContainer *pContainer) {
                 nAttr++) {
             if (!pObj->isAttrValid(nAttr)) {
                 printf("Object %i of %i being predicted... ", i, nObjectCount);
+<<<<<<< HEAD
+=======
+                gettimeofday(&s, NULL);
+>>>>>>> ce3317ced0e9887c2832ec78fb8b67b84a37ac96
                 predictAttributes(pObj, pContainer);
                 break;
             }
@@ -173,6 +187,12 @@ void EuclidMetric::predictAttributes(Object *pCurrentObj, DataContainer *pContai
 }
 
 void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContainer *pContainer) {
+<<<<<<< HEAD
+=======
+    timeval start, end;
+    timeval s, e, s1, e1, s2, e2;
+    gettimeofday(&start, NULL);
+>>>>>>> ce3317ced0e9887c2832ec78fb8b67b84a37ac96
     list<ObjectRange> lsObjectRanges;
 
     float nBias = 2.;
@@ -187,6 +207,10 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
     int nObjectsPerThread = nObjectCount / nThreadCount;
 
     ObjectRange *arrRanges = new ObjectRange[nMaxRanges];
+<<<<<<< HEAD
+=======
+    gettimeofday(&s, NULL);
+>>>>>>> ce3317ced0e9887c2832ec78fb8b67b84a37ac96
     ObjectRange *pRange;
     Object **arrObjects = new Object*[nObjectsPerThread];
 
@@ -241,76 +265,104 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
                 }
             }
         }
-        delete[] pData->arrObjects;
         delete pData;
     }
+<<<<<<< HEAD
+=======
+    gettimeofday(&e, NULL);
+    //printf("Calculated competences: %.4f.\n", timeSpan(s, e));
 
-    //arrRanges contains at least nMaxRanges of ObjectRange's
-    //Find out the exact number
-    nObjectCount = 0;
-    while (nObjectCount < nMaxRanges && arrRanges[nObjectCount].pObject != NULL)
-        nObjectCount++;
-
-    //Fill the object array with objects
-    //arrObjects now contains an array of competent objects
-    arrObjects = new Object*[nObjectCount];
-    for (int i = 0; i < nObjectCount; i++)
-        arrObjects[i] = arrRanges[i].pObject;
+>>>>>>> ce3317ced0e9887c2832ec78fb8b67b84a37ac96
+	//Object **arrObjects = new Object*[nObjectCount];
+	int nObject = 0;
+    int nRangeCount = 0;
+    float dValue = 0;
+	for (int nRange = 0; nRange < nMaxRanges; nRange++) {
+        if (arrRanges[nRange].pObject == NULL)
+            continue;
+        dValue += arrRanges[nRange].pObject->attr(nAttr);
+        nRangeCount++;
+	}
     delete[] arrRanges;
-    
-    list<AttributeRange> lsAttrRanges;
-    float c;
-    for (int i = 0; i < pCurrentObj->attributeCount(); i++) {
-        if (i != nAttr) {
-            bool bAllAttributesValid = true;
-            for (int nObject = 0; nObject < nObjectCount; nObject++) {
-                if (!arrObjects[nObject]->isAttrValid(i)) {
-                    bAllAttributesValid = false;
-                    break;
-                }
-            }
-            if (!bAllAttributesValid)
-                continue;
-            if (!pCurrentObj->isAttrValid(i))
-                continue;
-            c = this->competence(i, nAttr, arrObjects, nObjectCount);
-            printf("%.2f, \t", c);
-            lsAttrRanges.push_back(AttributeRange(i, c));
-        }
-    }
-    lsAttrRanges.sort(EuclidMetric::compareAttributeRanges);
-    list<AttributeRange>::iterator iA = lsAttrRanges.begin();
-    float diff = abs((++iA)->nRange - lsAttrRanges.begin()->nRange);
-    iA++;
+    dValue /= (float)nRangeCount;
+    pCurrentObj->setAttr(nAttr, dValue);
+<<<<<<< HEAD
+=======
+    gettimeofday(&end, NULL);
+    float d = timeSpan(start, end);
+>>>>>>> ce3317ced0e9887c2832ec78fb8b67b84a37ac96
+    //printf("Attribute %i predicted, %.4f seconds spent.\n\n", nAttr, d);
 
-    while (iA != lsAttrRanges.end()) {
-        if (abs(iA->nRange - lsAttrRanges.begin()->nRange) > nBias*diff) {
-            lsAttrRanges.erase(iA);
-            break;
+/*
+        list<AttributeRange> lsAttrRanges;
+        float c;
+        for (int i = 0; i < pCurrentObj->attributeCount(); i++) {
+            if (i != nAttr) {
+                bool bAllAttributesValid = true;
+                for (int nObject = 0; nObject < nObjectCount; nObject++) {
+                    if (!arrObjects[nObject]->isAttrValid(i)) {
+                        bAllAttributesValid = false;
+                        break;
+                    }
+                }
+                if (!bAllAttributesValid)
+                    continue;
+                if (!pCurrentObj->isAttrValid(i))
+                    continue;
+                c = this->competence(i, nAttr, arrObjects, nObjectCount);
+                lsAttrRanges.push_back(AttributeRange(i, c));
+            }
         }
+        lsAttrRanges.sort(EuclidMetric::compareAttributeRanges);
+        list<AttributeRange>::iterator iA = lsAttrRanges.begin();
+        diff = abs((++iA)->nRange - lsAttrRanges.begin()->nRange);
         iA++;
-    }
-    int nAttributeCount = lsAttrRanges.size();
-    printf("Valid attribute count: %i\n", nAttributeCount);
-    int *arrAttrs = new int[nAttributeCount];
-    {
-        iA = lsAttrRanges.begin();
-        int i = 0;
+
         while (iA != lsAttrRanges.end()) {
-            arrAttrs[i] = iA->nAttribute;
-            printf("Attribute %i has range %.2f;\t", iA->nAttribute, iA->nRange);
-            i++;
+            if (abs(iA->nRange - lsAttrRanges.begin()->nRange) > nBias*diff) {
+                lsAttrRanges.erase(iA);
+                break;
+            }
             iA++;
         }
-        printf("\n");
-    }
-    
-    //at this point we have a submatrix of competent objects and their attributes
+        int nAttributeCount = lsAttrRanges.size();
+        printf("Valid attribute count: %i\n", nAttributeCount);
+        int *arrAttrs = new int[nAttributeCount];
+        {
+            iA = lsAttrRanges.begin();
+            int i = 0;
+            while (iA != lsAttrRanges.end()) {
+                arrAttrs[i] = iA->nAttribute;
+                i++;
+                iA++;
+            }
+        }
 
-    //TODO: add prediction based on arrAttrs and arrObjects here
+        FILE *pFile = fopen("competence.txt", "w");
+        fprintf(pFile, "Object to be filled: \n");
+        for (int i = 0; i < pCurrentObj->attributeCount(); i++) {
+            if (pCurrentObj->isAttrValid(arrAttrs[i]))
+                fprintf(pFile, "%.3f,\t", pCurrentObj->attr(arrAttrs[i]));
+            else
+                fprintf(pFile, "N/A,\t");
+        }
+        fprintf(pFile, "\nFound following objects: \n");
 
-    delete[] arrAttrs;
-    delete[] arrObjects;
+        Object *pO;
+        for (int i = 0; i < nObjectCount; i++) {
+            pO = arrObjects[i];
+            for (int j = 0; j < nAttributeCount; j++) {
+                if (pO->isAttrValid(i))
+                    fprintf(pFile, "%.3f,\t", pO->attr(arrAttrs[j]));
+                else
+                    fprintf(pFile, "N/A,\t");
+            }
+            fprintf(pFile, "\n");
+        }
+
+        fclose(pFile);
+        delete[] arrAttrs;
+*/
 }
 
 float EuclidMetric::competence(Object &o1, Object &o2) {
@@ -383,8 +435,7 @@ float EuclidMetric::competence(int attr1, int attr2, Object** arrObjects, int nO
     }
     float covariance = EuclidMetric::expectation(arrValues1, nValidObjects1);
 
-    delete[] arrValues1;
-    delete[] arrValues2;
+    delete[] arrValues1, arrValues2;
 
     float correlation = abs(covariance / (sqrt(dispersion1) * sqrt(dispersion2)));
 
