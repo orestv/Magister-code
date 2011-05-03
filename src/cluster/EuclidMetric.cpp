@@ -58,7 +58,6 @@ struct Thread_competence_data {
 
     ~Thread_competence_data() {
         delete[] arrRanges;
-        delete[] arrObjects;
     }
 };
 
@@ -242,6 +241,7 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
                 }
             }
         }
+        delete[] pData->arrObjects;
         delete pData;
     }
 	//Object **arrObjects = new Object*[nObjectCount];
