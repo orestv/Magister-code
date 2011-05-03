@@ -244,7 +244,7 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
         delete[] pData->arrObjects;
         delete pData;
     }
-	//Object **arrObjects = new Object*[nObjectCount];
+    /*
 	int nObject = 0;
     int nRangeCount = 0;
     float dValue = 0;
@@ -258,77 +258,70 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
     dValue /= (float)nRangeCount;
     pCurrentObj->setAttr(nAttr, dValue);
     //printf("Attribute %i predicted, %.4f seconds spent.\n\n", nAttr, d);
+    */
 
-/*
-        list<AttributeRange> lsAttrRanges;
-        float c;
-        for (int i = 0; i < pCurrentObj->attributeCount(); i++) {
-            if (i != nAttr) {
-                bool bAllAttributesValid = true;
-                for (int nObject = 0; nObject < nObjectCount; nObject++) {
-                    if (!arrObjects[nObject]->isAttrValid(i)) {
-                        bAllAttributesValid = false;
-                        break;
-                    }
+    //arrRanges contains at least nMaxRanges of ObjectRange's
+    //Find out the exact number
+    nObjectCount = 0;
+    while (nObjectCount < nMaxRanges && arrRanges[nObjectCount].pObject != NULL)
+        nObjectCount++;
+
+    //Fill the object array with objects
+    //arrObjects now contains an array of competent objects
+    arrObjects = new Object*[nObjectCount];
+    for (int i = 0; i < nObjectCount; i++)
+        arrObjects[i] = arrRanges[i].pObject;
+    delete[] arrRanges;
+    
+    list<AttributeRange> lsAttrRanges;
+    float c;
+    for (int i = 0; i < pCurrentObj->attributeCount(); i++) {
+        if (i != nAttr) {
+            bool bAllAttributesValid = true;
+            for (int nObject = 0; nObject < nObjectCount; nObject++) {
+                if (!arrObjects[nObject]->isAttrValid(i)) {
+                    bAllAttributesValid = false;
+                    break;
                 }
-                if (!bAllAttributesValid)
-                    continue;
-                if (!pCurrentObj->isAttrValid(i))
-                    continue;
-                c = this->competence(i, nAttr, arrObjects, nObjectCount);
-                lsAttrRanges.push_back(AttributeRange(i, c));
             }
+            if (!bAllAttributesValid)
+                continue;
+            if (!pCurrentObj->isAttrValid(i))
+                continue;
+            c = this->competence(i, nAttr, arrObjects, nObjectCount);
+            printf("%.2f, \t", c);
+            lsAttrRanges.push_back(AttributeRange(i, c));
         }
-        lsAttrRanges.sort(EuclidMetric::compareAttributeRanges);
-        list<AttributeRange>::iterator iA = lsAttrRanges.begin();
-        diff = abs((++iA)->nRange - lsAttrRanges.begin()->nRange);
-        iA++;
+    }
+    lsAttrRanges.sort(EuclidMetric::compareAttributeRanges);
+    list<AttributeRange>::iterator iA = lsAttrRanges.begin();
+    float diff = abs((++iA)->nRange - lsAttrRanges.begin()->nRange);
+    iA++;
 
+    while (iA != lsAttrRanges.end()) {
+        if (abs(iA->nRange - lsAttrRanges.begin()->nRange) > nBias*diff) {
+            lsAttrRanges.erase(iA);
+            break;
+        }
+        iA++;
+    }
+    int nAttributeCount = lsAttrRanges.size();
+    printf("Valid attribute count: %i\n", nAttributeCount);
+    int *arrAttrs = new int[nAttributeCount];
+    {
+        iA = lsAttrRanges.begin();
+        int i = 0;
         while (iA != lsAttrRanges.end()) {
-            if (abs(iA->nRange - lsAttrRanges.begin()->nRange) > nBias*diff) {
-                lsAttrRanges.erase(iA);
-                break;
-            }
+            arrAttrs[i] = iA->nAttribute;
+            i++;
             iA++;
         }
-        int nAttributeCount = lsAttrRanges.size();
-        printf("Valid attribute count: %i\n", nAttributeCount);
-        int *arrAttrs = new int[nAttributeCount];
-        {
-            iA = lsAttrRanges.begin();
-            int i = 0;
-            while (iA != lsAttrRanges.end()) {
-                arrAttrs[i] = iA->nAttribute;
-                i++;
-                iA++;
-            }
-        }
+    }
 
-        FILE *pFile = fopen("competence.txt", "w");
-        fprintf(pFile, "Object to be filled: \n");
-        for (int i = 0; i < pCurrentObj->attributeCount(); i++) {
-            if (pCurrentObj->isAttrValid(arrAttrs[i]))
-                fprintf(pFile, "%.3f,\t", pCurrentObj->attr(arrAttrs[i]));
-            else
-                fprintf(pFile, "N/A,\t");
-        }
-        fprintf(pFile, "\nFound following objects: \n");
+    //TODO: add prediction based on arrAttrs and arrObjects here
 
-        Object *pO;
-        for (int i = 0; i < nObjectCount; i++) {
-            pO = arrObjects[i];
-            for (int j = 0; j < nAttributeCount; j++) {
-                if (pO->isAttrValid(i))
-                    fprintf(pFile, "%.3f,\t", pO->attr(arrAttrs[j]));
-                else
-                    fprintf(pFile, "N/A,\t");
-            }
-            fprintf(pFile, "\n");
-        }
-
-        fclose(pFile);
-        delete[] arrAttrs;
-*/
+    delete[] arrAttrs;
+    delete[] arrObjects;
 }
 
 float EuclidMetric::competence(Object &o1, Object &o2) {
@@ -401,7 +394,8 @@ float EuclidMetric::competence(int attr1, int attr2, Object** arrObjects, int nO
     }
     float covariance = EuclidMetric::expectation(arrValues1, nValidObjects1);
 
-    delete[] arrValues1, arrValues2;
+    delete[] arrValues1;
+    delete[] arrValues2;
 
     float correlation = abs(covariance / (sqrt(dispersion1) * sqrt(dispersion2)));
 
