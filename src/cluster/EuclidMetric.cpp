@@ -246,24 +246,18 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
         delete pData;
     }
 
+    nObjectCount = 0;
     if (arrRanges[0].pObject != NULL && arrRanges[1].pObject != NULL) {
         float diff = 0;
         diff = abs(arrRanges[1].nRange - arrRanges[0].nRange);
         //printf("diff = %.4f\n", diff);
         for (int i = 2; i < nMaxRanges && arrRanges[i].pObject != NULL; i++) {
-            if (abs(arrRanges[i].nRange - arrRanges[0].nRange) > 10*nBias * diff) {
-                arrRanges[i].pObject = NULL;
+            if (abs(arrRanges[i].nRange - arrRanges[0].nRange) > nBias * diff) {
+                nObjectCount = i;
                 break;
             }
         }
     }
-
-
-    //arrRanges contains at least nMaxRanges of ObjectRange's
-    //Find out the exact number
-    nObjectCount = 0;
-    while (nObjectCount < nMaxRanges && arrRanges[nObjectCount].pObject != NULL)
-        nObjectCount++;
 
     //Fill the object array with objects
     //arrObjects now contains an array of competent objects
