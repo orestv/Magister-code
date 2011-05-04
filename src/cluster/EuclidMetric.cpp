@@ -1,3 +1,4 @@
+
 /* 
  * File:   EuclidMetric.cpp
  * Author: ovoloshchuk
@@ -15,8 +16,12 @@
 #include <math.h>
 #include <cmath>
 #include <memory.h>
+#include <sys/time.h>
 #include <pthread.h>
 
+float timeSpan(timeval start, timeval end) {
+    return end.tv_sec-start.tv_sec + (end.tv_usec-start.tv_usec)/1000000.;
+}
 void recordObject(char *filename, Object *pObj) {
     FILE *pFile = fopen(filename, "w");
     for (int i = 0; i < pObj->attributeCount(); i++) {
@@ -143,6 +148,7 @@ void EuclidMetric::predictMissingData(DataContainer *pContainer) {
     int i = 0;
     int nAttributeCount = 0;
     int nObjectCount = pContainer->ids().size();
+    timeval s, e;
     for (int nObject = 0; nObject < nObjectCount; nObject++) {
         pObj = pContainer->getByIndex(nObject);
         if (nAttributeCount == 0)
@@ -154,7 +160,10 @@ void EuclidMetric::predictMissingData(DataContainer *pContainer) {
                 nAttr++) {
             if (!pObj->isAttrValid(nAttr)) {
                 printf("Object %i of %i being predicted... ", i, nObjectCount);
+                gettimeofday(&s, NULL);
                 predictAttributes(pObj, pContainer);
+                gettimeofday(&e, NULL);
+                printf(" done! spent %.5f seconds.\n", timeSpan(s, e));
                 break;
             }
 
@@ -174,6 +183,9 @@ void EuclidMetric::predictAttributes(Object *pCurrentObj, DataContainer *pContai
 }
 
 void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContainer *pContainer) {
+    timeval start, end;
+    timeval s, e, s1, e1, s2, e2;
+    gettimeofday(&start, NULL);
     list<ObjectRange> lsObjectRanges;
 
     float nBias = 2.;
@@ -188,6 +200,7 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
     int nObjectsPerThread = nObjectCount / nThreadCount;
 
     ObjectRange *arrRanges = new ObjectRange[nMaxRanges];
+    gettimeofday(&s, NULL);
     ObjectRange *pRange;
     Object **arrObjects = new Object*[nObjectsPerThread];
 
@@ -246,6 +259,7 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
         delete pData;
     }
 
+
     nObjectCount = 0;
     if (arrRanges[0].pObject != NULL && arrRanges[1].pObject != NULL) {
         float diff = 0;
@@ -258,6 +272,13 @@ void EuclidMetric::predictAttribute(Object *pCurrentObj, int nAttr, DataContaine
             }
         }
     }
+
+
+    //arrRanges contains at least nMaxRanges of ObjectRange's
+    //Find out the exact number
+    nObjectCount = 0;
+    while (nObjectCount < nMaxRanges && arrRanges[nObjectCount].pObject != NULL)
+        nObjectCount++;
 
     //Fill the object array with objects
     //arrObjects now contains an array of competent objects
