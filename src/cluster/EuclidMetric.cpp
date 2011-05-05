@@ -372,6 +372,43 @@ float EuclidMetric::competence(int attr1, int attr2, Object** arrObjects, int nO
     float *arrValues1 = new float[nObjects];
     float *arrValues2 = new float[nObjects];
 
+    memset(arrValues1, 0, nObjects*sizeof(float));
+    memset(arrValues2, 0, nObjects*sizeof(float));
+
+    int nValidObjects = 0;
+    Object *pObj;
+    for (int i = 0; i < nObjects; i++) {
+        pObj = arrObjects[i];
+        if (pObj->isAttrValid(attr1)) {
+            arrValues1[nValidObjects] = pObj->attr(attr1) * pObj->attr(attr1);
+            arrValues2[nValidObjects] = pObj->attr(attr1);
+            nValidObjects++;
+        }
+    }
+
+    float exp1 = EuclidMetric::expectation(arrValues1, nValidObjects);
+    float exp2 = EuclidMetric::expectation(arrValues2, nValidObjects);
+    float disp1 = exp1 - exp2*exp2;
+
+    memset(arrValues1, 0, nObjects*sizeof(float));
+    memset(arrValues2, 0, nObjects*sizeof(float));
+    nValidObjects = 0;
+    for (int i = 0; i < nObjects; i++) {
+        pObj = arrObjects[i];
+        if (pObj->isAttrValid(attr2)) {
+            arrValues1[nValidObjects] = pObj->attr(attr2) * pObj->attr(attr2);
+            arrValues2[nValidObjects] = pObj->attr(attr2);
+            nValidObjects++;
+        }
+    }
+    exp1 = EuclidMetric::expectation(arrValues1, nValidObjects);
+    exp2 = EuclidMetric::expectation(arrValues2, nValidObjects);
+    float disp2 = exp1 - exp2*exp2;
+
+    printf("Dispersions: %.4f, %.4f\n", disp1, disp2);
+    return 1;
+    /*
+
     int nValidObjects1 = 0, nValidObjects2 = 0;
 
     for (int nObject = 0; nObject < nObjects; nObject++) {
@@ -437,6 +474,7 @@ float EuclidMetric::competence(int attr1, int attr2, Object** arrObjects, int nO
     }
 
 	return correlation*nCoefficient;
+    */
 }
 
 float EuclidMetric::expectation(float *arrValues, int nValueCount) {
