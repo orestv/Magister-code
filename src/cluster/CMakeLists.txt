@@ -20,3 +20,7 @@ target_link_libraries (Upgma Cluster)
 
 add_library (EuclidMetric EuclidMetric.cpp)
 target_link_libraries (EuclidMetric Regression)
+
+add_library(NN nn.cpp)
+target_link_libraries (NN DataContainer)
+target_link_libraries (NN Cluster)
