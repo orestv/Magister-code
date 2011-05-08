@@ -380,13 +380,27 @@ float EuclidMetric::competence(int attr1, int attr2, Object** arrObjects, int nO
     for (int i = 0; i < nObjects; i++) {
         pObj = arrObjects[i];
         if (pObj->isAttrValid(attr1)) {
-            arrValues1[nValidObjects] = pObj->attr(attr1) * pObj->attr(attr1);
-            arrValues2[nValidObjects] = pObj->attr(attr1);
+            arrValues1[nValidObjects] = pObj->attr(attr1);
             nValidObjects++;
         }
     }
-
     float exp1 = EuclidMetric::expectation(arrValues1, nValidObjects);
+
+    nValidObjects = 0;
+    for (int i = 0; i < nObjects; i++) {
+        pObj = arrObjects[i];
+        if (pObj->isAttrValid(attr1)) {
+            arrValues1[nValidObjects] = pow(pObj->attr(attr1) - exp1, 2);
+            printf("Diff: %.5f\n", arrValues1[nValidObjects]);
+            nValidObjects++;
+        }
+    }
+    float d = EuclidMetric::expectation(arrValues1, nValidObjects);
+    printf("Dispersion: %.5f\n", d);
+
+    return 1;
+
+
     float exp2 = EuclidMetric::expectation(arrValues2, nValidObjects);
     float disp1 = exp1 - exp2*exp2;
 
