@@ -162,6 +162,14 @@ float Cluster::distance(Cluster &c1, Cluster &c2, AbstractMetric *pMetric) {
     return result;
 }
 
+Cluster* Cluster::getNeighbor() {
+    return _pNeighbor;
+}
+
+void Cluster::setNeighbor(Cluster *pNeighbor) {
+    _pNeighbor = pNeighbor;
+}
+
 Cluster::~Cluster() {
     if (_pCenter)
         delete _pCenter;

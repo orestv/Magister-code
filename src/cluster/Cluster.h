@@ -37,6 +37,9 @@ public:
 	
 	void clear();
 
+    Cluster *getNeighbor();
+    void setNeighbor(Cluster*);
+
     bool operator==(Cluster &other);
     Cluster& operator=(Cluster &other);
 
@@ -51,6 +54,7 @@ private:
     list<int> _ids;
     list<Cluster*> _clusters;
 	bool _centerValid;
+    Cluster *_pNeighbor;
 };
 
 #endif	/* _CLUSTER_H */
