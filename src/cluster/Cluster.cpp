@@ -105,29 +105,25 @@ Object* Cluster::calculateCenter(AbstractMetric* pMetric) {
 }
 
 bool Cluster::operator==(Cluster &other) {
-    return _ids == other._ids;
+    return _objects == other._objects;
+    /*
     if (_pContainer != other._pContainer)
         return false;
-    /*
-    if (_ids.size() != other._ids.size()) {
-        std::cout<<"Diff: "<<_ids.size()-other._ids.size()<<" elements"<<std::endl;
-        return false;
-    }
-    */
-    bool bFound = false;
+    bool bObjectFound = false;
     for (list<Object*>::iterator iObjectOuter = _objects.begin(); iObjectOuter != _objects.end(); iObjectOuter++) {
-        bFound = false;
+        bObjectFound = false;
 
         for (list<Object*>::iterator iObjectInner = other._objects.begin(); iObjectInner != other._objects.end(); iObjectInner++) {
-            if (iObjectOuter == iObjectInner) {
-                bFound = true;
+            if (*iObjectOuter == *iObjectInner) {
+                bObjectFound = true;
                 break;
             }
         }
-        if (!bFound)
+        if (!bObjectFound)
             return false;
     }
     return true;
+    */
 }
 
 Object *Cluster::get(int id) {

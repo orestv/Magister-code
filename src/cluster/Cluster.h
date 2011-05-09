@@ -52,7 +52,6 @@ private:
 
     Object *_pCenter;
     DataContainer *_pContainer;
-    list<int> _ids;
     list<Object*> _objects;
     list<Cluster*> _clusters;
 	bool _centerValid;
