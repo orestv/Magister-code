@@ -34,7 +34,7 @@ Cluster* KMeans::clusters() {
 	return _clusters;
 }
 
-void KMeans::clusterize(AbstractMetric *pMetric) {
+Clustering* KMeans::clusterize(AbstractMetric *pMetric) {
 	list<int> ids = _pContainer->ids();
     int nObjectCount = _pContainer->ids().size();
 	
@@ -131,6 +131,7 @@ void KMeans::clusterize(AbstractMetric *pMetric) {
 	}
     printf("Done!\r\n");
 	delete[] pTempClusters;
+    return new Clustering(_clusters, _clusterCount);
     /*
     FILE *pFile = 0;
     char *filename = "results2.txt";

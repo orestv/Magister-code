@@ -21,6 +21,7 @@
 #include <time.h>
 #include <list>
 #include <cmath>
+#include "clustering.h"
 
 
 using namespace std;
@@ -82,15 +83,17 @@ int main(int argc, char** argv) {
     }
     fclose(pFile);
 	
+
+    Clustering *pClus = NULL;
     time_t start, end;
     start = time(NULL);
 
     switch (nMethod) {
         case 0:
-            km.clusterize(pMetric);
+            pClus = km.clusterize(pMetric);
             break;
         case 1:
-            up.clusterize(pMetric);
+            pClus = up.clusterize(pMetric);
             break;
     };
 
@@ -99,6 +102,8 @@ int main(int argc, char** argv) {
     printf("Clusterized, %i seconds spent.\r\n", (int)(end-start));
 	
 	delete pMetric;
+    if (pClus)
+        delete pClus;
 
     return (EXIT_SUCCESS);
 }

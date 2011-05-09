@@ -4,6 +4,7 @@
 #include "DataContainer.h"
 #include "AbstractMetric.h"
 #include "Cluster.h"
+#include "clustering.h"
 #include <list>
 
 class KMeans {
@@ -11,7 +12,7 @@ class KMeans {
 		KMeans(DataContainer *pContainer, int clusterCount);
 		~KMeans();
 		
-		void clusterize(AbstractMetric *pMetric);
+		Clustering* clusterize(AbstractMetric *pMetric);
 		
 		Cluster* clusters();
 		int clusterCount();

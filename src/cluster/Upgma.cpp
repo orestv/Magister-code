@@ -57,7 +57,7 @@ void* findLeastDistance(void *p) {
     pthread_exit(pData);
 }
 
-void Upgma::clusterize(AbstractMetric *pMetric) {
+Clustering* Upgma::clusterize(AbstractMetric *pMetric) {
     list<int> ids = _pContainer->ids();
     int nObjectCount = 0;
     Cluster *pCluster = 0;
@@ -130,7 +130,7 @@ void Upgma::clusterize(AbstractMetric *pMetric) {
 
         if (pC1 == NULL || pC2 == NULL) { 
             fprintf(stderr, "fail!\n");
-            return;
+            return NULL;
         }
         Cluster *pC = new Cluster(_pContainer);
         pC->addCluster(pC1);
@@ -140,5 +140,6 @@ void Upgma::clusterize(AbstractMetric *pMetric) {
         _clusters.push_back(pC);
         fprintf(stderr, "Current cluster list size: %i.\n\n", _clusters.size());
     }
+    return NULL;
 }
 

@@ -3,6 +3,7 @@
 
 #include <list>
 #include "Cluster.h"
+#include "clustering.h"
 
 using namespace std;
 
@@ -11,7 +12,7 @@ class Upgma {
         Upgma(DataContainer *pContainer);
         ~Upgma();
 
-        void clusterize(AbstractMetric *pMetric);
+        Clustering* clusterize(AbstractMetric *pMetric);
 
         Cluster* result();
 
