@@ -33,7 +33,7 @@ Cluster::Cluster(const Cluster& orig) {
         delete _pCenter;
 	_pCenter = 0;
 	_pContainer = orig._pContainer;
-	_ids = orig._ids;
+    _objects = orig._objects;
 	_centerValid = false;
 }
 
@@ -42,7 +42,7 @@ Cluster& Cluster::operator=(Cluster &other) {
         delete _pCenter;
 	_pCenter = 0;
 	_pContainer = other._pContainer;
-	_ids = other._ids;
+    _objects = other._objects;
 	_centerValid = false;
 }
 
@@ -51,7 +51,7 @@ void Cluster::clear() {
 		delete _pCenter;
 		_pCenter = 0;
 	}
-	_ids.clear();
+    _objects.clear();
 	_centerValid = false;
 }
 
@@ -60,50 +60,40 @@ Object* Cluster::center(AbstractMetric *pMetric) {
 		if (_pCenter)
 			delete _pCenter;
         //_pCenter = calculateCenter(pMetric);
-        _pCenter = pMetric->center(_pContainer, _ids);
+        _pCenter = pMetric->center(_objects);
         _centerValid = true;
 	}
     return _pCenter;
 }
 
-list<int>& Cluster::ids() {
-    return _ids;
+list<Object*>& Cluster::objects() {
+    return _objects;
 }
 
 list<Cluster*>& Cluster::clusters() {
     return _clusters;
 }
 
-void Cluster::add(int id) {
-	_ids.push_back(id);
+void Cluster::addObject(Object *pObject) {
+    _objects.push_back(pObject);
 	_centerValid = false;
 }
 
-void Cluster::add(Cluster *pCluster) {
+void Cluster::addCluster(Cluster *pCluster) {
     _clusters.insert(_clusters.end(), pCluster);
-    _ids.insert(_ids.begin(), pCluster->ids().begin(), pCluster->ids().end());
+    _objects.insert(_objects.end(), pCluster->objects().begin(), pCluster->objects().end());
 }
 
-void Cluster::remove(int id) {
-    _ids.remove(id);
-    /*
-	for (list<int>::iterator iter = _ids.begin(); \
-		iter != _ids.end(); iter++) {
-		
-		if (*iter == id) {
-			_ids.remove(iter);
-			return;
-		}
-	}
-    */
+void Cluster::remove(Object *pObject) {
+    _objects.remove(pObject);
 	_centerValid = false;
 }
 
-bool Cluster::contains(int id) {
-	for (list<int>::iterator iId = _ids.begin(); \
-		iId != _ids.end(); iId++) {
+bool Cluster::contains(Object *pObject) {
+	for (list<Object*>::iterator iObject = _objects.begin(); \
+		iObject != _objects.end(); iObject++) {
 		
-		if (*iId == id)
+		if (*iObject == pObject)
 			return true;
 	}
 	return false;
@@ -111,7 +101,7 @@ bool Cluster::contains(int id) {
 
 Object* Cluster::calculateCenter(AbstractMetric* pMetric) {
 	_centerValid = true;
-    return pMetric->center(_pContainer, _ids);
+    return pMetric->center(_objects);
 }
 
 bool Cluster::operator==(Cluster &other) {
@@ -125,16 +115,15 @@ bool Cluster::operator==(Cluster &other) {
     }
     */
     bool bFound = false;
-    for (list<int>::iterator idOuter = _ids.begin(); idOuter != _ids.end(); idOuter++) {
+    for (list<Object*>::iterator iObjectOuter = _objects.begin(); iObjectOuter != _objects.end(); iObjectOuter++) {
         bFound = false;
 
-        for (list<int>::iterator idInner = other._ids.begin(); idInner != other._ids.end(); idInner++) {
-            if (*idOuter == *idInner) {
+        for (list<Object*>::iterator iObjectInner = other._objects.begin(); iObjectInner != other._objects.end(); iObjectInner++) {
+            if (iObjectOuter == iObjectInner) {
                 bFound = true;
                 break;
             }
         }
-        std::cout<<bFound<<std::endl;
         if (!bFound)
             return false;
     }
@@ -142,23 +131,23 @@ bool Cluster::operator==(Cluster &other) {
 }
 
 Object *Cluster::get(int id) {
-    return _pContainer->get(id);
+    return _pContainer->getByIndex(id);
 }
 
 float Cluster::distance(Cluster &c1, Cluster &c2, AbstractMetric *pMetric) {
     float result = 0.;
-    list<int> ids1 = c1.ids();
-    list<int> ids2 = c2.ids();
+    list<Object*> lsObjects1 = c1.objects();
+    list<Object*> lsObjects2 = c2.objects();
 
-    for (list<int>::iterator iOuter = ids1.begin();
-            iOuter != ids1.end(); iOuter++) {
+    for (list<Object*>::iterator iOuter = lsObjects1.begin();
+            iOuter != lsObjects1.end(); iOuter++) {
 
-        for (list<int>::iterator iInner = ids2.begin();
-                iInner != ids2.end(); iInner++) {
-            result += pMetric->distance(*c1.get(*iOuter), *c2.get(*iInner));
+        for (list<Object*>::iterator iInner = lsObjects2.begin();
+                iInner != lsObjects2.end(); iInner++) {
+            result += pMetric->distance(**iOuter, **iInner);
         }
     }
-    result /= (float) (ids1.size() + ids2.size());
+    result /= (float) (lsObjects1.size() + lsObjects2.size());
     return result;
 }
 

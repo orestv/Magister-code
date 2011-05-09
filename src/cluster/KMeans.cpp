@@ -36,6 +36,7 @@ Cluster* KMeans::clusters() {
 
 void KMeans::clusterize(AbstractMetric *pMetric) {
 	list<int> ids = _pContainer->ids();
+    int nObjectCount = _pContainer->ids().size();
 	
 	list<int> sample = KMeans::randomSample(ids, _clusterCount);
     printf("ID selection for random sample: ");
@@ -46,10 +47,10 @@ void KMeans::clusterize(AbstractMetric *pMetric) {
     }
     printf("\n");
 	int nCluster = 0;
-	for (list<int>::iterator iObjectId = sample.begin(); \
-		iObjectId != sample.end(); iObjectId++, nCluster++) {
+    for (list<int>::iterator iEl = sample.begin();
+            iEl != sample.end(); iEl++, nCluster++) {
 		
-		_clusters[nCluster].add(*iObjectId);
+		_clusters[nCluster].addObject(_pContainer->get(*iEl));
 	}
 	
 	Cluster *pTempClusters = new Cluster[_clusterCount];
@@ -71,9 +72,8 @@ void KMeans::clusterize(AbstractMetric *pMetric) {
 		time_t start, end;
 		start = time(NULL);
 		int nIndexCounter = 0;
-		for (list<int>::iterator iObjectId = ids.begin(); \
-			iObjectId != ids.end(); iObjectId++) {			
-			pObj = _pContainer->get(*iObjectId);
+        for (int i = 0; i < nObjectCount; i++) {
+			pObj = _pContainer->getByIndex(i);
 			
 			minDist = -1;
 			nCluster = 0;
@@ -97,7 +97,7 @@ void KMeans::clusterize(AbstractMetric *pMetric) {
 			}
             */
 				
-			pTempClusters[nSelectedCluster].add(*iObjectId);
+			pTempClusters[nSelectedCluster].addObject(pObj);
 			
 			nIndexCounter++;
 			if (nIndexCounter % 10000 == 0)
@@ -131,6 +131,7 @@ void KMeans::clusterize(AbstractMetric *pMetric) {
 	}
     printf("Done!\r\n");
 	delete[] pTempClusters;
+    /*
     FILE *pFile = 0;
     char *filename = "results2.txt";
     pFile = fopen(filename, "w");
@@ -150,8 +151,9 @@ void KMeans::clusterize(AbstractMetric *pMetric) {
         }
         fprintf(pFile, "\n");
     }
-    delete[] pActualClasses;
     fclose(pFile);
+    delete[] pActualClasses;
+    */
 }
 
 list<int> KMeans::randomSample(list<int> ids, int nIndexCount) {	

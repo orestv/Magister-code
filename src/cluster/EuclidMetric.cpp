@@ -101,12 +101,12 @@ float EuclidMetric::distance(Object& o1, Object& o2, bool bUseIntegratedPredicti
     return dResult;
 }
 
-Object* EuclidMetric::center(DataContainer *pContainer,
-        list<int>& indices) {
+Object* EuclidMetric::center(list<Object*> &lsObjects) {
     int nAttributeCount = 0;
-    list<int>::iterator iIndex;
-    for (iIndex = indices.begin(); iIndex != indices.end(); iIndex++) {
-        nAttributeCount = max(nAttributeCount, pContainer->get(*iIndex)->attributeCount());
+    for (list<Object*>::iterator iObject = lsObjects.begin();
+            iObject != lsObjects.end(); iObject++) {
+
+        nAttributeCount = max(nAttributeCount, (*iObject)->attributeCount());
     }
     Object *pResult = new Object(nAttributeCount);
 
@@ -115,10 +115,10 @@ Object* EuclidMetric::center(DataContainer *pContainer,
     bool *pValids = new bool[nAttributeCount];
     memset(pAttributes, 0, nAttributeCount*sizeof(float));
     memset(pValids, 0, nAttributeCount*sizeof(bool));
-    for (iIndex = indices.begin();  \
-            iIndex != indices.end(); iIndex++) {
+    for (list<Object*>::iterator iObject = lsObjects.begin();
+            iObject != lsObjects.end(); iObject++) {
 
-        pObj = pContainer->get(*iIndex);
+        pObj = *iObject;
         for (int nAttribute = 0; nAttribute < nAttributeCount; nAttribute++) {
             if (pObj->isAttrValid(nAttribute)) {
                 pAttributes[nAttribute] += pObj->attr(nAttribute);
@@ -127,7 +127,7 @@ Object* EuclidMetric::center(DataContainer *pContainer,
         }
     }
 
-    int nIndexCount = indices.size();
+    int nIndexCount = lsObjects.size();
     for (int nAttribute = 0; nAttribute < nAttributeCount; nAttribute++) {
         pAttributes[nAttribute] /= (float)nIndexCount;
         if (pValids[nAttribute])

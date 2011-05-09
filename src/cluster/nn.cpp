@@ -1,6 +1,7 @@
 #include "nn.h"
 #include <time.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 NN::NN(DataContainer *pContainer) {
     this->_pContainer = pContainer;
@@ -15,13 +16,13 @@ void NN::clusterize(AbstractMetric *pMetric) {
     list<Cluster*> lsClusters;
     for (int i = 0; i < nObjectCount; i++) {
         Cluster *pC = new Cluster(_pContainer);
-        pC->add(i);
+        pC->addObject(_pContainer->getByIndex(i));
         lsClusters.push_back(pC);
     }
     srand(time(NULL));
     //Pick a random cluster index
     int nRandomIndex = rand() % nObjectCount;
-    Cluster *pC = NULL, pC2 = NULL;
+    Cluster *pC = NULL, *pC2 = NULL;
     //Find the cluster for that index
     {
         list<Cluster*>::iterator iC;
@@ -39,18 +40,18 @@ void NN::clusterize(AbstractMetric *pMetric) {
         fprintf(stderr, "Failed to generate random cluster for NN!\n");
         return;
     }
-    Cluster *pC0 = *lsClusters.begin();
+    Cluster *pC0 = *(lsClusters.begin());
     while (lsClusters.size() > 1){
         pC = nearestNeighbor(pC0, lsClusters, pMetric);
         pC2 = nearestNeighbor(pC, lsClusters, pMetric);
         if (pC0 == pC2) {
-            Cluster *pC_new = new Cluster(pMetric);
-            pC_new.add(pC);
-            pC_new.add(pC2);
+            Cluster *pC_new = new Cluster(_pContainer);
+            pC_new->addCluster(pC);
+            pC_new->addCluster(pC2);
             lsClusters.push_back(pC_new);
             lsClusters.remove(pC);
-            lsClusters.remove(*iC);
-            pC0 = lsClusters.begin();
+            lsClusters.remove(pC2);
+            pC0 = *(lsClusters.begin());
         } else {
             pC0 = pC2;
         }
