@@ -1,7 +1,11 @@
 #include "clustering.h"
 
 Clustering::Clustering(list<Cluster*> lsClusters) {
-    this->_lsClusters = lsClusters;
+    for (list<Cluster*>::iterator iC = lsClusters.begin();
+            iC != lsClusters.end(); iC++) {
+        Cluster *pC = new Cluster(**iC);
+        _lsClusters.push_back(pC);
+    }
 }
 
 Clustering::Clustering(Cluster *arrClusters, int nClusters) {
