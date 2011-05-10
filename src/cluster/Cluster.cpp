@@ -29,8 +29,6 @@ void Cluster::setContainer(DataContainer *pContainer) {
 }
 
 Cluster::Cluster(const Cluster& orig) {
-    if (_pCenter)
-        delete _pCenter;
 	_pCenter = 0;
 	_pContainer = orig._pContainer;
     _objects = orig._objects;
@@ -59,7 +57,6 @@ Object* Cluster::center(AbstractMetric *pMetric) {
 	if (!_centerValid) {
 		if (_pCenter)
 			delete _pCenter;
-        //_pCenter = calculateCenter(pMetric);
         _pCenter = pMetric->center(_objects);
         _centerValid = true;
 	}
@@ -97,11 +94,6 @@ bool Cluster::contains(Object *pObject) {
 			return true;
 	}
 	return false;
-}
-
-Object* Cluster::calculateCenter(AbstractMetric* pMetric) {
-	_centerValid = true;
-    return pMetric->center(_objects);
 }
 
 bool Cluster::operator==(Cluster &other) {

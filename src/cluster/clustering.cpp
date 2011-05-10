@@ -22,3 +22,7 @@ Clustering::~Clustering() {
         delete *iC;
     }
 }
+
+list<Cluster*> Clustering::clusters() {
+    return _lsClusters;
+}

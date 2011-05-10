@@ -10,6 +10,8 @@ class Clustering {
         Clustering(list<Cluster*>);
         Clustering(Cluster*, int);
 
+        list<Cluster*> clusters();
+
         ~Clustering();
     private:
         list<Cluster*> _lsClusters;

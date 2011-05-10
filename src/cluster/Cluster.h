@@ -47,7 +47,6 @@ public:
     static float distance(Cluster &c1, Cluster &c2, AbstractMetric *pMetric);
 
 private:
-    Object *calculateCenter(AbstractMetric *pMetric);
     void init();
 
     Object *_pCenter;
