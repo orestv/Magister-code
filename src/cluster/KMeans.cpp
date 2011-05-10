@@ -83,6 +83,7 @@ Clustering* KMeans::clusterize(AbstractMetric *pMetric) {
                 pCenter = _clusters[nCluster].center(pMetric);
 
 				dist = pMetric->distance(*pObj, *_clusters[nCluster].center(pMetric));
+                printf("distance: %.4f\n", dist);
 				if (minDist < 0 || dist < minDist) {
 					nSelectedCluster = nCluster;
 					minDist = dist;
