@@ -10,6 +10,7 @@
 
 using namespace std;
 
+
 KMeans::KMeans(DataContainer *pContainer, int clusterCount) {
 	_pContainer = pContainer;
 	_clusterCount = clusterCount;
@@ -79,8 +80,12 @@ Clustering* KMeans::clusterize(AbstractMetric *pMetric) {
 			nCluster = 0;
 			nSelectedCluster = 0;
             Object *pCenter = NULL;
+            printf("Object in question: ");
+            pObj->print();
 			for (nCluster = 0; nCluster < _clusterCount; nCluster++) {
                 pCenter = _clusters[nCluster].center(pMetric);
+                printf("Center: ");
+                pCenter->print();
 
 				dist = pMetric->distance(*pObj, *_clusters[nCluster].center(pMetric));
                 printf("distance: %.4f\n", dist);
@@ -89,6 +94,7 @@ Clustering* KMeans::clusterize(AbstractMetric *pMetric) {
 					minDist = dist;
 				}
 			}
+            printf("\n\n");
 			
 			//if (!bClustersChanged && !_clusters[nSelectedCluster].contains(*iObjectId))
             /*
@@ -132,6 +138,14 @@ Clustering* KMeans::clusterize(AbstractMetric *pMetric) {
 	}
     printf("Done!\r\n");
 	delete[] pTempClusters;
+    for (nCluster = 0; nCluster < _clusterCount; nCluster++) {
+        Cluster *pC = _clusters + nCluster;
+        printf("Cluster %i: \n", nCluster);
+        for (list<Object*>::iterator iO = pC->objects().begin();
+                iO != pC->objects().end(); iO++) {
+            (*iO)->print();
+        }
+    }
     return new Clustering(_clusters, _clusterCount);
     /*
     FILE *pFile = 0;
@@ -177,3 +191,4 @@ list<int> KMeans::randomSample(list<int> ids, int nIndexCount) {
 	
 	return result;
 }
+
