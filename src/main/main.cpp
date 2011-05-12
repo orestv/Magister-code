@@ -101,16 +101,14 @@ int main(int argc, char** argv) {
 
     printf("Clusterized, %i seconds spent.\r\n", (int)(end-start));
     printf("Results: \n");
-    list<Cluster*>::iterator iC = pClus->clusters().begin();
-    for (int nCluster = 0; nCluster < pClus->clusters().size() && iC != pClus->clusters().end();
-            nCluster++) {
-        printf("size: %i, objects: \n", (*iC)->objects().size());
-        for (list<Object*>::iterator iO = (*iC)->objects().begin();
-                iO != (*iC)->objects().end(); iO++) {
+    for (list<Cluster*>::iterator iC = pClus->clusters().begin(); 
+            iC != pClus->clusters().end(); iC++) {
+        list<Object*> lsObjects = (*iC)->objects();
+        for (list<Object*>::iterator iO = lsObjects.begin();
+                iO != lsObjects.end(); iO++) {
             (*iO)->print();
         }
         printf("\n");
-        iC++;
     }
 	delete pMetric;
     if (pClus)

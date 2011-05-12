@@ -29,6 +29,6 @@ Clustering::~Clustering() {
     }
 }
 
-list<Cluster*> Clustering::clusters() {
+list<Cluster*>& Clustering::clusters() {
     return _lsClusters;
 }

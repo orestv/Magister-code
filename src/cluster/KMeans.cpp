@@ -145,6 +145,7 @@ Clustering* KMeans::clusterize(AbstractMetric *pMetric) {
                 iO != pC->objects().end(); iO++) {
             (*iO)->print();
         }
+        printf("\n");
     }
     return new Clustering(_clusters, _clusterCount);
     /*
