@@ -30,3 +30,6 @@ add_library(NN nn.cpp)
 target_link_libraries (NN DataContainer)
 target_link_libraries (NN Cluster)
 target_link_libraries (NN Clustering)
+
+add_library (Validity validity.cpp)
+target_link_libraries (Validity Clustering)

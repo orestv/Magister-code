@@ -22,6 +22,7 @@
 #include <list>
 #include <cmath>
 #include "clustering.h"
+#include "validity.h"
 
 
 using namespace std;
@@ -104,11 +105,7 @@ int main(int argc, char** argv) {
     for (list<Cluster*>::iterator iC = pClus->clusters().begin(); 
             iC != pClus->clusters().end(); iC++) {
         list<Object*> lsObjects = (*iC)->objects();
-        for (list<Object*>::iterator iO = lsObjects.begin();
-                iO != lsObjects.end(); iO++) {
-            (*iO)->print();
-        }
-        printf("\n");
+        printf("%i objects\n", lsObjects.size());
     }
 	delete pMetric;
     if (pClus)
