@@ -140,6 +140,7 @@ Clustering* Upgma::clusterize(AbstractMetric *pMetric) {
         _clusters.push_back(pC);
         fprintf(stderr, "Current cluster list size: %i.\n\n", _clusters.size());
     }
+    this->_pCluster = *(_clusters.begin());
     return NULL;
 }
 
