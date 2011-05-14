@@ -12,11 +12,6 @@ Clustering::Clustering(list<Cluster*> lsClusters) {
 Clustering::Clustering(Cluster *arrClusters, int nClusters) {
     for (int i = 0; i < nClusters; i++) {
         Cluster *pC = new Cluster(arrClusters[i]);
-        printf("Cluster %i in clustering constructor: \n", i);
-        for (list<Object*>::iterator iO = pC->objects().begin();
-                iO != pC->objects().end(); iO++) 
-            (*iO)->print();
-        printf("\n");
         _lsClusters.push_back(pC);
     }
 }
