@@ -10,6 +10,7 @@
 
 using namespace std;
 
+
 KMeans::KMeans(DataContainer *pContainer, int clusterCount) {
 	_pContainer = pContainer;
 	_clusterCount = clusterCount;
@@ -34,8 +35,9 @@ Cluster* KMeans::clusters() {
 	return _clusters;
 }
 
-void KMeans::clusterize(AbstractMetric *pMetric) {
+Clustering* KMeans::clusterize(AbstractMetric *pMetric) {
 	list<int> ids = _pContainer->ids();
+    int nObjectCount = _pContainer->ids().size();
 	
 	list<int> sample = KMeans::randomSample(ids, _clusterCount);
     printf("ID selection for random sample: ");
@@ -46,10 +48,10 @@ void KMeans::clusterize(AbstractMetric *pMetric) {
     }
     printf("\n");
 	int nCluster = 0;
-	for (list<int>::iterator iObjectId = sample.begin(); \
-		iObjectId != sample.end(); iObjectId++, nCluster++) {
+    for (list<int>::iterator iEl = sample.begin();
+            iEl != sample.end(); iEl++, nCluster++) {
 		
-		_clusters[nCluster].add(*iObjectId);
+		_clusters[nCluster].addObject(_pContainer->get(*iEl));
 	}
 	
 	Cluster *pTempClusters = new Cluster[_clusterCount];
@@ -71,23 +73,28 @@ void KMeans::clusterize(AbstractMetric *pMetric) {
 		time_t start, end;
 		start = time(NULL);
 		int nIndexCounter = 0;
-		for (list<int>::iterator iObjectId = ids.begin(); \
-			iObjectId != ids.end(); iObjectId++) {			
-			pObj = _pContainer->get(*iObjectId);
+        for (int i = 0; i < nObjectCount; i++) {
+			pObj = _pContainer->getByIndex(i);
 			
 			minDist = -1;
 			nCluster = 0;
 			nSelectedCluster = 0;
             Object *pCenter = NULL;
+            //printf("Object in question: ");
+            //pObj->print();
 			for (nCluster = 0; nCluster < _clusterCount; nCluster++) {
                 pCenter = _clusters[nCluster].center(pMetric);
+                //printf("Center: ");
+                //pCenter->print();
 
 				dist = pMetric->distance(*pObj, *_clusters[nCluster].center(pMetric));
+                //printf("distance: %.4f\n", dist);
 				if (minDist < 0 || dist < minDist) {
 					nSelectedCluster = nCluster;
 					minDist = dist;
 				}
 			}
+            //printf("\n\n");
 			
 			//if (!bClustersChanged && !_clusters[nSelectedCluster].contains(*iObjectId))
             /*
@@ -97,7 +104,7 @@ void KMeans::clusterize(AbstractMetric *pMetric) {
 			}
             */
 				
-			pTempClusters[nSelectedCluster].add(*iObjectId);
+			pTempClusters[nSelectedCluster].addObject(pObj);
 			
 			nIndexCounter++;
 			if (nIndexCounter % 10000 == 0)
@@ -131,6 +138,8 @@ void KMeans::clusterize(AbstractMetric *pMetric) {
 	}
     printf("Done!\r\n");
 	delete[] pTempClusters;
+    return new Clustering(_clusters, _clusterCount);
+    /*
     FILE *pFile = 0;
     char *filename = "results2.txt";
     pFile = fopen(filename, "w");
@@ -150,8 +159,9 @@ void KMeans::clusterize(AbstractMetric *pMetric) {
         }
         fprintf(pFile, "\n");
     }
-    delete[] pActualClasses;
     fclose(pFile);
+    delete[] pActualClasses;
+    */
 }
 
 list<int> KMeans::randomSample(list<int> ids, int nIndexCount) {	
@@ -173,3 +183,4 @@ list<int> KMeans::randomSample(list<int> ids, int nIndexCount) {
 	
 	return result;
 }
+

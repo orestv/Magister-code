@@ -7,6 +7,7 @@
 
 #include "Object.h"
 #include <memory.h>
+#include <stdio.h>
 
 Object::Object() {
 }
@@ -58,6 +59,14 @@ void Object::setActualClass(int actualClass) {
 
 int Object::actualClass() {
     return _actualClass;
+}
+
+void Object::print() {
+    int nAttrCount = this->attributeCount();
+    for (int i = 0; i < nAttrCount; i++) {
+        printf("%.4f, ", this->attr(i));
+    }
+    printf("\n");
 }
 
 Object::~Object() {

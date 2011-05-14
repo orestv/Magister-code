@@ -106,12 +106,12 @@ float EuclidMetric::distance(Object& o1, Object& o2, bool bUseIntegratedPredicti
     return dResult;
 }
 
-Object* EuclidMetric::center(DataContainer *pContainer,
-        list<int>& indices) {
+Object* EuclidMetric::center(list<Object*> &lsObjects) {
     int nAttributeCount = 0;
-    list<int>::iterator iIndex;
-    for (iIndex = indices.begin(); iIndex != indices.end(); iIndex++) {
-        nAttributeCount = max(nAttributeCount, pContainer->get(*iIndex)->attributeCount());
+    for (list<Object*>::iterator iObject = lsObjects.begin();
+            iObject != lsObjects.end(); iObject++) {
+
+        nAttributeCount = max(nAttributeCount, (*iObject)->attributeCount());
     }
     Object *pResult = new Object(nAttributeCount);
 
@@ -120,10 +120,10 @@ Object* EuclidMetric::center(DataContainer *pContainer,
     bool *pValids = new bool[nAttributeCount];
     memset(pAttributes, 0, nAttributeCount*sizeof(float));
     memset(pValids, 0, nAttributeCount*sizeof(bool));
-    for (iIndex = indices.begin();  \
-            iIndex != indices.end(); iIndex++) {
+    for (list<Object*>::iterator iObject = lsObjects.begin();
+            iObject != lsObjects.end(); iObject++) {
 
-        pObj = pContainer->get(*iIndex);
+        pObj = *iObject;
         for (int nAttribute = 0; nAttribute < nAttributeCount; nAttribute++) {
             if (pObj->isAttrValid(nAttribute)) {
                 pAttributes[nAttribute] += pObj->attr(nAttribute);
@@ -132,7 +132,7 @@ Object* EuclidMetric::center(DataContainer *pContainer,
         }
     }
 
-    int nIndexCount = indices.size();
+    int nIndexCount = lsObjects.size();
     for (int nAttribute = 0; nAttribute < nAttributeCount; nAttribute++) {
         pAttributes[nAttribute] /= (float)nIndexCount;
         if (pValids[nAttribute])
@@ -393,6 +393,57 @@ float EuclidMetric::competence(int attr1, int attr2, Object** arrObjects, int nO
     float *arrValues1 = new float[nObjects];
     float *arrValues2 = new float[nObjects];
 
+    memset(arrValues1, 0, nObjects*sizeof(float));
+    memset(arrValues2, 0, nObjects*sizeof(float));
+
+    int nValidObjects = 0;
+    Object *pObj;
+    for (int i = 0; i < nObjects; i++) {
+        pObj = arrObjects[i];
+        if (pObj->isAttrValid(attr1)) {
+            arrValues1[nValidObjects] = pObj->attr(attr1);
+            nValidObjects++;
+        }
+    }
+    float exp1 = EuclidMetric::expectation(arrValues1, nValidObjects);
+
+    nValidObjects = 0;
+    for (int i = 0; i < nObjects; i++) {
+        pObj = arrObjects[i];
+        if (pObj->isAttrValid(attr1)) {
+            arrValues1[nValidObjects] = pow(pObj->attr(attr1) - exp1, 2);
+            printf("Diff: %.5f\n", arrValues1[nValidObjects]);
+            nValidObjects++;
+        }
+    }
+    float d = EuclidMetric::expectation(arrValues1, nValidObjects);
+    printf("Dispersion: %.5f\n", d);
+
+    return 1;
+
+
+    float exp2 = EuclidMetric::expectation(arrValues2, nValidObjects);
+    float disp1 = exp1 - exp2*exp2;
+
+    memset(arrValues1, 0, nObjects*sizeof(float));
+    memset(arrValues2, 0, nObjects*sizeof(float));
+    nValidObjects = 0;
+    for (int i = 0; i < nObjects; i++) {
+        pObj = arrObjects[i];
+        if (pObj->isAttrValid(attr2)) {
+            arrValues1[nValidObjects] = pObj->attr(attr2) * pObj->attr(attr2);
+            arrValues2[nValidObjects] = pObj->attr(attr2);
+            nValidObjects++;
+        }
+    }
+    exp1 = EuclidMetric::expectation(arrValues1, nValidObjects);
+    exp2 = EuclidMetric::expectation(arrValues2, nValidObjects);
+    float disp2 = exp1 - exp2*exp2;
+
+    printf("Dispersions: %.4f, %.4f\n", disp1, disp2);
+    return 1;
+    /*
+
     int nValidObjects1 = 0, nValidObjects2 = 0;
 
     for (int nObject = 0; nObject < nObjects; nObject++) {
@@ -458,6 +509,7 @@ float EuclidMetric::competence(int attr1, int attr2, Object** arrObjects, int nO
     }
 
 	return correlation*nCoefficient;
+    */
 }
 
 float EuclidMetric::expectation(float *arrValues, int nValueCount) {

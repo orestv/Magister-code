@@ -17,8 +17,7 @@ class AbstractMetric {
 public:
 
     virtual float distance(Object &o1, Object &o2, bool bUseIntegratedPrediction = false) = 0;
-    virtual Object* center(DataContainer *pContainer, \
-        list<int> &indices) = 0;
+    virtual Object* center(list<Object*> &lsObjects) = 0;
     virtual void predictMissingData(DataContainer *pContainer) = 0;
 private:
 

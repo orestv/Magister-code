@@ -21,6 +21,8 @@
 #include <time.h>
 #include <list>
 #include <cmath>
+#include "clustering.h"
+#include "validity.h"
 
 
 using namespace std;
@@ -82,23 +84,32 @@ int main(int argc, char** argv) {
     }
     fclose(pFile);
 	
+
+    Clustering *pClus = NULL;
     time_t start, end;
     start = time(NULL);
 
     switch (nMethod) {
         case 0:
-            km.clusterize(pMetric);
+            pClus = km.clusterize(pMetric);
             break;
         case 1:
-            up.clusterize(pMetric);
+            pClus = up.clusterize(pMetric);
             break;
     };
 
     end = time(NULL);
 
     printf("Clusterized, %i seconds spent.\r\n", (int)(end-start));
-	
+    printf("Results: \n");
+    for (list<Cluster*>::iterator iC = pClus->clusters().begin(); 
+            iC != pClus->clusters().end(); iC++) {
+        list<Object*> lsObjects = (*iC)->objects();
+        printf("%i objects\n", lsObjects.size());
+    }
 	delete pMetric;
+    if (pClus)
+        delete pClus;
 
     return (EXIT_SUCCESS);
 }

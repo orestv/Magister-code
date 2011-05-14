@@ -10,6 +10,7 @@
 
 #include "AbstractMetric.h"
 #include "DataContainer.h"
+#include <list>
 
 struct ObjectRange {
     Object *pObject;
@@ -39,7 +40,7 @@ public:
     EuclidMetric(const EuclidMetric& orig);
 
     float distance(Object &o1, Object &o2, bool bUseIntegratedPrediction = false);
-    Object* center(DataContainer *pContainer, list<int> &indices);
+    Object* center(list<Object*> &lsObjects);
 
     static float competence(Object &o1, Object &o2);
 	static float competence(int attr1, int attr2, Object** ppObjects, int nObjects);

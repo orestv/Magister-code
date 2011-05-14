@@ -27,6 +27,7 @@ public:
 
     void setActualClass(int actualClass);
     int actualClass();
+    void print();
 
     virtual ~Object();
 private:
