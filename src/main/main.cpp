@@ -107,6 +107,7 @@ int main(int argc, char** argv) {
         list<Object*> lsObjects = (*iC)->objects();
         printf("%i objects\n", lsObjects.size());
     }
+    printf("Clustering validity: %.5f\n", Validity::dunn(*pClus, pMetric));
 	delete pMetric;
     if (pClus)
         delete pClus;

@@ -139,6 +139,23 @@ float Cluster::distance(Cluster &c1, Cluster &c2, AbstractMetric *pMetric) {
     return result;
 }
 
+float Cluster::diameter(AbstractMetric *pMetric) {
+    float dist = -1, maxDist = -1;
+    for (list<Object*>::iterator iO_outer = objects().begin();
+            iO_outer != objects().end(); iO_outer++) {
+        for (list<Object*>::iterator iO_inner = iO_outer;
+                iO_inner != objects().end(); iO_inner++) {
+            if (iO_inner == iO_outer)
+                continue;
+            dist = pMetric->distance(**iO_outer, **iO_inner);
+            if (dist > maxDist)
+                maxDist = dist;
+        }
+    }
+    return dist;
+}
+
+
 Cluster* Cluster::getNeighbor() {
     return _pNeighbor;
 }
