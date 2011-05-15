@@ -1,10 +1,39 @@
 #include "validity.h"
 #include <stdio.h>
+#include <pthread.h>
+
+ThreadDistanceData::ThreadDistanceData(Cluster *pCluster1, Cluster *pCluster2, AbstractMetric *pMetric) {
+    this->pCluster1 = pCluster1;
+    this->pCluster2 = pCluster2;
+    this->pMetric = pMetric;
+    this->_distance = 0;
+}
+
+float ThreadDistanceData::distance() {
+    return this->_distance;
+}
+
+void* ThreadDistanceData::threaded_distance(void *data) {
+    ThreadDistanceData *pData = (ThreadDistanceData*)data;
+    float dist = 0;
+    for (list<Object*>::iterator iO_outer = pData->pCluster1->objects().begin();
+            iO_outer != pData->pCluster1->objects().end(); iO_outer++) {
+        for (list<Object*>::iterator iO_inner = pData->pCluster2->objects().begin();
+                iO_inner != pData->pCluster2->objects().end(); iO_inner++) {
+            float d = pData->pMetric->distance(**iO_outer, **iO_inner);
+            if (dist == 0 || d < dist)
+                dist = d;
+        }
+    }
+    pData->_distance = dist;
+    pthread_exit((void*)pData);
+}
 
 float Validity::dunn(Clustering &clustering, AbstractMetric *pMetric) {
     float minDist = -1, maxDiam = -1;
     float dist = 0, diam = 0;
     int nObject = 0;
+    list<pthread_t> lsThreads;
     for (list<Cluster*>::iterator iC_outer = clustering.clusters().begin();
             iC_outer != clustering.clusters().end(); iC_outer++) {
         for (list<Cluster*>::iterator iC_inner = iC_outer;
@@ -13,25 +42,28 @@ float Validity::dunn(Clustering &clustering, AbstractMetric *pMetric) {
                 continue;
             dist = 0;
 
-            for (list<Object*>::iterator iO_outer = (*iC_outer)->objects().begin();
-                    iO_outer != (*iC_outer)->objects().end(); iO_outer++) {
-                for (list<Object*>::iterator iO_inner = (*iC_inner)->objects().begin();
-                            iO_inner != (*iC_inner)->objects().end(); iO_inner++) {
-                    float d = pMetric->distance(**iO_outer, **iO_inner);
-                    if (dist == 0 || d < dist)
-                        dist = d;
-                    nObject++;
-                    if (nObject % 1000000 == 0)
-                        printf("Object pair # %i processed!\n", nObject);
-                }
-            }
-            if (minDist < 0 || dist < minDist)
-                minDist = dist;
+            pthread_t thrd;
+            ThreadDistanceData *pData = new ThreadDistanceData(*iC_outer, *iC_inner, pMetric);
+            pthread_create(&thrd, NULL, ThreadDistanceData::threaded_distance, (void*)pData);
+            lsThreads.push_back(thrd);
         }
         diam = (*iC_outer)->diameter(pMetric);
         if (diam > maxDiam)
             maxDiam = diam;
     }
+    int nThread = 0;
+    for (list<pthread_t>::iterator iThread = lsThreads.begin();
+            iThread != lsThreads.end(); iThread++) {
+        void *data;
+        pthread_join(*iThread, &data);
+        ThreadDistanceData *pData = (ThreadDistanceData*)data;
+        dist = pData->distance();
+        if (minDist < 0 || dist < minDist)
+            minDist = dist;
+        nThread++;
+        printf("Joined thread %i\n", nThread);
+    }
+
     return minDist / maxDiam;
 }
 
