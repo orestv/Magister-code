@@ -45,6 +45,7 @@ public:
     Cluster& operator=(Cluster &other);
 
     static float distance(Cluster &c1, Cluster &c2, AbstractMetric *pMetric);
+    float diameter(AbstractMetric *pMetric);
 
 private:
     void init();
