@@ -24,7 +24,7 @@ Clustering* DBScan::clusterize(float eps, int nRequiredNeighborCount, AbstractMe
 
     Object *pObj = 0;
     while (_remainingObjects.size() > 0) {
-        printf("Unscanned objects remaining: %i\n", _remainingObjects.size());
+        printf("Unscanned objects left: %i\n", _remainingObjects.size());
         if (pCluster) {
             pObj = *(currentObjects.begin());
             currentObjects.erase(currentObjects.begin());
@@ -47,6 +47,7 @@ Clustering* DBScan::clusterize(float eps, int nRequiredNeighborCount, AbstractMe
                     currentObjects.insert(*iNeighbor);
             }
         }
+        printf("Current object count: %i\n", currentObjects.size());
         if (pCluster && currentObjects.size() == 0) {
             printf("Cluster finalized.\n");
             lsClusters.push_back(pCluster);
