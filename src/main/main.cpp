@@ -23,6 +23,7 @@
 #include <cmath>
 #include "clustering.h"
 #include "validity.h"
+#include "dbscan.h"
 
 
 using namespace std;
@@ -32,6 +33,8 @@ int main(int argc, char** argv) {
     char *filename;
     int nClusters = 5;
     int nMethod = 0;
+    int nNeighbors = 4;
+    float eps = 0.05;
     if (argc > 1) {
         if (strcmp(argv[1], "short") == 0)
             filename = "../../data/dmc2008_train_short.txt";
@@ -53,6 +56,10 @@ int main(int argc, char** argv) {
             nClusters = atoi(argv[3]);
         } else if (strcmp(argv[2], "upgma") == 0) {
             nMethod = 1;
+        } else if (strcmp(argv[2], "dbscan") == 0) {
+            nMethod = 2;
+            nNeighbors = atoi(argv[3]);
+            eps = atof(argv[4]);
         }
     }
     else
@@ -65,6 +72,7 @@ int main(int argc, char** argv) {
 	
 	KMeans km(&container, nClusters);
     Upgma up(&container);
+    DBScan dbscan(&container);
 	
 	AbstractMetric *pMetric = new EuclidMetric(&container);
     pMetric->predictMissingData(&container);
@@ -95,6 +103,9 @@ int main(int argc, char** argv) {
             break;
         case 1:
             pClus = up.clusterize(pMetric);
+            break;
+        case 2:
+            pClus = dbscan.clusterize(eps, nNeighbors, pMetric);
             break;
     };
 

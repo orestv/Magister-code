@@ -31,5 +31,11 @@ target_link_libraries (NN DataContainer)
 target_link_libraries (NN Cluster)
 target_link_libraries (NN Clustering)
 
+add_library(DBScan dbscan.cpp)
+target_link_libraries (DBScan DataContainer)
+target_link_libraries (DBScan Cluster)
+target_link_libraries (DBScan Clustering)
+
+
 add_library (Validity validity.cpp)
 target_link_libraries (Validity Clustering)
