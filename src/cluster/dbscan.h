@@ -7,6 +7,20 @@
 #include "AbstractMetric.h"
 #include <set>
 #include <list>
+#include <pthread.h>
+
+struct NeighborData {
+    public:
+        NeighborData(Object*, AbstractMetric *, std::set<Object*>, float);
+
+        AbstractMetric *pMetric;
+        Object *pObject;
+        std::set<Object*> toScan;
+        std::set<Object*> result;
+        float eps;
+};
+
+void* threadedNeighbors(void*);
 
 class DBScan {
     public:
