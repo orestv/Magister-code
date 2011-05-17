@@ -39,7 +39,7 @@ public:
     EuclidMetric(DataContainer *);
     EuclidMetric(const EuclidMetric& orig);
 
-    float distance(Object &o1, Object &o2, bool bUseIntegratedPrediction = false);
+    inline float distance(Object &o1, Object &o2, bool bUseIntegratedPrediction = false);
     Object* center(list<Object*> &lsObjects);
 
     static float competence(Object &o1, Object &o2);

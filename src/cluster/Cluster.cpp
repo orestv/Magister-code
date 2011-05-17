@@ -118,10 +118,6 @@ bool Cluster::operator==(Cluster &other) {
     */
 }
 
-Object *Cluster::get(int id) {
-    return _pContainer->getByIndex(id);
-}
-
 float Cluster::distance(Cluster &c1, Cluster &c2, AbstractMetric *pMetric) {
     float result = 0.;
     list<Object*> lsObjects1 = c1.objects();
