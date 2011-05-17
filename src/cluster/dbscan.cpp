@@ -59,17 +59,59 @@ Clustering* DBScan::clusterize(float eps, int nRequiredNeighborCount, AbstractMe
     return new Clustering(lsClusters);
 }
 
+void* threadedNeighbors(void* data) {
+   NeighborData *pData = (NeighborData*)data;
+   Object *pObj = pData->pObject;
+   set<Object*> &result = pData->result;
+   set<Object*> &toScan = pData->toScan;
+   AbstractMetric *pMetric = pData->pMetric;
+   float eps = pData->eps;
+
+   float dist;
+   for (set<Object*>::iterator iO = toScan.begin();
+           iO != toScan.end(); iO++) {
+       dist = pMetric->distance(*pObj, **iO);
+       if (dist < eps)
+           result.insert(*iO);
+   }
+   pthread_exit(data);
+}
+
+NeighborData::NeighborData(Object *pObject, AbstractMetric *pMetric, set<Object*> toScan, float eps) {
+    this->pObject = pObject;
+    this->pMetric = pMetric;
+    this->toScan = toScan;
+    this->eps = eps;
+}
+
 set<Object*> DBScan::neighbors(Object *pCurrentObject, AbstractMetric *pMetric, float eps) {
     float dist;
     Object *pObj;
     set<Object*> result;
+    int nThreadCount = 5;
+    int nObjectsPerthread = _nObjectCount / nThreadCount;
+    list<pthread_t> lsThreads;
+    set<Object*> toScan;
     for (int i = 0; i < _nObjectCount; i++) {
         pObj = _pContainer->getByIndex(i);
         if (pObj == pCurrentObject)
             continue;
-        dist = pMetric->distance(*pObj, *pCurrentObject);
-        if (dist < eps)
-            result.insert(pObj);
+        toScan.insert(pObj);
+        if (i % nObjectsPerthread == 0) {
+            pthread_t thrd;
+            NeighborData *pData = new NeighborData (pCurrentObject, pMetric, toScan, eps);
+            pthread_create(&thrd, NULL, threadedNeighbors, (void*)pData);
+            lsThreads.push_back(thrd);
+            toScan.clear();
+        }
+    }
+    void *data;
+    NeighborData *pData;
+    for (list<pthread_t>::iterator iThread = lsThreads.begin();
+            iThread != lsThreads.end(); iThread++) {
+        pthread_join(*iThread, &data);
+        pData = (NeighborData*)data;
+        result.insert(pData->result.begin(), pData->result.end());
     }
     return result;
 }
