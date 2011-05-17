@@ -62,6 +62,7 @@ float Validity::dunn(Clustering &clustering, AbstractMetric *pMetric) {
             minDist = dist;
         nThread++;
         printf("Joined thread %i\n", nThread);
+        delete pData;
     }
 
     return minDist / maxDiam;

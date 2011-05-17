@@ -29,31 +29,32 @@ Clustering* DBScan::clusterize(float eps, int nRequiredNeighborCount, AbstractMe
             pObj = *(currentObjects.begin());
             currentObjects.erase(currentObjects.begin());
         }
-        else
+        else {
             pObj = *(_remainingObjects.begin());
+        }
 
         set<Object*> neighbors = this->neighbors(pObj, pMetric, eps);
         printf("Neighbor count: %i\n", neighbors.size());
         if (neighbors.size() >= nRequiredNeighborCount) {
             if (pCluster == 0) {
                 printf("Starting a new cluster!\n");
-                pCluster = new Cluster(_pContainer);
-                pCluster->addObject(pObj);
-            } else 
-                pCluster->addObject(pObj);
+                pCluster = new Cluster();
+            }
+            pCluster->addObject(pObj);
             for (set<Object*>::iterator iNeighbor = neighbors.begin();
                     iNeighbor != neighbors.end(); iNeighbor++) {
                 if (_remainingObjects.find(*iNeighbor) != _remainingObjects.end())
                     currentObjects.insert(*iNeighbor);
             }
         }
+        _remainingObjects.erase(pObj);
         printf("Current object count: %i\n", currentObjects.size());
-        if (pCluster && currentObjects.size() == 0) {
+        if (pCluster && (currentObjects.size() == 0 || _remainingObjects.size() == 0)) {
             printf("Cluster finalized.\n");
             lsClusters.push_back(pCluster);
+            printf("Cluster array size: %i\n", lsClusters.size());
             pCluster = 0;
         }
-        _remainingObjects.erase(pObj);
         printf("\n");
     }
     return new Clustering(lsClusters);
@@ -88,7 +89,7 @@ set<Object*> DBScan::neighbors(Object *pCurrentObject, AbstractMetric *pMetric, 
     float dist;
     Object *pObj;
     set<Object*> result;
-    int nThreadCount = 5;
+    int nThreadCount = 15;
     int nObjectsPerthread = _nObjectCount / nThreadCount;
     list<pthread_t> lsThreads;
     set<Object*> toScan;
@@ -112,6 +113,7 @@ set<Object*> DBScan::neighbors(Object *pCurrentObject, AbstractMetric *pMetric, 
         pthread_join(*iThread, &data);
         pData = (NeighborData*)data;
         result.insert(pData->result.begin(), pData->result.end());
+        delete pData;
     }
     return result;
 }

@@ -33,8 +33,6 @@ public:
     list<Cluster*>& clusters();
 	
 	bool contains(Object *pObject);
-    
-    Object *get(int id);
 	
 	void clear();
 

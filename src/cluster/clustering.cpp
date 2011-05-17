@@ -19,9 +19,9 @@ Clustering::Clustering(Cluster *arrClusters, int nClusters) {
 Clustering::~Clustering() {
     for (list<Cluster*>::iterator iC = _lsClusters.begin();
             iC != _lsClusters.end(); iC++) {
-
         delete *iC;
     }
+    printf("Clustering destructor!\n");
 }
 
 list<Cluster*>& Clustering::clusters() {
