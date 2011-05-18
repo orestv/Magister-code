@@ -136,6 +136,11 @@ int main(int argc, char** argv) {
 
     char *pFilename = generateFilename(time(NULL));
     pFile = fopen(pFilename, "w");
+    fprintf(pFile, "run as: ");
+    for (int i = 0; i < argc; i++) {
+        fprintf(pFile, "%s ", argv[i]);
+    }
+    fprintf(pFile, "\n");
     for (list<Cluster*>::iterator iC = pClus->clusters().begin(); 
             iC != pClus->clusters().end(); iC++) {
         list<Object*> lsObjects = (*iC)->objects();
