@@ -69,6 +69,14 @@ void Object::print() {
     printf("\n");
 }
 
+int Object::id() {
+    return this->_id;
+}
+
+void Object::setId(int id) {
+    this->_id = id;
+}
+
 Object::~Object() {
     if (_attrValues)
         delete[] _attrValues;

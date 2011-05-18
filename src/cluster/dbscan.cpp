@@ -90,6 +90,8 @@ set<Object*> DBScan::neighbors(Object *pCurrentObject, AbstractMetric *pMetric, 
     Object *pObj;
     set<Object*> result;
     int nThreadCount = 15;
+    if (nThreadCount >= _nObjectCount)
+        nThreadCount = _nObjectCount / 3;
     int nObjectsPerthread = _nObjectCount / nThreadCount;
     list<pthread_t> lsThreads;
     set<Object*> toScan;

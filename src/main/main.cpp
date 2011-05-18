@@ -28,6 +28,26 @@
 
 using namespace std;
 
+char* generateFilename(time_t time) {
+    struct tm *pTime = localtime(&time);
+    char *pResults = "results_";
+    char *pExt = ".txt";
+
+    size_t nDateLength = 16;
+
+    char *pchrDate = new char[nDateLength];
+    strftime(pchrDate, nDateLength, "%Y%m%d_%H%M%S", pTime);
+
+    size_t nResultLength = strlen(pResults) + strlen(pchrDate) + strlen(pExt)+1;
+    char *pResult = new char[nResultLength];
+    memset(pResult, 0, sizeof(char)*nResultLength);
+    memcpy(pResult, pResults, sizeof(char)*strlen(pResults));
+    memcpy(pResult+strlen(pResults), pchrDate, sizeof(char)*strlen(pchrDate));
+    memcpy(pResult+strlen(pResults)+strlen(pchrDate), pExt, sizeof(char)*strlen(pExt)+1);
+    delete[] pchrDate;
+    return pResult;
+}
+
 int main(int argc, char** argv) {
 
     char *filename;
@@ -113,12 +133,21 @@ int main(int argc, char** argv) {
 
     printf("Clusterized, %i seconds spent.\r\n", (int)(end-start));
     printf("Results: \n");
+
+    char *pFilename = generateFilename(time(NULL));
+    pFile = fopen(pFilename, "w");
     for (list<Cluster*>::iterator iC = pClus->clusters().begin(); 
             iC != pClus->clusters().end(); iC++) {
         list<Object*> lsObjects = (*iC)->objects();
         printf("%i objects\n", lsObjects.size());
+        for (list<Object*>::iterator iO = lsObjects.begin();
+                iO != lsObjects.end(); iO++) {
+            fprintf(pFile, "%i\t", (*iO)->id());
+        }
+        fprintf(pFile, "\n");
     }
-    printf("Clustering validity: %.5f\n", Validity::dunn(*pClus, pMetric));
+    fclose(pFile);
+    //printf("Clustering validity: %.5f\n", Validity::dunn(*pClus, pMetric));
 	delete pMetric;
     if (pClus)
         delete pClus;

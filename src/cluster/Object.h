@@ -22,6 +22,8 @@ public:
 
     bool isAttrValid(int id);
     float attr(int id);
+    int id();
+    void setId(int id);
 
     void setAttr(int id, float value);
 
@@ -36,6 +38,7 @@ private:
     //Attribute* _attributes;
     float *_attrValues;
     bool *_attrValid;
+    int _id;
 
 };
 
