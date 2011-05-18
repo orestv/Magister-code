@@ -80,6 +80,7 @@ Object* Reader::parseObject(string sRow, int &id) {
 
     Object *pObj = new Object(nAttributeCount);
     pObj->setActualClass(nActualClass);
+    pObj->setId(id);
     float attrValue = 0;
     int nAttribute = 0;
 
