@@ -69,7 +69,7 @@ int main(int argc, char** argv) {
         else if (strcmp(argv[1], "snp") == 0)
             filename = "../../data/short_normalized.txt";
         else
-            filename = "../../data/dmc2008_train.txt";
+            filename = argv[1];//"../../data/dmc2008_train.txt";
 
         if (strcmp(argv[2], "kmeans") == 0) {
             nMethod = 0;
