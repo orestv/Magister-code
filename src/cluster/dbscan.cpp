@@ -17,20 +17,34 @@ DBScan::DBScan(DataContainer *pContainer) {
 DBScan::~DBScan() {
 }
 
+set<Object*>::iterator randomObject(set<Object*> *pList) {
+    int nIndex = rand() % pList->size();
+    int n = 0;
+    set<Object*>::iterator iO = pList->begin();
+    while (n < nIndex) {
+        iO++;
+        n++;
+    }
+    return iO;
+}
+
 Clustering* DBScan::clusterize(float eps, int nRequiredNeighborCount, AbstractMetric *pMetric) {
     list<Cluster*> lsClusters;
     Cluster *pCluster = 0;
     set<Object*> currentObjects;
 
     Object *pObj = 0;
+    srand(time(NULL));
     while (_remainingObjects.size() > 0) {
         printf("Unscanned objects left: %i\n", _remainingObjects.size());
         if (pCluster) {
-            pObj = *(currentObjects.begin());
-            currentObjects.erase(currentObjects.begin());
+            set<Object*>::iterator iO = currentObjects.begin();//randomObject(&currentObjects);
+            pObj = *iO;
+            currentObjects.erase(iO);
         }
         else {
-            pObj = *(_remainingObjects.begin());
+            set<Object*>::iterator iO = _remainingObjects.begin();//randomObject(&_remainingObjects);
+            pObj = *iO;
         }
 
         set<Object*> neighbors = this->neighbors(pObj, pMetric, eps);
@@ -50,10 +64,16 @@ Clustering* DBScan::clusterize(float eps, int nRequiredNeighborCount, AbstractMe
         _remainingObjects.erase(pObj);
         printf("Current object count: %i\n", currentObjects.size());
         if (pCluster && (currentObjects.size() == 0 || _remainingObjects.size() == 0)) {
-            printf("Cluster finalized.\n");
-            lsClusters.push_back(pCluster);
-            printf("Cluster array size: %i\n", lsClusters.size());
-            pCluster = 0;
+            if (pCluster->objects().size() == 1) {
+                delete pCluster;
+                pCluster = 0;
+                printf("Cluster only contains 1 element, deleting.\n");
+            } else {
+                printf("Cluster finalized.\n");
+                lsClusters.push_back(pCluster);
+                printf("Cluster array size: %i\n", lsClusters.size());
+                pCluster = 0;
+            }
         }
         printf("\n");
     }
