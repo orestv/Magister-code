@@ -8,6 +8,8 @@
 #ifndef _ROW_H
 #define	_ROW_H
 
+#include "Attribute.h"
+#include <vector>
 
 
 using namespace std;
@@ -35,7 +37,7 @@ public:
 private:
     int _attributeCount;
     int _actualClass;
-    //Attribute* _attributes;
+    Attribute* _attributes;
     float *_attrValues;
     bool *_attrValid;
     int _id;

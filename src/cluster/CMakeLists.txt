@@ -1,7 +1,6 @@
-#add_library (Attribute Attribute.cpp)
-
+add_library (Attribute Attribute.cpp)
 add_library (Object Object.cpp)
-#target_link_libraries (Object Attribute)
+target_link_libraries (Object Attribute)
 
 
 add_library (Cluster Cluster.cpp)

@@ -14,6 +14,8 @@ Object::Object() {
 
 Object::Object(int attributeCount) {
     _attributeCount = attributeCount;
+    //_attributes = new Attribute[attributeCount];
+    _attributes = NULL;
     _attrValues = new float[attributeCount];
     _attrValid = new bool[attributeCount];
     memset(_attrValues, 0, attributeCount*sizeof(float));
@@ -21,9 +23,9 @@ Object::Object(int attributeCount) {
 }
 
 Object::Object(const Object& orig) {
-    //this->_attributeCount = orig._attributeCount;
-    //this->_attributes = new Attribute[_attributeCount];
-    //memcpy(orig._attributes, _attributes, _attributeCount*sizeof(Attribute));
+    this->_attributeCount = orig._attributeCount;
+    this->_attributes = new Attribute[_attributeCount];
+    memcpy(orig._attributes, _attributes, _attributeCount*sizeof(Attribute));
     //this->_attributes = orig._attributes;
 }
 
@@ -78,6 +80,8 @@ void Object::setId(int id) {
 }
 
 Object::~Object() {
+    if (_attributes)
+        delete[] _attributes;
     if (_attrValues)
         delete[] _attrValues;
     if (_attrValid)
