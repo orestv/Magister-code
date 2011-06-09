@@ -99,13 +99,13 @@ void* threadedNeighbors(void* data) {
    NeighborData *pData = (NeighborData*)data;
    Object *pObj = pData->pObject;
    set<Object*> &result = pData->result;
-   set<Object*> &toScan = pData->toScan;
+   set<Object*> *toScan = pData->toScan;
    AbstractMetric *pMetric = pData->pMetric;
    float eps = pData->eps;
 
    float dist;
-   for (set<Object*>::iterator iO = toScan.begin();
-           iO != toScan.end(); iO++) {
+   for (set<Object*>::iterator iO = toScan->begin();
+           iO != toScan->end(); iO++) {
        dist = pMetric->distance(*pObj, **iO);
        if (dist < eps)
            result.insert(*iO);
@@ -113,7 +113,7 @@ void* threadedNeighbors(void* data) {
    pthread_exit(data);
 }
 
-NeighborData::NeighborData(Object *pObject, AbstractMetric *pMetric, set<Object*> toScan, float eps) {
+NeighborData::NeighborData(Object *pObject, AbstractMetric *pMetric, set<Object*> *toScan, float eps) {
     this->pObject = pObject;
     this->pMetric = pMetric;
     this->toScan = toScan;
@@ -124,23 +124,23 @@ set<Object*> DBScan::neighbors(Object *pCurrentObject, AbstractMetric *pMetric, 
     float dist;
     Object *pObj;
     set<Object*> result;
-    int nThreadCount = 15;
+    int nThreadCount = 4;
     if (nThreadCount >= _nObjectCount)
         nThreadCount = _nObjectCount / 3;
     int nObjectsPerthread = _nObjectCount / nThreadCount;
     list<pthread_t> lsThreads;
-    set<Object*> toScan;
+    set<Object*> *ptoScan = new set<Object*>;
     for (int i = 0; i < _nObjectCount; i++) {
         pObj = _pContainer->getByIndex(i);
         if (pObj == pCurrentObject)
             continue;
-        toScan.insert(pObj);
+        ptoScan->insert(pObj);
         if (i % nObjectsPerthread == 0) {
             pthread_t thrd;
-            NeighborData *pData = new NeighborData (pCurrentObject, pMetric, toScan, eps);
+            NeighborData *pData = new NeighborData (pCurrentObject, pMetric, ptoScan, eps);
             pthread_create(&thrd, NULL, threadedNeighbors, (void*)pData);
             lsThreads.push_back(thrd);
-            toScan.clear();
+            ptoScan = new set<Object*>;
         }
     }
     void *data;
@@ -150,6 +150,7 @@ set<Object*> DBScan::neighbors(Object *pCurrentObject, AbstractMetric *pMetric, 
         pthread_join(*iThread, &data);
         pData = (NeighborData*)data;
         result.insert(pData->result.begin(), pData->result.end());
+        delete pData->toScan;
         delete pData;
     }
     return result;

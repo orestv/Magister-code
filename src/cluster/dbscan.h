@@ -11,11 +11,11 @@
 
 struct NeighborData {
     public:
-        NeighborData(Object*, AbstractMetric *, std::set<Object*>, float);
+        NeighborData(Object*, AbstractMetric *, std::set<Object*> *, float);
 
         AbstractMetric *pMetric;
         Object *pObject;
-        std::set<Object*> toScan;
+        std::set<Object*> *toScan;
         std::set<Object*> result;
         float eps;
 };
