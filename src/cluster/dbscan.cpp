@@ -75,6 +75,10 @@ Clustering* DBScan::clusterize(float eps, int nRequiredNeighborCount, AbstractMe
                 pCluster = 0;
             }
         }
+        gettimeofday(&t_end, 0);
+        double fIterationTime = (t_end.tv_sec-t_start.tv_sec) + (double)(t_end.tv_usec-t_start.tv_usec)/1000000;
+        fprintf(fTime, "%.5f\n", fIterationTime);
+        printf("Iteration time: %.5f\n", fIterationTime);
         printf("\n");
     }
     return new Clustering(lsClusters);
