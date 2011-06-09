@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <sys/time.h>
+#include <algorithm>
 
 using namespace std;
 
@@ -59,11 +60,16 @@ Clustering* DBScan::clusterize(float eps, int nRequiredNeighborCount, AbstractMe
                 pCluster = new Cluster();
             }
             pCluster->addObject(pObj);
+            set_intersection(neighbors.begin(), neighbors.end(),
+                    _remainingObjects.begin(), _remainingObjects.end(),
+                    inserter(currentObjects, currentObjects.begin()));
+            /*
             for (set<Object*>::iterator iNeighbor = neighbors.begin();
                     iNeighbor != neighbors.end(); iNeighbor++) {
                 if (_remainingObjects.find(*iNeighbor) != _remainingObjects.end())
                     currentObjects.insert(*iNeighbor);
             }
+            */
         }
         _remainingObjects.erase(pObj);
         printf("Current object count: %i\n", currentObjects.size());
