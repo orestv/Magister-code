@@ -81,7 +81,8 @@ Clustering* DBScan::clusterize(float eps, int nRequiredNeighborCount, AbstractMe
         }
         double fIterationTime = (t_end.tv_sec-t_start.tv_sec) + (double)(t_end.tv_usec-t_start.tv_usec)/1000000;
         gettimeofday(&t_end, 0);
-        printf("%.5f\n", fIterationTime);
+        fprintf(fTime, "%.5f\n", fIterationTime);
+        printf("Iteration time: %.5f\n", fIterationTime);
         printf("\n");
     }
     fclose(fTime);
