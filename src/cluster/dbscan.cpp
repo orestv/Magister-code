@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <sys/time.h>
 
 using namespace std;
 
@@ -35,8 +36,11 @@ Clustering* DBScan::clusterize(float eps, int nRequiredNeighborCount, AbstractMe
 
     Object *pObj = 0;
     srand(time(NULL));
+    timeval t_start, t_end;
+    FILE *fTime = fopen("time_dbscan.txt", "w");
     while (_remainingObjects.size() > 0) {
         printf("Unscanned objects left: %i\n", _remainingObjects.size());
+        gettimeofday(&t_start, 0);
         if (pCluster) {
             set<Object*>::iterator iO = currentObjects.begin();//randomObject(&currentObjects);
             pObj = *iO;
@@ -75,8 +79,12 @@ Clustering* DBScan::clusterize(float eps, int nRequiredNeighborCount, AbstractMe
                 pCluster = 0;
             }
         }
+        double fIterationTime = (t_end.tv_sec-t_start.tv_sec) + (double)(t_end.tv_usec-t_start.tv_usec)/1000000;
+        gettimeofday(&t_end, 0);
+        printf("%.5f\n", fIterationTime);
         printf("\n");
     }
+    fclose(fTime);
     return new Clustering(lsClusters);
 }
 
