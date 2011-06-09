@@ -11,13 +11,13 @@
 
 struct NeighborData {
     public:
-        NeighborData(Object*, AbstractMetric *, std::set<Object*>, float);
+        NeighborData(Object*, AbstractMetric *, std::set<Object*>, double);
 
         AbstractMetric *pMetric;
         Object *pObject;
         std::set<Object*> toScan;
         std::set<Object*> result;
-        float eps;
+        double eps;
 };
 
 void* threadedNeighbors(void*);
@@ -27,8 +27,8 @@ class DBScan {
         DBScan(DataContainer *);
         ~DBScan();
 
-        Clustering* clusterize(float eps, int nRequiredNeighborCount, AbstractMetric *pMetric);
-        std::set<Object*> neighbors(Object *, AbstractMetric *, float);
+        Clustering* clusterize(double eps, int nRequiredNeighborCount, AbstractMetric *pMetric);
+        std::set<Object*> neighbors(Object *, AbstractMetric *, double);
         
     private:
         DataContainer *_pContainer;

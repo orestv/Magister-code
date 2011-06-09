@@ -21,7 +21,7 @@ class Upgma {
             Cluster *pStart, *pEnd;
             int nObjectCount;
             Cluster *pResult1, *pResult2;
-            float nResult;
+            double nResult;
             AbstractMetric *pMetric;
         };
 

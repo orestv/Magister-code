@@ -28,7 +28,7 @@ set<Object*>::iterator randomObject(set<Object*> *pList) {
     return iO;
 }
 
-Clustering* DBScan::clusterize(float eps, int nRequiredNeighborCount, AbstractMetric *pMetric) {
+Clustering* DBScan::clusterize(double eps, int nRequiredNeighborCount, AbstractMetric *pMetric) {
     list<Cluster*> lsClusters;
     Cluster *pCluster = 0;
     set<Object*> currentObjects;
@@ -86,9 +86,9 @@ void* threadedNeighbors(void* data) {
    set<Object*> &result = pData->result;
    set<Object*> &toScan = pData->toScan;
    AbstractMetric *pMetric = pData->pMetric;
-   float eps = pData->eps;
+   double eps = pData->eps;
 
-   float dist;
+   double dist;
    for (set<Object*>::iterator iO = toScan.begin();
            iO != toScan.end(); iO++) {
        dist = pMetric->distance(*pObj, **iO);
@@ -98,15 +98,15 @@ void* threadedNeighbors(void* data) {
    pthread_exit(data);
 }
 
-NeighborData::NeighborData(Object *pObject, AbstractMetric *pMetric, set<Object*> toScan, float eps) {
+NeighborData::NeighborData(Object *pObject, AbstractMetric *pMetric, set<Object*> toScan, double eps) {
     this->pObject = pObject;
     this->pMetric = pMetric;
     this->toScan = toScan;
     this->eps = eps;
 }
 
-set<Object*> DBScan::neighbors(Object *pCurrentObject, AbstractMetric *pMetric, float eps) {
-    float dist;
+set<Object*> DBScan::neighbors(Object *pCurrentObject, AbstractMetric *pMetric, double eps) {
+    double dist;
     Object *pObj;
     set<Object*> result;
     int nThreadCount = 15;

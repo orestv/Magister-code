@@ -54,7 +54,7 @@ int main(int argc, char** argv) {
     int nClusters = 5;
     int nMethod = 0;
     int nNeighbors = 4;
-    float eps = 0.05;
+    double eps = 0.05;
     if (argc > 1) {
         if (strcmp(argv[1], "short") == 0)
             filename = "../../data/dmc2008_train_short.txt";

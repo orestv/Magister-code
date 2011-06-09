@@ -59,8 +59,8 @@ void NN::clusterize(AbstractMetric *pMetric) {
 };
 
 Cluster *nearestNeighbor(Cluster *pCluster, list<Cluster*> lsClusters, AbstractMetric *pMetric) {
-    float minDist = -1;
-    float dist;
+    double minDist = -1;
+    double dist;
     Cluster *pRet = NULL;
     for (list<Cluster*>::iterator iC = lsClusters.begin();
             iC != lsClusters.end(); iC++) {

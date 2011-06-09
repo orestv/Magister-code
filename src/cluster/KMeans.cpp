@@ -59,7 +59,7 @@ Clustering* KMeans::clusterize(AbstractMetric *pMetric) {
 	for (int i = 0; i < _clusterCount; i++)
 		pTempClusters[i].setContainer(_pContainer);
 	
-	float dist, minDist;
+	double dist, minDist;
 	int nSelectedCluster = 0;
 	Object *pObj;
 	
@@ -140,7 +140,7 @@ Clustering* KMeans::clusterize(AbstractMetric *pMetric) {
 			pTempClusters[nCluster].clear();
 		}
         gettimeofday(&t_end, 0);
-        float fIterationTime = (t_end.tv_sec-t_start.tv_sec) + (float)(t_end.tv_usec-t_start.tv_usec)/1000000;
+        double fIterationTime = (t_end.tv_sec-t_start.tv_sec) + (double)(t_end.tv_usec-t_start.tv_usec)/1000000;
         fprintf(fTime, "%.5f\n", fIterationTime);
         printf("Iteration time: %.5f\n", fIterationTime);
 	}

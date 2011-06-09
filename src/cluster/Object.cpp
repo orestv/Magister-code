@@ -34,13 +34,13 @@ bool Object::isAttrValid(int id) {
     return _attributes[id].valid();
 }
 
-float Object::attr(int id) {
+double Object::attr(int id) {
     if (!isAttrValid(id))
         return 0;
     return _attributes[id].value();
 }
 
-void Object::setAttr(int id, float value) {
+void Object::setAttr(int id, double value) {
     if (id >= _attributeCount)
         return;
     _attributes[id].setValue(value);

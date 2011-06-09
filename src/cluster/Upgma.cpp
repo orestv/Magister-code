@@ -31,7 +31,7 @@ void* findLeastDistance(void *p) {
         iOuter++;
     list<Cluster*>::iterator iInner = iOuter;
     iInner++;
-    float dist = Cluster::distance(**iOuter, **iInner, pData->pMetric);
+    double dist = Cluster::distance(**iOuter, **iInner, pData->pMetric);
     pData->nResult = dist;
     pData->pResult1 = *iOuter;
     pData->pResult2 = *iInner;
@@ -107,7 +107,7 @@ Clustering* Upgma::clusterize(AbstractMetric *pMetric) {
 
 
         Cluster *pC1 = NULL, *pC2 = NULL;
-        float dist = 0;
+        double dist = 0;
 
         int nThread = 1;
         for (list<pthread_t>::iterator iThread = lsThreads.begin();

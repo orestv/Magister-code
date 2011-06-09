@@ -14,24 +14,24 @@
 
 struct ObjectRange {
     Object *pObject;
-    float nRange;
+    double nRange;
 
-    ObjectRange (Object *pObject, float nRange) ;
+    ObjectRange (Object *pObject, double nRange) ;
     ObjectRange();
 };
 
 struct AttributeRange {
     int nAttribute;
-    float nRange;
+    double nRange;
 
-    AttributeRange(int nAttribute, float nRange) ;
+    AttributeRange(int nAttribute, double nRange) ;
 };
 
 struct AttributeProbability {
-	map<float, int> occurrences;
+	map<double, int> occurrences;
 	
-	void add(float value); 	
-	int get(float value); 
+	void add(double value); 	
+	int get(double value); 
 };
 
 class EuclidMetric : public AbstractMetric {
@@ -39,22 +39,22 @@ public:
     EuclidMetric(DataContainer *);
     EuclidMetric(const EuclidMetric& orig);
 
-    inline float distance(Object &o1, Object &o2, bool bUseIntegratedPrediction = false);
+    inline double distance(Object &o1, Object &o2, bool bUseIntegratedPrediction = false);
     Object* center(list<Object*> &lsObjects);
 
-    static float competence(Object &o1, Object &o2);
-	static float competence(int attr1, int attr2, Object** ppObjects, int nObjects);
+    static double competence(Object &o1, Object &o2);
+	static double competence(int attr1, int attr2, Object** ppObjects, int nObjects);
 
     void predictMissingData(DataContainer *pContainer);
     void predictAttributes(Object *pObj, DataContainer *pContainer);
     void predictAttribute(Object *pObj, int nAttr, DataContainer *pContainer);
-    static float expectation (float *arrValues, int nValueCount);
+    static double expectation (double *arrValues, int nValueCount);
 		
     virtual ~EuclidMetric();
 private:
     DataContainer *m_pContainer;
     int m_nAttributeCount;
-    float *m_arrAverageDeltas;
+    double *m_arrAverageDeltas;
     int *m_arrValidAttrCount;
 
     static bool compareObjectRanges(ObjectRange, ObjectRange);

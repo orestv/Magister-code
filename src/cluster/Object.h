@@ -23,11 +23,11 @@ public:
     int attributeCount();
 
     bool isAttrValid(int id);
-    float attr(int id);
+    double attr(int id);
     int id();
     void setId(int id);
 
-    void setAttr(int id, float value);
+    void setAttr(int id, double value);
 
     void setActualClass(int actualClass);
     int actualClass();

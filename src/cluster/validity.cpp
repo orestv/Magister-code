@@ -9,18 +9,18 @@ ThreadDistanceData::ThreadDistanceData(Cluster *pCluster1, Cluster *pCluster2, A
     this->_distance = 0;
 }
 
-float ThreadDistanceData::distance() {
+double ThreadDistanceData::distance() {
     return this->_distance;
 }
 
 void* ThreadDistanceData::threaded_distance(void *data) {
     ThreadDistanceData *pData = (ThreadDistanceData*)data;
-    float dist = 0;
+    double dist = 0;
     for (list<Object*>::iterator iO_outer = pData->pCluster1->objects().begin();
             iO_outer != pData->pCluster1->objects().end(); iO_outer++) {
         for (list<Object*>::iterator iO_inner = pData->pCluster2->objects().begin();
                 iO_inner != pData->pCluster2->objects().end(); iO_inner++) {
-            float d = pData->pMetric->distance(**iO_outer, **iO_inner);
+            double d = pData->pMetric->distance(**iO_outer, **iO_inner);
             if (dist == 0 || d < dist)
                 dist = d;
         }
@@ -29,9 +29,9 @@ void* ThreadDistanceData::threaded_distance(void *data) {
     pthread_exit((void*)pData);
 }
 
-float Validity::dunn(Clustering &clustering, AbstractMetric *pMetric) {
-    float minDist = -1, maxDiam = -1;
-    float dist = 0, diam = 0;
+double Validity::dunn(Clustering &clustering, AbstractMetric *pMetric) {
+    double minDist = -1, maxDiam = -1;
+    double dist = 0, diam = 0;
     int nObject = 0;
     list<pthread_t> lsThreads;
     for (list<Cluster*>::iterator iC_outer = clustering.clusters().begin();
@@ -68,9 +68,9 @@ float Validity::dunn(Clustering &clustering, AbstractMetric *pMetric) {
     return minDist / maxDiam;
 }
 
-float Validity::bezderk(Clustering &clustering, AbstractMetric *pMetric) {
-    float minDist = -1, maxDiam = -1;
-    float dist = 0, diam = 0;
+double Validity::bezderk(Clustering &clustering, AbstractMetric *pMetric) {
+    double minDist = -1, maxDiam = -1;
+    double dist = 0, diam = 0;
     for (list<Cluster*>::iterator iC_outer = clustering.clusters().begin();
             iC_outer != clustering.clusters().end(); iC_outer++) {
         for (list<Cluster*>::iterator iC_inner = iC_outer;
@@ -87,7 +87,7 @@ float Validity::bezderk(Clustering &clustering, AbstractMetric *pMetric) {
                 iO != (*iC_outer)->objects().end(); iO++) {
            diam += pMetric->distance(**iO, *pCenter);
         }
-        diam *= 2./(float)(*iC_outer)->objects().size();
+        diam *= 2./(double)(*iC_outer)->objects().size();
         if (diam > maxDiam)
             maxDiam = diam;
     }

@@ -118,8 +118,8 @@ bool Cluster::operator==(Cluster &other) {
     */
 }
 
-float Cluster::distance(Cluster &c1, Cluster &c2, AbstractMetric *pMetric) {
-    float result = 0.;
+double Cluster::distance(Cluster &c1, Cluster &c2, AbstractMetric *pMetric) {
+    double result = 0.;
     list<Object*> lsObjects1 = c1.objects();
     list<Object*> lsObjects2 = c2.objects();
 
@@ -131,12 +131,12 @@ float Cluster::distance(Cluster &c1, Cluster &c2, AbstractMetric *pMetric) {
             result += pMetric->distance(**iOuter, **iInner);
         }
     }
-    result /= (float) (lsObjects1.size() + lsObjects2.size());
+    result /= (double) (lsObjects1.size() + lsObjects2.size());
     return result;
 }
 
-float Cluster::diameter(AbstractMetric *pMetric) {
-    float dist = -1, maxDist = -1;
+double Cluster::diameter(AbstractMetric *pMetric) {
+    double dist = -1, maxDist = -1;
     for (list<Object*>::iterator iO_outer = objects().begin();
             iO_outer != objects().end(); iO_outer++) {
         for (list<Object*>::iterator iO_inner = iO_outer;
