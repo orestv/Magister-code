@@ -97,6 +97,8 @@ int main(int argc, char** argv) {
 	AbstractMetric *pMetric = new EuclidMetric(&container);
     pMetric->predictMissingData(&container);
 
+    FILE *pFile;
+    /*
     list<int> ids = container.ids();
     Object *pObj;
     FILE *pFile = fopen("predicted_data.txt", "w");
@@ -111,6 +113,7 @@ int main(int argc, char** argv) {
         fprintf(pFile, "\n");
     }
     fclose(pFile);
+    */
 	
 
     Clustering *pClus = NULL;
@@ -134,24 +137,26 @@ int main(int argc, char** argv) {
     printf("Clusterized, %i seconds spent.\r\n", (int)(end-start));
     printf("Results: \n");
 
-    char *pFilename = generateFilename(time(NULL));
-    pFile = fopen(pFilename, "w");
-    fprintf(pFile, "run as: ");
-    for (int i = 0; i < argc; i++) {
-        fprintf(pFile, "%s ", argv[i]);
-    }
-    fprintf(pFile, "\n");
-    for (list<Cluster*>::iterator iC = pClus->clusters().begin(); 
-            iC != pClus->clusters().end(); iC++) {
-        list<Object*> lsObjects = (*iC)->objects();
-        printf("%i objects\n", lsObjects.size());
-        for (list<Object*>::iterator iO = lsObjects.begin();
-                iO != lsObjects.end(); iO++) {
-            fprintf(pFile, "%i\t", (*iO)->id());
+    if (pClus) {
+        char *pFilename = generateFilename(time(NULL));
+        pFile = fopen(pFilename, "w");
+        fprintf(pFile, "run as: ");
+        for (int i = 0; i < argc; i++) {
+            fprintf(pFile, "%s ", argv[i]);
         }
         fprintf(pFile, "\n");
+        for (list<Cluster*>::iterator iC = pClus->clusters().begin(); 
+                iC != pClus->clusters().end(); iC++) {
+            list<Object*> lsObjects = (*iC)->objects();
+            printf("%i objects\n", lsObjects.size());
+            for (list<Object*>::iterator iO = lsObjects.begin();
+                    iO != lsObjects.end(); iO++) {
+                fprintf(pFile, "%i\t", (*iO)->id());
+            }
+            fprintf(pFile, "\n");
+        }
+        fclose(pFile);
     }
-    fclose(pFile);
     //printf("Clustering validity: %.5f\n", Validity::dunn(*pClus, pMetric));
 	delete pMetric;
     if (pClus)

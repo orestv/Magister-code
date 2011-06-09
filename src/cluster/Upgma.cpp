@@ -1,6 +1,7 @@
 #include "Upgma.h"
 #include <stdio.h>
 #include <pthread.h>
+#include <sys/time.h>
 
 Upgma::Upgma(DataContainer *pContainer) {
     _pContainer = pContainer;
@@ -58,20 +59,25 @@ void* findLeastDistance(void *p) {
 }
 
 Clustering* Upgma::clusterize(AbstractMetric *pMetric) {
-    list<int> ids = _pContainer->ids();
-    int nObjectCount = 0;
+    int nObjectCount = _pContainer->ids().size();
     Cluster *pCluster = 0;
+
+    printf("Initializing UPGMA... %i objects\n", nObjectCount);
 
     for (int i = 0; i < nObjectCount; i++) {
         pCluster = new Cluster(_pContainer);        
         pCluster->addObject(_pContainer->getByIndex(i));
         _clusters.push_back(pCluster);
     }
+    printf("A lot of clusters created!\n");
 
     int nThreads = 8;
 
-
+    FILE *fTime = fopen("time_upgma.txt", "w");
+    timeval t_start, t_end;
     while (_clusters.size() > 2) {
+        gettimeofday(&t_start, 0);
+        printf("Iteration started.\n");
         list<pthread_t> lsThreads;
         int nClusters = _clusters.size(), nClustersPerThread = nClusters / nThreads;
         list<Cluster*>::iterator iStart, iEnd, iTotalEnd;
@@ -88,7 +94,7 @@ Clustering* Upgma::clusterize(AbstractMetric *pMetric) {
                 iEnd++;
             }
             nProcessedClusters += nCluster;
-            //fprintf(stderr, "Processed %i of %i clusters.\n", nProcessedClusters, nClusters);
+            fprintf(stderr, "Processed %i of %i clusters.\n", nProcessedClusters, nClusters);
             if (nClusters - nProcessedClusters > 0 && nClusters - nProcessedClusters < 3)
                 iEnd = iTotalEnd;
 
@@ -139,7 +145,12 @@ Clustering* Upgma::clusterize(AbstractMetric *pMetric) {
         _clusters.remove(pC2);
         _clusters.push_back(pC);
         fprintf(stderr, "Current cluster list size: %i.\n\n", _clusters.size());
+        gettimeofday(&t_end, 0);
+        float fIterationTime = (t_end.tv_sec-t_start.tv_sec) + (float)(t_end.tv_usec-t_start.tv_usec)/1000000;
+        fprintf(fTime, "%.5f\n", fIterationTime);
+        printf("Iteration time: %.5f\n", fIterationTime);
     }
+    fclose(fTime);
     this->_pCluster = *(_clusters.begin());
     return NULL;
 }
