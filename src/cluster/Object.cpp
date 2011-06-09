@@ -14,7 +14,12 @@ Object::Object() {
 
 Object::Object(int attributeCount) {
     _attributeCount = attributeCount;
-    _attributes = new Attribute[attributeCount];
+    //_attributes = new Attribute[attributeCount];
+    _attributes = NULL;
+    _attrValues = new float[attributeCount];
+    _attrValid = new bool[attributeCount];
+    memset(_attrValues, 0, attributeCount*sizeof(float));
+    memset(_attrValid, 0, attributeCount*sizeof(bool));
 }
 
 Object::Object(const Object& orig) {
@@ -31,19 +36,23 @@ int Object::attributeCount() {
 bool Object::isAttrValid(int id) {
     if (id >= _attributeCount || id < 0)
         return false;
-    return _attributes[id].valid();
+    return _attrValid[id];
+    //return _attributes[id].valid();
 }
 
 float Object::attr(int id) {
-    if (!isAttrValid(id))
-        return 0;
-    return _attributes[id].value();
+    //if (!isAttrValid(id))
+    //    return 0;
+    return _attrValues[id];
+    //return _attributes[id].value();
 }
 
 void Object::setAttr(int id, float value) {
     if (id >= _attributeCount)
         return;
-    _attributes[id].setValue(value);
+    _attrValues[id] = value;
+    _attrValid[id] = true;
+    //_attributes[id].setValue(value);
 }
 
 void Object::setActualClass(int actualClass) {
@@ -73,5 +82,9 @@ void Object::setId(int id) {
 Object::~Object() {
     if (_attributes)
         delete[] _attributes;
+    if (_attrValues)
+        delete[] _attrValues;
+    if (_attrValid)
+        delete[] _attrValid;
 }
 

@@ -38,7 +38,10 @@ private:
     int _attributeCount;
     int _actualClass;
     Attribute* _attributes;
+    float *_attrValues;
+    bool *_attrValid;
     int _id;
+
 };
 
 #endif	/* _ROW_H */
