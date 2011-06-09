@@ -7,6 +7,7 @@
 #include <memory.h>
 #include <vector>
 #include <iostream>
+#include <sys/time.h>
 
 using namespace std;
 
@@ -66,7 +67,10 @@ Clustering* KMeans::clusterize(AbstractMetric *pMetric) {
     int nClusterChangeTreshold = 500;
 	
 	bool bClustersChanged = true;
+    timeval t_start, t_end;
+    FILE *fTime = fopen("time_kmeans.txt", "w");
 	while (bClustersChanged) {
+        gettimeofday(&t_start, 0);
 		nClusterChanges = 0;
 		bClustersChanged = false;
 		
@@ -135,7 +139,12 @@ Clustering* KMeans::clusterize(AbstractMetric *pMetric) {
 			_clusters[nCluster] = pTempClusters[nCluster];
 			pTempClusters[nCluster].clear();
 		}
+        gettimeofday(&t_end, 0);
+        float fIterationTime = (t_end.tv_sec-t_start.tv_sec) + (float)(t_end.tv_usec-t_start.tv_usec)/1000000;
+        fprintf(fTime, "%.5f\n", fIterationTime);
+        printf("Iteration time: %.5f\n", fIterationTime);
 	}
+    fclose(fTime);
     printf("Done!\r\n");
 	delete[] pTempClusters;
     return new Clustering(_clusters, _clusterCount);
