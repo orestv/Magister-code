@@ -2,6 +2,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <sys/time.h>
 
 NN::NN(DataContainer *pContainer) {
     this->_pContainer = pContainer;
@@ -10,7 +11,20 @@ NN::NN(DataContainer *pContainer) {
 NN::~NN() {
 }
 
-void NN::clusterize(AbstractMetric *pMetric) {
+Cluster* randomCluster(list<Cluster*> &lsClusters) {
+    int nRandomIndex = rand() % lsClusters.size();
+    list<Cluster*>::iterator iC;
+    int i = 0;
+    for (iC = lsClusters.begin();
+            iC != lsClusters.end();
+            iC++, i++) {
+        if (i == nRandomIndex) {
+            return *iC;
+        }
+    }
+}
+
+Clustering* NN::clusterize(AbstractMetric *pMetric) {
     int nObjectCount = _pContainer->ids().size();
 
     list<Cluster*> lsClusters;
@@ -21,41 +35,55 @@ void NN::clusterize(AbstractMetric *pMetric) {
     }
     srand(time(NULL));
     //Pick a random cluster index
-    int nRandomIndex = rand() % nObjectCount;
-    Cluster *pC = NULL, *pC2 = NULL;
-    //Find the cluster for that index
-    {
-        list<Cluster*>::iterator iC;
-        int i = 0;
-        for (iC = lsClusters.begin();
-                iC != lsClusters.end() && i < nObjectCount;
-                iC++, i++) {
-            if (i == nRandomIndex) {
-                pC = *iC;
-                break;
-            }
-        }
-    }
+    Cluster *pC = randomCluster(lsClusters);
     if (pC == NULL) {
         fprintf(stderr, "Failed to generate random cluster for NN!\n");
-        return;
+        return 0;
     }
     Cluster *pC0 = *(lsClusters.begin());
+    list<Cluster*> lsChain;
+    lsChain.push_back(pC0);
+    timeval t_start, t_end;
+    FILE *fTime = fopen("time_nj.txt", "w");
     while (lsClusters.size() > 1){
+        gettimeofday(&t_start, 0);
+        printf("Iteration!\n");
+        if (lsChain.size() == 0) {
+            printf("Chain is empty!\n");
+            Cluster *pRandom = randomCluster(lsClusters);
+            lsChain.push_back(pRandom);
+            printf("Added a random element to the chain.\n");
+        }
+        printf("Chain size: %i\n", lsChain.size());
+
+        list<Cluster*>::iterator preLast = lsChain.end();
+        preLast--;
+        pC0 = *preLast;
+
         pC = nearestNeighbor(pC0, lsClusters, pMetric);
-        pC2 = nearestNeighbor(pC, lsClusters, pMetric);
+        Cluster *pC2 = nearestNeighbor(pC, lsClusters, pMetric);
+        printf("Neighbors located!\n");
         if (pC0 == pC2) {
+            printf("Chain is full!\n");
             Cluster *pC_new = new Cluster(_pContainer);
             pC_new->addCluster(pC);
             pC_new->addCluster(pC2);
             lsClusters.push_back(pC_new);
             lsClusters.remove(pC);
             lsClusters.remove(pC2);
-            pC0 = *(lsClusters.begin());
+            lsChain.remove(pC);
+            lsChain.remove(pC2);
         } else {
-            pC0 = pC2;
+            printf("Chain is not full, extending.\n");
+            lsChain.push_back(pC);
         }
+        gettimeofday(&t_end, 0);
+        double fIterationTime = (t_end.tv_sec-t_start.tv_sec) + (double)(t_end.tv_usec-t_start.tv_usec)/1000000;
+        fprintf(fTime, "%.5f\n", fIterationTime);
+        printf("Iteration time: %.5f\n", fIterationTime);
     }
+    fclose(fTime);
+    return 0;
 };
 
 Cluster *nearestNeighbor(Cluster *pCluster, list<Cluster*> lsClusters, AbstractMetric *pMetric) {
