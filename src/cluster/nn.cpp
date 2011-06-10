@@ -86,15 +86,9 @@ Clustering* NN::clusterize(AbstractMetric *pMetric) {
     return 0;
 };
 
-<<<<<<< HEAD
-Cluster *nearestNeighbor(Cluster *pCluster, list<Cluster*> lsClusters, AbstractMetric *pMetric) {
+Cluster *NN::nearestNeighbor(Cluster *pCluster, list<Cluster*> lsClusters, AbstractMetric *pMetric) {
     float minDist = -1;
     float dist;
-=======
-Cluster *NN::nearestNeighbor(Cluster *pCluster, list<Cluster*> lsClusters, AbstractMetric *pMetric) {
-    double minDist = -1;
-    double dist;
->>>>>>> 77beeee... Neighbor-joining works!
     Cluster *pRet = NULL;
     for (list<Cluster*>::iterator iC = lsClusters.begin();
             iC != lsClusters.end(); iC++) {
