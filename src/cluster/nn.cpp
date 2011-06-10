@@ -76,6 +76,7 @@ Clustering* NN::clusterize(AbstractMetric *pMetric) {
         } else {
             printf("Chain is not full, extending.\n");
             lsChain.push_back(pC);
+            lsChain.push_back(pC2);
         }
         gettimeofday(&t_end, 0);
         double fIterationTime = (t_end.tv_sec-t_start.tv_sec) + (double)(t_end.tv_usec-t_start.tv_usec)/1000000;
