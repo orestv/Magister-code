@@ -4,11 +4,12 @@
 #include "DataContainer.h"
 #include "AbstractMetric.h"
 #include "Cluster.h"
+#include "clustering.h"
 
 class NN {
     public:
         NN(DataContainer *pDataContainer);
-        void clusterize(AbstractMetric *pMetric);
+        Clustering* clusterize(AbstractMetric *pMetric);
 
         ~NN();
     private:

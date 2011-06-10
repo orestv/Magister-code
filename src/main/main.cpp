@@ -24,6 +24,7 @@
 #include "clustering.h"
 #include "validity.h"
 #include "dbscan.h"
+#include "nn.h"
 
 
 using namespace std;
@@ -80,6 +81,8 @@ int main(int argc, char** argv) {
             nMethod = 2;
             nNeighbors = atoi(argv[3]);
             eps = atof(argv[4]);
+        } else if (strcmp(argv[2], "nj") == 0) {
+            nMethod = 3;
         }
     }
     else
@@ -93,6 +96,7 @@ int main(int argc, char** argv) {
 	KMeans km(&container, nClusters);
     Upgma up(&container);
     DBScan dbscan(&container);
+    NN nj(&container);
 	
 	AbstractMetric *pMetric = new EuclidMetric(&container);
     pMetric->predictMissingData(&container);
@@ -130,6 +134,8 @@ int main(int argc, char** argv) {
         case 2:
             pClus = dbscan.clusterize(eps, nNeighbors, pMetric);
             break;
+        case 3:
+            pClus = nj.clusterize(pMetric);
     };
 
     end = time(NULL);
