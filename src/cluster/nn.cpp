@@ -86,7 +86,7 @@ Clustering* NN::clusterize(AbstractMetric *pMetric) {
     return 0;
 };
 
-Cluster *nearestNeighbor(Cluster *pCluster, list<Cluster*> lsClusters, AbstractMetric *pMetric) {
+Cluster *NN::nearestNeighbor(Cluster *pCluster, list<Cluster*> lsClusters, AbstractMetric *pMetric) {
     float minDist = -1;
     float dist;
     Cluster *pRet = NULL;
